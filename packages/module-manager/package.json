@@ -1,0 +1,15 @@
+{
+  "name": "@yalk/module-manager",
+  "version": "1.0.0",
+  "description": "The module manager for the modular app",
+  "main": "build/index.ts",
+  "types": "build/index.d.ts",
+  "scripts": {
+    "test": "jest",
+    "build": "tsc --build"
+  },
+  "author": "nicrausaz",
+  "license": "MIT",
+  "devDependencies": {},
+  "keywords": []
+}

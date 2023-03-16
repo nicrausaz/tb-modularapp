@@ -1,0 +1,33 @@
+{
+  "name": "tb-modular-application",
+  "version": "1.0.0",
+  "description": "A modular app",
+  "main": "index.ts",
+  "scripts": {
+    "test": "jest",
+    "build": "tsc --build --verbose",
+    "lint": "eslint . --ext .ts",
+    "lint-and-fix": "eslint . --ext .ts --fix"
+  },
+  "author": "nicrausaz",
+  "license": "MIT",
+  "workspaces": [
+    "packages/module-manager",
+    "packages/server",
+    "packages/app"
+  ],
+  "devDependencies": {
+    "@types/jest": "^29.4.4",
+    "@types/node": "^18.15.3",
+    "@typescript-eslint/eslint-plugin": "^5.55.0",
+    "@typescript-eslint/parser": "^5.55.0",
+    "eslint": "^8.36.0",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.0.5",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5"
+  },
+  "dependencies": {
+    "@yalk/module-manager": "^1.0.0"
+  }
+}
