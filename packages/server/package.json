@@ -2,7 +2,7 @@
   "name": "@yalk/server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "build/index.js",
   "scripts": {
     "dev": "nodemon src/index.ts",
     "start": "node dist/index.js",

@@ -1,30 +1,34 @@
-import express, { Request, Response } from 'express'
-import dotenv from 'dotenv'
-// import { dirWatcher, loadModulesFromDirectory } from './libs/modules'
-import path from 'path'
+import Server from './server/Server'
+export { Server }
+
+// import express, { Request, Response } from 'express'
+// import dotenv from 'dotenv'
+// // import { dirWatcher, loadModulesFromDirectory } from './libs/modules'
+// import path from 'path'
 // import { Manager } from '@yalk/module-manager'
-dotenv.config()
 
-const app = express()
-const PORT = process.env.PORT
-const dirModules = path.join(__dirname, '..', 'modules')
+// dotenv.config()
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello World!')
-})
+// const app = express()
+// const PORT = process.env.PORT
+// const dirModules = path.join(__dirname, '..', 'modules')
 
-app.get('/modules', (req: Request, res: Response) => {
-  res.send('Modules ')
-})
+// app.get('/', (req: Request, res: Response) => {
+//   res.send(dirModules)
+// })
 
-app.get('/modules/:id', (req: Request, res: Response) => {
-  res.send(`Module ${req.params.id   }`)
-})
+// app.get('/modules', (req: Request, res: Response) => {
+//   res.send('Modules ')
+// })
 
-app.listen(PORT, () => {
-  console.log(`⚡ Server running on port ${PORT}`)
-  // loadModulesFromDirectory(dirModules)
-  // dirWatcher(dirModules)
+// app.get('/modules/:id', (req: Request, res: Response) => {
+//   res.send(`Module ${req.params.id   }`)
+// })
 
-  // Manager.getInstance().start()
-})
+// app.listen(PORT, () => {
+//   console.log(`⚡ Server running on port ${PORT}`)
+//   // loadModulesFromDirectory(dirModules)
+//   // dirWatcher(dirModules)
+
+//   // Manager.getInstance().start()
+// })

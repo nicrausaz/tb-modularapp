@@ -2,6 +2,7 @@
 const electron = require("electron");
 const path = require("path");
 const utils = require("@electron-toolkit/utils");
+const server = require("@yalk/server");
 const icon = path.join(__dirname, "../../resources/icon.png");
 function createWindow() {
   const mainWindow = new electron.BrowserWindow({
@@ -44,3 +45,4 @@ electron.app.on("window-all-closed", () => {
     electron.app.quit();
   }
 });
+new server.Server(3e3).start();
