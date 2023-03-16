@@ -1,10 +1,5 @@
-// import { HelloModule, Manager } from '../../index'
+import { Manager } from "@yalk/module-manager/src"
 
-// test('Manager class should exists', () => {
-//    expect(Manager).toBeDefined()
-// })
-
-// test('Manager should register a module', () => {
-//   const hello = new HelloModule()
-//   Manager.getInstance().registerModule(hello)
-// })
+test('Manager class should exists', () => {
+  expect(Manager).toBeDefined()
+})

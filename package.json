@@ -17,6 +17,7 @@
     "packages/app"
   ],
   "devDependencies": {
+    "@jest/globals": "^29.5.0",
     "@types/jest": "^29.4.4",
     "@types/node": "^18.15.3",
     "@typescript-eslint/eslint-plugin": "^5.55.0",
