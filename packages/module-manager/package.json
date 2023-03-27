@@ -2,7 +2,7 @@
   "name": "@yalk/module-manager",
   "version": "1.0.0",
   "description": "The module manager for the modular app",
-  "main": "build/index.ts",
+  "main": "build/index.js",
   "types": "build/index.d.ts",
   "scripts": {
     "test": "jest",

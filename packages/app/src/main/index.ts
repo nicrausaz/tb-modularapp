@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow } from 'electron'
+import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -16,6 +16,8 @@ function createWindow(): void {
       sandbox: false
     }
   })
+
+  // kiosk: true, might be useful for visualisation on screens
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
@@ -49,6 +51,10 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
+  // Register IPC handlers
+  ipcMain.handle('test:test', test)
+
+
   createWindow()
 
   app.on('activate', function () {
@@ -71,6 +77,18 @@ app.on('window-all-closed', () => {
 // code. You can also put them in separate files and require them here.
 
 import { Server } from '@yalk/server'
+import { Manager } from '@yalk/module-manager'
 
 new Server(3000).start()
+const manager = new Manager(join(__dirname, '../../modules'))
+
+manager.start()
+
+manager.loadModulesFromPath()
+
+const test = () => {
+  return manager.getModules()
+}
+
+
 

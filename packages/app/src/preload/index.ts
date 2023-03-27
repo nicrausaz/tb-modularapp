@@ -1,8 +1,19 @@
-import { contextBridge } from 'electron'
-import { electronAPI } from '@electron-toolkit/preload'
+import { contextBridge, ipcRenderer } from 'electron'
+import { ElectronAPI, electronAPI } from '@electron-toolkit/preload'
+import { API } from './API'
+
+// TODO: prevent duplicate definition
+declare global {
+  interface Window {
+    electron: ElectronAPI
+    api: API
+  }
+}
 
 // Custom APIs for renderer
-const api = {}
+const api = {
+  test: () => ipcRenderer.invoke('test:test'),
+}
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
@@ -15,10 +26,6 @@ if (process.contextIsolated) {
     console.error(error)
   }
 } else {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   window.electron = electronAPI
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   window.api = api
 }

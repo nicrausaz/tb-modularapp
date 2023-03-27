@@ -5,8 +5,6 @@ export default abstract class Module {
 
   abstract version: string
 
-  enabled: boolean = true
-
   /**
    * Called when the module is registered to the manager
    */
