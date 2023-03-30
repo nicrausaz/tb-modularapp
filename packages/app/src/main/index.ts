@@ -1,9 +1,9 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, Menu } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
-function createWindow(): void {
+function createWindow(): BrowserWindow {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 1200,
@@ -28,6 +28,7 @@ function createWindow(): void {
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
+    // mainWindow.webContents.send('module:communication', 100)
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -42,7 +43,11 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+
+  return mainWindow
 }
+
+let interval = null
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -65,7 +70,13 @@ app.whenReady().then(() => {
     return getModuleRender()
   })
 
-  createWindow()
+  const win = createWindow()
+
+  interval = setInterval(() => {
+    let test = 0
+    win.webContents.send('update-counter', ++test)
+    console.log(test)
+  }, 1000)
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
@@ -77,11 +88,7 @@ app.whenReady().then(() => {
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
+
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
@@ -99,8 +106,6 @@ manager.loadModulesFromPath().then(() => {
   manager.start()
 })
 
-
-
 const test = () => {
   return manager.getModules()
 }
@@ -110,4 +115,14 @@ const getModuleRender = async (/*id: string */) => {
   // const Render = app.default.default
   // console.log(await test12())
   // return await test12()
+  return 'test'
 }
+
+app.on('window-all-closed', () => {
+  clearInterval(interval)
+  manager.stop()
+
+  if (process.platform !== 'darwin') {
+    app.quit()
+  }
+})
