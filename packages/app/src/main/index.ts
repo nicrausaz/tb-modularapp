@@ -47,7 +47,7 @@ function createWindow(): BrowserWindow {
   return mainWindow
 }
 
-let interval = null
+// let interval = null
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -64,19 +64,31 @@ app.whenReady().then(() => {
   })
 
   // Register IPC handlers
-  ipcMain.handle('test:test', test)
+  // ipcMain.handle('test:test', test)
 
-  ipcMain.handle('module:getRender', (event, ...args) => {
-    return getModuleRender()
-  })
+  // ipcMain.handle('module:getRender', (event, ...args) => {
+  //   return getModuleRender()
+  // })
 
   const win = createWindow()
+  const manager = new Manager(join(__dirname, '../../modules'))
 
-  interval = setInterval(() => {
-    let test = 0
-    win.webContents.send('update-counter', ++test)
-    console.log(test)
-  }, 1000)
+  manager.start()
+
+  manager.loadModulesFromPath().then(() => {
+    manager.start()
+  })
+
+  // Data sent from a module
+  manager.on('event', (data) => {
+    win.webContents.send('update-counter', data)
+  })
+
+  // interval = setInterval(() => {
+  //   let test = 0
+  //   win.webContents.send('update-counter', ++test)
+  //   console.log(test)
+  // }, 1000)
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
@@ -89,7 +101,6 @@ app.whenReady().then(() => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 
-
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
 
@@ -98,17 +109,10 @@ import { Manager } from '@yalk/module-manager'
 // import { test12 } from './test'
 
 new Server(3000).start()
-const manager = new Manager(join(__dirname, '../../modules'))
 
-manager.start()
-
-manager.loadModulesFromPath().then(() => {
-  manager.start()
-})
-
-const test = () => {
-  return manager.getModules()
-}
+// const test = () => {
+//   return manager.getModules()
+// }
 
 const getModuleRender = async (/*id: string */) => {
   // const app = await import(join(__dirname, '../../modules', manager.getModules()[0].name, 'app.js'))
@@ -119,8 +123,8 @@ const getModuleRender = async (/*id: string */) => {
 }
 
 app.on('window-all-closed', () => {
-  clearInterval(interval)
-  manager.stop()
+  // clearInterval(interval)
+  // manager.stop()
 
   if (process.platform !== 'darwin') {
     app.quit()

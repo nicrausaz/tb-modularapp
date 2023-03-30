@@ -5,26 +5,31 @@ export default class HelloModule extends Module {
   description = 'A simple module that says hello'
   version = '1.0.0'
 
-  private _hello!: string
+  private hello = 'Hello World! from module'
 
   private interval!: NodeJS.Timer
 
   init(): this {
     console.log('Init from the HelloModule!')
-    this._hello = 'Hello World after init!'
     return this
   }
 
   start(): void {
     console.log('Start from the HelloModule!')
     this.interval = setInterval(() => {
-      console.log(this._hello)
+      console.log('update')
+      this.emit('update', this.hello + ' ' + new Date().toISOString())
     }, 3000)
+
+    this.on('create', (data) => {
+      console.log('Received create event from the HelloModule!', data)
+    })
   }
 
   stop(): void {
     console.log('Stop from the HelloModule!')
     clearInterval(this.interval)
+    this.removeAllListeners()
   }
 
   render() {

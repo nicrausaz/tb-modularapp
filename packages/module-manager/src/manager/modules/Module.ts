@@ -1,4 +1,6 @@
-export default abstract class Module {
+import EventEmitter from 'events'
+
+export default abstract class Module extends EventEmitter {
   abstract name: string
 
   abstract description: string
