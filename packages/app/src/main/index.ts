@@ -6,16 +6,23 @@ import icon from '../../resources/icon.png?asset'
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    width: 1200,
+    height: 900,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
-    }
+      sandbox: false,
+    },
   })
+
+  // Window personalization
+  mainWindow.center()
+
+  // DEV
+  mainWindow.webContents.openDevTools()
+  // END DEV
 
   // kiosk: true, might be useful for visualisation on screens
 
@@ -54,6 +61,9 @@ app.whenReady().then(() => {
   // Register IPC handlers
   ipcMain.handle('test:test', test)
 
+  ipcMain.handle('module:getRender', (event, ...args) => {
+    return getModuleRender()
+  })
 
   createWindow()
 
@@ -78,17 +88,26 @@ app.on('window-all-closed', () => {
 
 import { Server } from '@yalk/server'
 import { Manager } from '@yalk/module-manager'
+// import { test12 } from './test'
 
 new Server(3000).start()
 const manager = new Manager(join(__dirname, '../../modules'))
 
 manager.start()
 
-manager.loadModulesFromPath()
+manager.loadModulesFromPath().then(() => {
+  manager.start()
+})
+
+
 
 const test = () => {
   return manager.getModules()
 }
 
-
-
+const getModuleRender = async (/*id: string */) => {
+  // const app = await import(join(__dirname, '../../modules', manager.getModules()[0].name, 'app.js'))
+  // const Render = app.default.default
+  // console.log(await test12())
+  // return await test12()
+}

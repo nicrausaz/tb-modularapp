@@ -13,6 +13,7 @@ declare global {
 // Custom APIs for renderer
 const api = {
   test: () => ipcRenderer.invoke('test:test'),
+  getModuleRender: (id: string) => ipcRenderer.invoke('module:getRender', id)
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

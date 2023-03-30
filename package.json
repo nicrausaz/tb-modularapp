@@ -14,7 +14,8 @@
   "workspaces": [
     "packages/module-manager",
     "packages/server",
-    "packages/app"
+    "packages/app",
+    "packages/hello-module"
   ],
   "devDependencies": {
     "@jest/globals": "^29.5.0",

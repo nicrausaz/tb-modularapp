@@ -23,5 +23,5 @@ export default abstract class Module {
   /**
    * Returns the module's view
    */
-  abstract render(): string
+  // abstract render(): any
 }

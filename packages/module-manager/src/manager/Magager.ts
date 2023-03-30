@@ -1,7 +1,6 @@
 import Module from './modules/Module'
 import { readdir, lstatSync } from 'fs'
 import { join } from 'path'
-import Hello from './prebuilt/Hello'
 
 type ModuleId = string
 
@@ -14,7 +13,7 @@ type ModuleEntry = {
 export default class Manager {
   // private static instance: Manager
 
-  private activeModules: Map<ModuleId, ModuleEntry> = new Map()
+  private modules: Map<ModuleId, ModuleEntry> = new Map()
 
   // static getInstance(): Manager {
   //    if (!this.instance) {
@@ -28,42 +27,52 @@ export default class Manager {
     this.watch = watch
   }
 
-  loadModulesFromPath() {
-    readdir(this.modulesPath, (err, files) => {
-      if (err) {
-        console.error(err)
-        return
-      }
-
-      files.forEach((file) => {
-        if (lstatSync(join(this.modulesPath, file)).isDirectory()) {
-          const module = new Hello()
-          this.registerModule(file, module)
+  async loadModulesFromPath() {
+    console.log("Loading modules from path", this.modulesPath)
+    return new Promise<void>((resolve, reject) => {
+      readdir(this.modulesPath, async (err, files) => {
+        if (err) {
+          reject(err)
+          return
         }
+  
+        for await (const file of files) {
+          if (lstatSync(join(this.modulesPath, file)).isDirectory()) {
+            const module = await import(join(this.modulesPath, file))
+            this.registerModule(file, new module.default())
+            console.log("Loaded module", file)
+          }
+        }
+        console.log("Loaded modules done")
+        resolve()
       })
     })
+    
   }
 
   registerModule(id: string, module: Module) {
-    this.activeModules.set(id, {
+    module.init()
+
+    this.modules.set(id, {
       module,
-      enabled: true,
+      enabled: false,
     })
   }
 
   unregisterModule(id: string) {
-    this.activeModules.delete(id)
+    this.modules.delete(id)
   }
 
   start() {
-    this.activeModules.forEach((entry) => entry.module.start())
+    console.log("Starting modules", this.modules)
+    this.modules.forEach((entry) => entry.module.start())
   }
 
   stop() {
-    this.activeModules.forEach((entry) => entry.module.stop())
+    this.modules.forEach((entry) => entry.module.stop())
   }
 
   getModules() {
-    return Array.from(this.activeModules.values()).map((entry) => entry.module)
+    return Array.from(this.modules.values()).map((entry) => entry.module)
   }
 }

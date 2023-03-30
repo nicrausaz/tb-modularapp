@@ -1,25 +1,29 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const Module_1 = __importDefault(require("../modules/Module"));
-class Hello extends Module_1.default {
+const module_manager_1 = require("@yalk/module-manager");
+class HelloModule extends module_manager_1.Module {
+    name = 'hello-module';
+    description = 'A simple module that says hello';
+    version = '1.0.0';
+    _hello;
+    interval;
     init() {
-        console.log('init hello');
+        console.log('Init from the HelloModule!');
+        this._hello = 'Hello World after init!';
         return this;
     }
     start() {
-        console.log('init hello');
+        console.log('Start from the HelloModule!');
+        this.interval = setInterval(() => {
+            console.log(this._hello);
+        }, 3000);
     }
     stop() {
-        console.log('init hello');
+        console.log('Stop from the HelloModule!');
+        clearInterval(this.interval);
     }
-    name = 'Hello';
-    description = 'A simple module that says hello';
-    version = '1.0.0';
     render() {
-        return 'Hello World';
+        return "";
     }
 }
-exports.default = Hello;
+exports.default = HelloModule;

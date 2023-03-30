@@ -1,0 +1,13 @@
+{
+  "name": "@yalk/hello-module",
+  "version": "1.0.0",
+  "description": "Hello module",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "scripts": {
+    "build": "tsc --build"
+  },
+  "author": "nicrausaz",
+  "license": "MIT",
+  "keywords": []
+}
