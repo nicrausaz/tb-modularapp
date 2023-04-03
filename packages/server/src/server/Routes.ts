@@ -13,7 +13,6 @@ const configureRoutes = (app: express.Application, manager: Manager) => {
   const homeRepository = new HomeRepository()
   // const modulesRepository = new ModulesController(manager)
 
-
   // Create the controllers
   const homeController = new HomeController(homeRepository)
   const modulesController = new ModulesController(manager)

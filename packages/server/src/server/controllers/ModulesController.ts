@@ -19,6 +19,17 @@ export default class ModulesController {
    * Register to the module's events trough SSE
    */
   module = (req: Request, res: Response) => {
+
+    // Get the module
+    const module = this.manager.getModule(req.params.id)
+
+    if (!module) {
+      res.status(404).send('Module not found')
+      return
+    }
+
+
+
     res.setHeader('Content-Type', 'text/event-stream')
     res.setHeader('Cache-Control', 'no-cache')
     res.setHeader('Connection', 'keep-alive')

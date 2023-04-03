@@ -100,6 +100,10 @@ export default class Manager extends EventEmitter {
     return Array.from(this.modules.values()).map((entry) => entry.module)
   }
 
+  getModule(id: string): Module | null {
+    return this.modules.get(id)?.module || null
+  }
+
   receive(event: string) {
     const [moduleId, action] = event.split(':')
     const entry = this.modules.get(moduleId)
