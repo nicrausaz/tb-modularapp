@@ -1,12 +1,24 @@
 import express from 'express'
 import configureRoutes from './Routes'
+import { Manager } from '@yalk/module-manager'
 
 export default class Server {
   private app: express.Application
+  private manager: Manager
 
-  constructor(readonly port: number) {
+  constructor(readonly port: number, dirModules: string) {
     this.app = express()
-    configureRoutes(this.app)
+    this.manager = new Manager(dirModules)
+    // this.manager.start()
+    this.manager.loadModulesFromPath().then(() => {
+      this.manager.start()
+    })
+
+    this.manager.on('event', (data) => {
+      // console.log('got data in server', data)
+    })
+
+    configureRoutes(this.app, this.manager)
   }
 
   start() {

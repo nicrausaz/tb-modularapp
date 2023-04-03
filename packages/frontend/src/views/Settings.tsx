@@ -1,32 +1,41 @@
+import { useEffect, useState } from 'react'
+
 export default function Settings() {
-  const source = new EventSource('http://localhost:3000')
+  const [data, setData] = useState<any>(null)
 
-  source.addEventListener(
-    'message',
-    function (e) {
-      console.log(e.data)
-    },
-    false,
-  )
+  useEffect(() => {
+    const source = new EventSource('/api/modules/hello-world')
 
-  source.addEventListener(
-    'open',
-    function (e) {
-      console.log('open')
-    },
-    false,
-  )
-  source.addEventListener(
-    'error',
-    function (e) {
-      console.log('error', e)
-    },
-    false,
-  )
+    source.addEventListener(
+      'message',
+      (e) => {
+        console.log('message', e)
+        setData(e.data)
+      },
+      false,
+    )
+
+    source.addEventListener(
+      'open',
+      function (e) {
+        console.log('open')
+      },
+      false,
+    )
+    source.addEventListener(
+      'error',
+      function (e) {
+        console.log('error', e)
+      },
+      false,
+    )
+  }, [])
 
   return (
     <div>
       <h1>Settings</h1>
+
+      <p>data: {data}</p>
     </div>
   )
 }

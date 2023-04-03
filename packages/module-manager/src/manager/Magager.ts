@@ -41,10 +41,8 @@ export default class Manager extends EventEmitter {
           if (lstatSync(join(this.modulesPath, file)).isDirectory()) {
             const module = await import(join(this.modulesPath, file))
             this.registerModule(file, new module.default())
-            console.log('Loaded module', file)
           }
         }
-        console.log('Loaded modules done')
         resolve()
       })
     })
@@ -71,7 +69,7 @@ export default class Manager extends EventEmitter {
       entry.enabled = true
 
       entry.module.on('update', (data) => {
-        console.log('Received update event from the module', id, data)
+        // console.log('Received update event from the module', id, data)
         this.emit(`event`, data)
       })
 
