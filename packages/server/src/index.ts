@@ -1,5 +1,7 @@
+import { join } from 'path'
 import Server from './server/Server'
-export { Server }
+
+new Server(3000, join(__dirname, '../modules')).start()
 
 // import express, { Request, Response } from 'express'
 // import dotenv from 'dotenv'

@@ -17,7 +17,7 @@ export default class HelloModule extends Module {
   start(): void {
     console.log('Start from the HelloModule!')
     this.interval = setInterval(() => {
-      console.log('update')
+      // console.log('update')
       this.emit('update', this.hello + ' ' + new Date().toISOString())
     }, 3000)
 
