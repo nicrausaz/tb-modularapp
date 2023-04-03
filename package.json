@@ -15,7 +15,8 @@
     "packages/module-manager",
     "packages/server",
     "packages/app",
-    "packages/hello-module"
+    "packages/hello-module",
+    "packages/frontend"
   ],
   "devDependencies": {
     "@jest/globals": "^29.5.0",

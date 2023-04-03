@@ -3,13 +3,15 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
-import { spawn } from 'child_process'
-const server = spawn('node', ['src/main/server.ts'])
+// import { spawn } from 'child_process'
+// const server = spawn('node', ['src/main/server.ts'])
 
-server.stdout.on('data', (data) => {
-  console.log(`data from server : ${data}`);
-});
+// server.stdout.on('data', (data) => {
+//   console.log(`data from server : ${data}`);
+// });
 
+import { Server } from '@yalk/server'
+const server = new Server(3000)
 
 function createWindow(): BrowserWindow {
   // Create the browser window.
@@ -46,13 +48,11 @@ function createWindow(): BrowserWindow {
 
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
-  // if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-  //   mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
-  // } else {
-  //   mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
-  // }
-
-  mainWindow.loadURL("http://localhost:3000")
+  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
+    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
+  } else {
+    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+  }
 
   return mainWindow
 }
