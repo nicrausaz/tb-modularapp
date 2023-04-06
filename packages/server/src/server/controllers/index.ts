@@ -1,4 +1,5 @@
 import HomeController from './HomeController'
 import ModulesController from './ModulesController'
+import AuthController from './AuthController'
 
-export { HomeController, ModulesController }
+export { AuthController, HomeController, ModulesController }

@@ -4,6 +4,10 @@ import { Manager } from '@yalk/module-manager'
 export default class ModulesController {
   constructor(/* private homeRepository: ModulesRepository */ private manager: Manager) {}
 
+  /**
+   * GET
+   * Get all the modules
+   */
   index = (req: Request, res: Response) => {
     const mods = this.manager.getModules().map((m) => {
       return {
@@ -16,10 +20,10 @@ export default class ModulesController {
   }
 
   /**
-   * Register to the module's events trough SSE
+   * GET
+   * Register to a module's events trough SSE
    */
   module = (req: Request, res: Response) => {
-
     // Get the module
     const module = this.manager.getModule(req.params.id)
 
@@ -44,6 +48,37 @@ export default class ModulesController {
     // Gestion de la fin de la connexion SSE
     req.on('close', () => {
       clearInterval(intervalId)
+    })
+  }
+
+
+  /**
+   * GET
+   * Get a module's configuration
+   */
+  moduleConfiguration = (req: Request, res: Response) => {
+    res.send({
+      fields: [
+        {
+          name: 'test',
+          type: 'text',
+        }
+      ]
+    })
+  }
+
+  /**
+   * POST
+   * Update a module's configuration
+   */
+  moduleConfigurationUpdate = (req: Request, res: Response) => {
+    res.send({
+      fields: [
+        {
+          name: 'test',
+          type: 'text',
+        }
+      ]
     })
   }
 }

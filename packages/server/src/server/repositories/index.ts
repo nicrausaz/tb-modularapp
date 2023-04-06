@@ -1,5 +1,4 @@
 import HomeRepository from './HomeRepository'
+import UserRepository from './UserRepository'
 
-export {
-  HomeRepository,
-}
+export { HomeRepository, UserRepository }
