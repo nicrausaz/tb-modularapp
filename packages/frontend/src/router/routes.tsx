@@ -1,12 +1,18 @@
 import { Navigate, RouteObject } from 'react-router-dom'
 
 import MainLayout from '@/layouts/MainLayout'
+import Login from '@/views/Login'
 import Error from '@/views/Error'
 import Settings from '@/views/Settings'
 import Dashboard from '@/views/Dashboard'
 
+// TODO: use loader
 const routes: RouteObject[] = [
-  // TODO: Add login page
+  {
+    path: '/login',
+    element: <Login />,
+    errorElement: <Error />,
+  },
   {
     path: '/',
     element: <MainLayout />,
@@ -14,6 +20,10 @@ const routes: RouteObject[] = [
     children: [
       {
         path: '/dashboard',
+        element: <Dashboard />,
+      },
+      {
+        path: '/modules',
         element: <Dashboard />,
       },
       {
