@@ -1,14 +1,11 @@
-import { Suspense, lazy } from 'react'
+import * as icons from '@/assets/icons'
 
 type IconProps = {
   name: string
 }
 
 export default function Icon({ name, ...props }: IconProps) {
-  const Icon = lazy(() => import(`../assets/icons/${name}`))
-  return (
-    <Suspense>
-      <Icon {...props} />
-    </Suspense>
-  )
+  const Icon = icons[name]
+
+  return <Icon {...props} />
 }
