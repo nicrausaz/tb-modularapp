@@ -40,6 +40,8 @@ const configureRoutes = (app: express.Application, manager: Manager) => {
 
   app.get('/api/modules/:id', authMiddleware, modulesController.module)
 
+  app.get('/api/modules/:id/render', authMiddleware, modulesController.moduleRender)
+
   // app.patch('/api/modules/:id/status')
 
   app.get('/api/modules/:id/configuration', authMiddleware, modulesController.moduleConfiguration)

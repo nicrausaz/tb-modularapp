@@ -1,18 +1,15 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const react_1 = __importDefault(require("react"));
-function render() {
-    const [counter, setCounter] = react_1.default.useState(0);
-    react_1.default.useEffect(() => {
-        setInterval(() => {
-            setCounter((counter) => counter + 1);
-        }, 1000);
-    }, []);
-    return (react_1.default.createElement("h1", null,
-        "Hello world from the render function ",
-        counter));
-}
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.default = render;
+
+var _react = _interopRequireDefault(require("react"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function render(_ref) {
+  var name = _ref.name;
+  return /*#__PURE__*/_react.default.createElement("h1", null, "Hello world from the render ", name);
+}

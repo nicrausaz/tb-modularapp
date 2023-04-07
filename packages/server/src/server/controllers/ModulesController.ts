@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import { Manager } from '@yalk/module-manager'
+import { renderToPipeableStream, renderToStaticMarkup } from 'react-dom/server'
 
 export default class ModulesController {
   constructor(/* private homeRepository: ModulesRepository */ private manager: Manager) {}
@@ -27,12 +28,13 @@ export default class ModulesController {
     // Get the module
     const module = this.manager.getModule(req.params.id)
 
+    // TODO: here SSR the module render, pass the props and send the html
+    // with the event stream data
+
     if (!module) {
       res.status(404).send('Module not found')
       return
     }
-
-
 
     res.setHeader('Content-Type', 'text/event-stream')
     res.setHeader('Cache-Control', 'no-cache')
@@ -80,5 +82,25 @@ export default class ModulesController {
         }
       ]
     })
+  }
+
+  moduleRender = async (req: Request, res: Response) => {
+    console.log(req.params.id)
+    // Get the module
+    // eslint-disable-next-line
+    // @ts-ignore
+    const M = await import('../../../modules/hello-module/app')
+
+    // console.log(M.default())
+
+    const html = renderToStaticMarkup(M.default({ name: 'Nicolas' }))
+    res.send(html)
+
+    // const { pipe } = renderToPipeableStream(M.default(), {
+    //   onShellReady() {
+    //     res.setHeader('content-type', 'text/html');
+    //     pipe(res);
+    //   }
+    // });
   }
 }

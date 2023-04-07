@@ -4,7 +4,7 @@ export default function Settings() {
   const [data, setData] = useState<any>(null)
 
   useEffect(() => {
-    const source = new EventSource('/api/modules/hello-world')
+    const source = new EventSource('/api/modules/hello-module')
 
     source.addEventListener(
       'message',
