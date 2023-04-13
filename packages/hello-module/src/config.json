@@ -6,13 +6,11 @@
   "specificConfig": {
     "message": {
       "type": "string",
-      "label": "Message",
       "description": "The message to say",
       "value": "Hello"
     },
     "refreshRate": {
       "type": "number",
-      "label": "Refresh rate",
       "description": "The refresh rate in seconds",
       "value": 1
     }

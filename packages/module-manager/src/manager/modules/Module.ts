@@ -1,11 +1,11 @@
 import EventEmitter from 'events'
+import { Configuration } from './Configuration'
+import { SpecificConfiguration } from './configuration/SpecificConfiguration'
 
 export default abstract class Module extends EventEmitter {
-  abstract name: string
-
-  abstract description: string
-
-  abstract version: string
+  constructor(private readonly configuration: Configuration) {
+    super()
+  }
 
   /**
    * Called when the module is registered to the manager
@@ -22,8 +22,27 @@ export default abstract class Module extends EventEmitter {
    */
   abstract stop(): void
 
+  get name(): string {
+    return this.configuration.name
+  }
+
+  get description(): string {
+    return this.configuration.description
+  }
+
+  get version(): string {
+    return this.configuration.version
+  }
+
+  get author(): string {
+    return this.configuration.author
+  }
+
   /**
-   * Returns the module's view
+   * Get a the default configuration for this module
+   * @returns The default configuration for this module
    */
-  // abstract render(): any
+  defaultConfig(): SpecificConfiguration {
+    return this.configuration.default()
+  }
 }

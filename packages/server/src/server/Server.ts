@@ -4,15 +4,15 @@ import { Manager } from '@yalk/module-manager'
 // import "../database/database"
 
 export default class Server {
-  private app: express.Application
-  private manager: Manager
+  private readonly app: express.Application
+  private readonly manager: Manager
 
   constructor(readonly port: number, dirModules: string) {
     this.app = express()
     this.manager = new Manager(dirModules)
     // this.manager.start()
     this.manager.loadModulesFromPath().then(() => {
-      this.manager.start()
+      // this.manager.start()
     })
 
     this.manager.on('event', (data) => {
