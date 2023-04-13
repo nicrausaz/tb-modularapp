@@ -12,7 +12,7 @@ export default class Server {
     this.manager = new Manager(dirModules)
     // this.manager.start()
     this.manager.loadModulesFromPath().then(() => {
-      // this.manager.start()
+      this.manager.start()
     })
 
     this.manager.on('event', (data) => {

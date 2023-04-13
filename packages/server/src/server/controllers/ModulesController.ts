@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { Manager } from '@yalk/module-manager'
-import { renderToPipeableStream, renderToStaticMarkup } from 'react-dom/server'
+import { renderToStaticMarkup } from 'react-dom/server'
 
 export default class ModulesController {
   constructor(/* private homeRepository: ModulesRepository */ private manager: Manager) {}
@@ -53,20 +53,13 @@ export default class ModulesController {
     })
   }
 
-
   /**
    * GET
    * Get a module's configuration
    */
   moduleConfiguration = (req: Request, res: Response) => {
-    res.send({
-      fields: [
-        {
-          name: 'test',
-          type: 'text',
-        }
-      ]
-    })
+    const module = this.manager.getModule(req.params.id)
+    res.send(module!.toDTO())
   }
 
   /**
@@ -79,8 +72,8 @@ export default class ModulesController {
         {
           name: 'test',
           type: 'text',
-        }
-      ]
+        },
+      ],
     })
   }
 

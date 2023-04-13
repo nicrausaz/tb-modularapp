@@ -45,4 +45,18 @@ export default abstract class Module extends EventEmitter {
   defaultConfig(): SpecificConfiguration {
     return this.configuration.default()
   }
+
+  toDTO() {
+    return {
+      name: this.name,
+      description: this.description,
+      version: this.version,
+      author: this.author,
+      specificEntries: this.configuration.specificConfig,
+    }
+  }
+
+  protected getEntry<T>(key: string): T {
+    return this.configuration.specificConfig.getEntry(key) as T
+  }
 }
