@@ -40,16 +40,15 @@ export default class ModulesController {
     res.setHeader('Cache-Control', 'no-cache')
     res.setHeader('Connection', 'keep-alive')
 
-    res.write(`data: Current time is ${new Date().toLocaleTimeString()}\n\n`)
+    const handleModuleEvent = (data: any) => {
+      res.write(`data: ${JSON.stringify(data)}\n\n`)
+    }
 
-    // Envoi périodique de données SSE
-    const intervalId = setInterval(() => {
-      res.write(`data: Current time is ${new Date().toLocaleTimeString()}\n\n`)
-    }, 5000)
+    module.on('update', handleModuleEvent)
 
     // Gestion de la fin de la connexion SSE
     req.on('close', () => {
-      clearInterval(intervalId)
+      module.removeListener('update', handleModuleEvent)
     })
   }
 

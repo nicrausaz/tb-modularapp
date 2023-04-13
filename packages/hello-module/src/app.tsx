@@ -1,14 +1,9 @@
 import React from 'react'
 
-export default function render() {
+type Props = {
+  name: string
+}
 
-  const [counter, setCounter] = React.useState(0)
-
-  React.useEffect(() => {
-    setInterval(() => {
-      setCounter((counter) => counter + 1)
-    }, 1000)
-  }, [])
-
-  return (<h1>Hello world from the render function {counter}</h1>)
+export default function render({ name }: Props) {
+  return <h1>Hello world from the render {name}</h1>
 }

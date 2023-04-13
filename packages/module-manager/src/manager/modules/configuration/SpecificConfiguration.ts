@@ -1,4 +1,4 @@
-import { SpecificConfigurationEntry } from './ConfigurationEntry'
+import { SpecificConfigurationEntry } from './SpecificConfigurationEntry'
 
 type EntryName = string
 
@@ -18,6 +18,17 @@ export class SpecificConfiguration {
   toArray(): SpecificConfigurationEntry[] {
     return Array.from(this.entries.values())
   }
+
+  // fromObject(rawConfiguration: object): SpecificConfiguration {
+  //   const entries: SpecificConfigurationEntry[] = []
+  //   Object.entries(rawConfiguration).forEach(([key, value]) => {
+  //     entries.push({
+  //       name: key,
+  //       ...value,
+  //     })
+  //   })
+  //   return new SpecificConfiguration(entries)
+  // }
 }
 
 export const specificConfigurationReader = (rawConfiguration: object) => {

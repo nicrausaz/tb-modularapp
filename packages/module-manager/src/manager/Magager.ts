@@ -3,33 +3,26 @@ import { readdir, lstatSync } from 'fs'
 import { join } from 'path'
 import EventEmitter from 'events'
 import { randomUUID } from 'crypto'
-import { SpecificConfiguration, specificConfigurationReader } from './modules/configuration/SpecificConfiguration'
-import { Configuration } from './modules/Configuration'
+import { specificConfigurationReader } from './modules/configuration/SpecificConfiguration'
+import { Configuration } from './modules/configuration/Configuration'
 
 type ModuleId = string
 
 type ModuleEntry = {
   module: Module
   enabled: boolean
-  currentConfiguration: SpecificConfiguration
 }
 
 export default class Manager extends EventEmitter {
-  // private static instance: Manager
-
   private static readonly CONFIG_FILENAME = 'config.json'
 
   private modules: Map<ModuleId, ModuleEntry> = new Map()
 
-  // static getInstance(): Manager {
-  //    if (!this.instance) {
-  //       this.instance = new Manager()
-  //    }
-  //    return this.instance
-  // }
-
   constructor(private readonly modulesPath: string, private readonly watch: boolean = true) {
     super()
+    if (watch) {
+      this.bindFolderWatcher()
+    }
   }
 
   async loadModulesFromPath() {
@@ -52,17 +45,20 @@ export default class Manager extends EventEmitter {
 
   /**
    * Register a new module to the manager
-   * The default configuration of the module will be loader
    */
-  registerModule(id: string, module: Module /*, config: SpecificConfiguration */) {
+  registerModule(id: string, module: Module) {
     module.init()
     this.modules.set(id, {
       module,
       enabled: false,
-      currentConfiguration: module.defaultConfig(),
     })
   }
 
+  /**
+   * Unregister a module from the manager
+   * The module will be stopped, removed from the manager and deleted from the module folder
+   * @param id
+   */
   unregisterModule(id: string) {
     this.modules.delete(id)
   }
@@ -71,11 +67,10 @@ export default class Manager extends EventEmitter {
     const entry = this.modules.get(id)
     if (entry) {
       entry.enabled = true
-
-      entry.module.on('update', (data: any) => {
-        // console.log('Received update event from the module', id, data)
-        this.emit(`event`, data)
-      })
+      // entry.module.on('update', (data: any) => {
+      //   // console.log('Received update event from the module', id, data)
+      //   this.emit(`event`, data)
+      // })
 
       entry.module.start()
     }
@@ -86,13 +81,14 @@ export default class Manager extends EventEmitter {
     if (entry) {
       entry.enabled = false
       entry.module.stop()
+      // entry.module.off('update')
     }
   }
 
   start() {
     console.log('Starting modules', this.modules)
-    this.modules.forEach((entry) => {
-      this.enableModule(entry.module.name)
+    this.modules.forEach((_, key) => {
+      this.enableModule(key)
     })
   }
 
@@ -121,6 +117,10 @@ export default class Manager extends EventEmitter {
     }
   }
 
+  private bindFolderWatcher() {
+    // TODO
+  }
+
   /**
    * Load a module, its configuration and registrers it into the manager
    */
@@ -143,32 +143,10 @@ export default class Manager extends EventEmitter {
       config.description,
       config.version,
       config.author,
-      config.specificConfig,
+      specific,
     )
 
-    // Load the configuration into the module
-    const moduleInstance = new module.default(configuration)
-
-    this.registerModule(id, moduleInstance)
-
-    // console.log(specific)
-    // console.log(specific.toArray())
-
-    // Load the configuration type
-    // const ConfigType = (await import(join(path, 'config-type.ts.d'))).default
-
-    // Build the configuration / TODO type
-    /*
-    const configuration = new Configuration<SpecificConfiguration>(
-      config.name,
-      config.description,
-      config.version,
-      config.author,
-      config.specificConfig,
-    )
-
-    // Register the module
-    
-    */
+    // Load the configuration into the module and register it
+    this.registerModule(id, new module.default(configuration))
   }
 }

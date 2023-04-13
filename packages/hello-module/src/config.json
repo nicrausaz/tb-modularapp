@@ -13,8 +13,8 @@
     "refreshRate": {
       "type": "number",
       "label": "Refresh rate",
-      "description": "The refresh rate in seconds",
-      "value": 1
+      "description": "The refresh rate in ms",
+      "value": 5000
     },
     "showDate": {
       "type": "boolean",

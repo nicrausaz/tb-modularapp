@@ -1,4 +1,4 @@
-import { SpecificConfiguration } from "./configuration/SpecificConfiguration"
+import { SpecificConfiguration } from './SpecificConfiguration'
 
 export class Configuration {
   private readonly _defaultEntries: SpecificConfiguration
@@ -8,9 +8,11 @@ export class Configuration {
     private readonly _description: string,
     private readonly _version: string,
     private readonly _author: string,
-    private readonly _specificEntries?: SpecificConfiguration,
+    private readonly _specificEntries: SpecificConfiguration,
   ) {
-    this._defaultEntries = this._specificEntries || ({} as SpecificConfiguration)
+    // Creates a deep copy of then entries,
+    // so the default configuration can be recovered
+    this._defaultEntries = structuredClone(this._specificEntries)
   }
 
   get name(): string {
@@ -34,7 +36,6 @@ export class Configuration {
   }
 
   public default(): SpecificConfiguration {
-    // todo: copy the default entries
     return this._defaultEntries
   }
 }

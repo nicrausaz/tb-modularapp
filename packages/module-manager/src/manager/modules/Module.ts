@@ -1,5 +1,5 @@
 import EventEmitter from 'events'
-import { Configuration } from './Configuration'
+import { Configuration } from './configuration/Configuration'
 import { SpecificConfiguration } from './configuration/SpecificConfiguration'
 
 export default abstract class Module extends EventEmitter {
@@ -56,7 +56,7 @@ export default abstract class Module extends EventEmitter {
     }
   }
 
-  protected getEntry<T>(key: string): T {
-    return this.configuration.specificConfig.getEntry(key) as T
+  protected getEntryValue<T>(key: string): T {
+    return this.configuration.specificConfig.getEntry(key)?.value as T
   }
 }

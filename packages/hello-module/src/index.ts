@@ -9,12 +9,11 @@ export default class HelloModule extends Module {
   }
 
   start(): void {
-    console.log('Start from the HelloModule!')
+    console.log('Start from the HelloModule!', this.getEntryValue<number>('refreshRate'))
 
     this.interval = setInterval(() => {
-      console.log('update', this.getEntry('message'))
-      this.emit('update', this.getEntry('message'))
-    }, this.getEntry<number>('refreshRate'))
+      this.emit('update', this.getEntryValue('message'))
+    }, this.getEntryValue<number>('refreshRate'))
 
     this.on('create', (data) => {
       console.log('Received create event from the HelloModule!', data)
@@ -25,9 +24,5 @@ export default class HelloModule extends Module {
     console.log('Stop from the HelloModule!')
     clearInterval(this.interval)
     this.removeAllListeners()
-  }
-
-  render() {
-    return ''
   }
 }
