@@ -5,6 +5,7 @@ import Login from '@/views/Login'
 import Error from '@/views/Error'
 import Settings from '@/views/Settings'
 import Dashboard from '@/views/Dashboard'
+import Module from '@/views/Module'
 
 // TODO: use loader
 const routes: RouteObject[] = [
@@ -27,15 +28,19 @@ const routes: RouteObject[] = [
         element: <Dashboard />,
       },
       {
+        path: '/modules/:moduleId',
+        element: <Module />,
+      },
+      {
         path: '/settings',
         element: <Settings />,
       },
     ],
   },
-  {
-    path: '*',
-    element: <Navigate to="/404" replace />,
-  },
+  // {
+  //   path: '*',
+  //   element: <Navigate to="/404" replace />,
+  // },
 ]
 
 export default routes
