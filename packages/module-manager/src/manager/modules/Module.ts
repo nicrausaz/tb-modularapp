@@ -13,6 +13,11 @@ export default abstract class Module extends EventEmitter {
   abstract init(): this
 
   /**
+   * Called when the module is unregistered from the manager
+   */
+  abstract destroy(): void
+
+  /**
    * Called when the module is started
    */
   abstract start(): void
