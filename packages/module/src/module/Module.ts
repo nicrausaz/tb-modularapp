@@ -1,9 +1,14 @@
 import EventEmitter from 'events'
 import { Configuration } from './configuration/Configuration'
 import { SpecificConfiguration } from './configuration/SpecificConfiguration'
+import ModuleRenderer from './ModuleRenderer'
+
+export interface ModuleProps {
+  [key: string]: unknown
+}
 
 export default abstract class Module extends EventEmitter {
-  constructor(private readonly configuration: Configuration) {
+  constructor(private readonly configuration: Configuration, private readonly _renderer?: ModuleRenderer) {
     super()
   }
 
@@ -41,6 +46,10 @@ export default abstract class Module extends EventEmitter {
 
   get author(): string {
     return this.configuration.author
+  }
+
+  get renderer(): ModuleRenderer | undefined {
+    return this._renderer
   }
 
   /**

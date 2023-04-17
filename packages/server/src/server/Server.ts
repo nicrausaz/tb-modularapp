@@ -10,14 +10,12 @@ export default class Server {
   constructor(readonly port: number, dirModules: string) {
     this.app = express()
     this.manager = new Manager(dirModules)
-    // this.manager.start()
+
+    // Load existing modules, then start them all
+    // TODO: this will need to be done according to the database
     this.manager.loadModulesFromPath().then(() => {
       this.manager.start()
     })
-
-    // this.manager.on('event', (data) => {
-    //   // console.log('got data in server', data)
-    // })
 
     configureRoutes(this.app, this.manager)
   }

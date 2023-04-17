@@ -3,7 +3,7 @@ import { readdir, lstatSync } from 'fs'
 import { join } from 'path'
 import EventEmitter from 'events'
 import { randomUUID } from 'crypto'
-import { dirWatcher } from './helpers'
+// import { dirWatcher } from './helpers'
 
 type ModuleId = string
 
@@ -13,15 +13,17 @@ type ModuleEntry = {
 }
 
 export default class Manager extends EventEmitter {
+  private static readonly MODULE_ENTRY_FILENAME = 'index.js'
   private static readonly CONFIG_FILENAME = 'config.json'
+  private static readonly MODULE_RENDERED_FILENAME = 'app.js'
 
   private modules: Map<ModuleId, ModuleEntry> = new Map()
 
   constructor(private readonly modulesPath: string, private readonly watch: boolean = true) {
     super()
     if (watch) {
-      console.log('Watching for changes in the modules folder ...')
-      this.bindFolderWatcher()
+      // console.log('Watching for changes in the modules folder ...')
+      // this.bindFolderWatcher()
     }
   }
 
@@ -35,7 +37,7 @@ export default class Manager extends EventEmitter {
 
         for await (const file of files) {
           if (lstatSync(join(this.modulesPath, file)).isDirectory()) {
-            this.loadModule(join(this.modulesPath, file))
+            await this.loadModule(join(this.modulesPath, file))
           }
         }
         resolve()
@@ -113,19 +115,6 @@ export default class Manager extends EventEmitter {
     return this.modules.get(id)?.module || null
   }
 
-  receive(event: string) {
-    const [moduleId, action] = event.split(':')
-    const entry = this.modules.get(moduleId)
-
-    if (entry) {
-      entry.module.emit(action, {
-        name: 'test',
-      })
-    } else {
-      console.error('Module not found', moduleId)
-    }
-  }
-
   private bindFolderWatcher() {
     // dirWatcher(this.modulesPath)
   }
@@ -138,7 +127,7 @@ export default class Manager extends EventEmitter {
     const id = randomUUID()
 
     // Load the module
-    const module = await import(path)
+    const module = await import(join(path, Manager.MODULE_ENTRY_FILENAME))
 
     // Load the configuration
     const config = (await import(join(path, Manager.CONFIG_FILENAME))).default
@@ -149,7 +138,10 @@ export default class Manager extends EventEmitter {
     // Build the module configuration
     const configuration = new Configuration(config.name, config.description, config.version, config.author, specific)
 
+    // Load the renderer
+    const renderer = new (await import(join(path, Manager.MODULE_RENDERED_FILENAME))).default()
+
     // Load the configuration into the module and register it
-    this.registerModule(id, new module.default(configuration))
+    this.registerModule(id, new module.default(configuration, renderer))
   }
 }

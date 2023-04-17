@@ -43,7 +43,7 @@ export default function Modules() {
 
       <div className="grid grid-cols-2 xl:grid-cols-3 gap-8 items-center">
         {modules.map((module, i) => (
-          <ModuleCard key={i} id={module.id} title={module.name} description={module.description} />
+          <ModuleCard key={i} id={module.id} title={module.name} description={module.description} active={module.enabled} />
         ))}
       </div>
     </div>
