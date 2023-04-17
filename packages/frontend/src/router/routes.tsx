@@ -6,6 +6,7 @@ import Error from '@/views/Error'
 import Settings from '@/views/Settings'
 import Dashboard from '@/views/Dashboard'
 import Module from '@/views/Module'
+import Modules from '@/views/Modules'
 
 // TODO: use loader
 const routes: RouteObject[] = [
@@ -25,7 +26,7 @@ const routes: RouteObject[] = [
       },
       {
         path: '/modules',
-        element: <Dashboard />,
+        element: <Modules />,
       },
       {
         path: '/modules/:moduleId',

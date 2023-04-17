@@ -15,9 +15,9 @@ export default class Server {
       this.manager.start()
     })
 
-    this.manager.on('event', (data) => {
-      // console.log('got data in server', data)
-    })
+    // this.manager.on('event', (data) => {
+    //   // console.log('got data in server', data)
+    // })
 
     configureRoutes(this.app, this.manager)
   }

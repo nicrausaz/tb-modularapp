@@ -20,6 +20,7 @@ export default class Manager extends EventEmitter {
   constructor(private readonly modulesPath: string, private readonly watch: boolean = true) {
     super()
     if (watch) {
+      console.log('Watching for changes in the modules folder ...')
       this.bindFolderWatcher()
     }
   }
@@ -46,7 +47,7 @@ export default class Manager extends EventEmitter {
    * Register a new module to the manager
    * The module will be initialized first
    */
-  registerModule(id: string, module: Module) {
+  registerModule(id: ModuleId, module: Module) {
     module.init()
     this.modules.set(id, {
       module,
@@ -59,11 +60,11 @@ export default class Manager extends EventEmitter {
    * The module will be stopped, removed from the manager and deleted from the module folder
    * @param id
    */
-  unregisterModule(id: string) {
+  unregisterModule(id: ModuleId) {
     this.modules.delete(id)
   }
 
-  enableModule(id: string) {
+  enableModule(id: ModuleId) {
     const entry = this.modules.get(id)
     if (entry) {
       entry.enabled = true
@@ -76,7 +77,7 @@ export default class Manager extends EventEmitter {
     }
   }
 
-  disableModule(id: string) {
+  disableModule(id: ModuleId) {
     const entry = this.modules.get(id)
     if (entry) {
       entry.enabled = false
@@ -96,10 +97,19 @@ export default class Manager extends EventEmitter {
   }
 
   getModules() {
-    return Array.from(this.modules.values()).map((entry) => entry.module)
+    return Array.from(this.modules).map(([key, entry]) => {
+      return {
+        id: key,
+        name: entry.module.name,
+        description: entry.module.description,
+        version: entry.module.version,
+        author: entry.module.author,
+        enabled: entry.enabled,
+      }
+    })
   }
 
-  getModule(id: string): Module | null {
+  getModule(id: ModuleId): Module | null {
     return this.modules.get(id)?.module || null
   }
 
@@ -117,7 +127,7 @@ export default class Manager extends EventEmitter {
   }
 
   private bindFolderWatcher() {
-    dirWatcher(this.modulesPath)
+    // dirWatcher(this.modulesPath)
   }
 
   /**

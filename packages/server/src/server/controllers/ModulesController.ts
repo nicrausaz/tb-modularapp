@@ -10,12 +10,15 @@ export default class ModulesController {
    * Get all the modules
    */
   index = (req: Request, res: Response) => {
+    console.log(this.manager.getModules())
     const mods = this.manager.getModules().map((m) => {
-      return {
-        name: m.name,
-        version: m.version,
-        description: m.description,
-      }
+      return m
+      // return {
+      //   id: m.id,
+      //   name: m.name,
+      //   version: m.version,
+      //   description: m.description,
+      // }
     })
     res.send(mods)
   }

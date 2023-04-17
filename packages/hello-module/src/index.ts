@@ -1,4 +1,4 @@
-import { Module } from '@yalk/module-manager'
+import { Module } from '@yalk/module'
 
 export default class HelloModule extends Module {
   private interval!: NodeJS.Timer
@@ -6,6 +6,10 @@ export default class HelloModule extends Module {
   init(): this {
     console.log('Init from the HelloModule!')
     return this
+  }
+
+  destroy(): void {
+    console.log('Destroyed the HelloModule!')
   }
 
   start(): void {
