@@ -1,7 +1,7 @@
 {
-  "name": "@yalk/module-manager",
+  "name": "@yalk/module",
   "version": "1.0.0",
-  "description": "The module manager for the modular app",
+  "description": "The base module definition for the modular app",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "scripts": {
@@ -10,8 +10,5 @@
   },
   "author": "nicrausaz",
   "license": "MIT",
-  "keywords": [],
-  "dependencies": {
-    "@yalk/module": "^1.0.0"
-  }
+  "keywords": []
 }

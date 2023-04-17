@@ -51,6 +51,7 @@ export default abstract class Module extends EventEmitter {
     return this.configuration.default()
   }
 
+  // tmp
   toDTO() {
     return {
       name: this.name,
@@ -61,6 +62,11 @@ export default abstract class Module extends EventEmitter {
     }
   }
 
+  /**
+   * Get a specific configuration entry value
+   * @param key The key of the entry
+   * @returns The value of the associated entry key
+   */
   protected getEntryValue<T>(key: string): T {
     return this.configuration.specificConfig.getEntry(key)?.value as T
   }

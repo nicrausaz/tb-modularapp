@@ -1,10 +1,9 @@
-import Module from './modules/Module'
+import { Configuration, Module, SpecificConfiguration } from '@yalk/module'
 import { readdir, lstatSync } from 'fs'
 import { join } from 'path'
 import EventEmitter from 'events'
 import { randomUUID } from 'crypto'
-import { specificConfigurationReader } from './modules/configuration/SpecificConfiguration'
-import { Configuration } from './modules/configuration/Configuration'
+import { dirWatcher } from './helpers'
 
 type ModuleId = string
 
@@ -45,6 +44,7 @@ export default class Manager extends EventEmitter {
 
   /**
    * Register a new module to the manager
+   * The module will be initialized first
    */
   registerModule(id: string, module: Module) {
     module.init()
@@ -86,7 +86,6 @@ export default class Manager extends EventEmitter {
   }
 
   start() {
-    console.log('Starting modules', this.modules)
     this.modules.forEach((_, key) => {
       this.enableModule(key)
     })
@@ -118,7 +117,7 @@ export default class Manager extends EventEmitter {
   }
 
   private bindFolderWatcher() {
-    // TODO
+    dirWatcher(this.modulesPath)
   }
 
   /**
@@ -135,16 +134,10 @@ export default class Manager extends EventEmitter {
     const config = (await import(join(path, Manager.CONFIG_FILENAME))).default
 
     // Load the specific configuration
-    const specific = specificConfigurationReader(config.specificConfig)
+    const specific = SpecificConfiguration.fromObject(config.specificConfig)
 
     // Build the module configuration
-    const configuration = new Configuration(
-      config.name,
-      config.description,
-      config.version,
-      config.author,
-      specific,
-    )
+    const configuration = new Configuration(config.name, config.description, config.version, config.author, specific)
 
     // Load the configuration into the module and register it
     this.registerModule(id, new module.default(configuration))
