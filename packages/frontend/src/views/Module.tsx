@@ -1,6 +1,10 @@
-import { useParams } from 'react-router-dom'
+import { useLoaderData, useParams } from 'react-router-dom'
+
 
 export default function Module() {
+  // const {id } = useLoaderData<{ id: string }>()
+
+
   const { moduleId } = useParams()
 
   const testConfig = [

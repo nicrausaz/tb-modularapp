@@ -13,22 +13,22 @@ export default abstract class Module extends EventEmitter {
   }
 
   /**
-   * Called when the module is registered to the manager
+   * Initialize the module
    */
   abstract init(): this
 
   /**
-   * Called when the module is unregistered from the manager
+   * Clear the module
    */
   abstract destroy(): void
 
   /**
-   * Called when the module is started
+   * Start the module
    */
   abstract start(): void
 
   /**
-   * Called when the module is stopped
+   * Stop the module
    */
   abstract stop(): void
 
@@ -57,22 +57,11 @@ export default abstract class Module extends EventEmitter {
   }
 
   /**
-   * Get a the default configuration for this module
+   * Get the default configuration for this module
    * @returns The default configuration for this module
    */
   get defaultConfig(): SpecificConfiguration {
     return this.configuration.default
-  }
-
-  // tmp
-  toDTO() {
-    return {
-      name: this.name,
-      description: this.description,
-      version: this.version,
-      author: this.author,
-      specificEntries: this.configuration.specificConfig,
-    }
   }
 
   /**

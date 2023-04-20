@@ -5,9 +5,5 @@ export default class EventHandler {
 
   receive(event: string) {
     const [moduleId, action] = event.split(':')
-
-    
-
-
   }
 }

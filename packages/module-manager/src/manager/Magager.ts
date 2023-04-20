@@ -1,9 +1,7 @@
 import { Configuration, Module, SpecificConfiguration } from '@yalk/module'
 import { readdir, lstatSync } from 'fs'
 import { join } from 'path'
-import EventEmitter from 'events'
 import { randomUUID } from 'crypto'
-// import { dirWatcher } from './helpers'
 
 type ModuleId = string
 
@@ -12,20 +10,18 @@ type ModuleEntry = {
   enabled: boolean
 }
 
-export default class Manager extends EventEmitter {
+/**
+ * The module manager is responsible for loading, starting and stopping modules and their configuration.
+ * It is the entry point to access the modules and their events.
+ */
+export default class Manager {
   private static readonly MODULE_ENTRY_FILENAME = 'index.js'
   private static readonly CONFIG_FILENAME = 'config.json'
   private static readonly MODULE_RENDERED_FILENAME = 'app.js'
 
   private modules: Map<ModuleId, ModuleEntry> = new Map()
 
-  constructor(private readonly modulesPath: string, private readonly watch: boolean = true) {
-    super()
-    if (watch) {
-      // console.log('Watching for changes in the modules folder ...')
-      // this.bindFolderWatcher()
-    }
-  }
+  constructor(private readonly modulesPath: string, private readonly watch: boolean = true) {}
 
   async loadModulesFromPath() {
     return new Promise<void>((resolve, reject) => {
@@ -59,45 +55,68 @@ export default class Manager extends EventEmitter {
 
   /**
    * Unregister a module from the manager
-   * The module will be stopped, removed from the manager and deleted from the module folder
-   * @param id
+   * The module will be stopped if it is running and removed from the manager
+   * @param id module id
+   * @throws ModuleNotFoundError if the module is not registered
    */
   unregisterModule(id: ModuleId) {
+    const entry = this.getEntryOrThrow(id)
+
+    if (entry.enabled) {
+      this.disableModule(id)
+    }
+
     this.modules.delete(id)
   }
 
+  /**
+   * Enable a module, if it is not already enabled.
+   * The module will be started
+   * @param id module id
+   * @throws ModuleNotFoundError if the module is not registered
+   */
   enableModule(id: ModuleId) {
-    const entry = this.modules.get(id)
-    if (entry) {
-      entry.enabled = true
-      // entry.module.on('update', (data: any) => {
-      //   // console.log('Received update event from the module', id, data)
-      //   this.emit(`event`, data)
-      // })
+    const entry = this.getEntryOrThrow(id)
 
+    if (!entry.enabled) {
+      entry.enabled = true
       entry.module.start()
     }
   }
 
+  /**
+   * Disable a module, if it is not already disabled.
+   * The module will be stopped
+   * @param id module id
+   * @throws ModuleNotFoundError if the module is not registered
+   */
   disableModule(id: ModuleId) {
-    const entry = this.modules.get(id)
-    if (entry) {
+    const entry = this.getEntryOrThrow(id)
+
+    if (entry.enabled) {
       entry.enabled = false
       entry.module.stop()
-      // entry.module.off('update')
     }
   }
 
+  /**
+   * Start all the modules
+   */
   start() {
-    this.modules.forEach((_, key) => {
-      this.enableModule(key)
-    })
+    this.modules.forEach((_, key) => this.enableModule(key))
   }
 
+  /**
+   * Stop all the modules
+   */
   stop() {
-    this.modules.forEach((entry) => entry.module.stop())
+    this.modules.forEach((_, id) => this.disableModule(id))
   }
 
+  /**
+   * Get all the registered modules
+   * @returns Array of registered modules
+   */
   getModules() {
     return Array.from(this.modules).map(([key, entry]) => {
       return {
@@ -111,12 +130,28 @@ export default class Manager extends EventEmitter {
     })
   }
 
-  getModule(id: ModuleId): Module | null {
-    return this.modules.get(id)?.module || null
+  /**
+   * Get a module by its id
+   * @param id
+   * @returns the module
+   * @throws ModuleNotFoundError if the module is not registered
+   */
+  getModule(id: ModuleId): Module {
+    return this.getEntryOrThrow(id).module
   }
 
-  private bindFolderWatcher() {
-    // dirWatcher(this.modulesPath)
+  /**
+   * Get a module entry or throw an error if it is not registered
+   * @param id module id
+   * @returns module entry
+   */
+  private getEntryOrThrow(id: ModuleId): ModuleEntry {
+    const entry = this.modules.get(id)
+
+    if (!entry) {
+      throw new ModuleNotFoundError(id)
+    }
+    return entry
   }
 
   /**
@@ -143,5 +178,14 @@ export default class Manager extends EventEmitter {
 
     // Load the configuration into the module and register it
     this.registerModule(id, new module.default(configuration, renderer))
+  }
+}
+
+/**
+ * Error thrown when a module is not found
+ */
+export class ModuleNotFoundError extends Error {
+  constructor(moduleId: ModuleId) {
+    super(`Module with id '${moduleId}' not found`)
   }
 }
