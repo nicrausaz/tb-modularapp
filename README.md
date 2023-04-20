@@ -4,6 +4,8 @@ Usefull monorepo commands:
 
 - npm run build --workspace ./packages/module-manager
 
+- npm run build --workspaces
+
 - npm install @yalk/module-manager --workspace ./packages/<folder>
 
 - npm install packagename --workspace ./packages/ui

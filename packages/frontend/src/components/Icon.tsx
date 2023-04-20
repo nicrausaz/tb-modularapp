@@ -5,7 +5,7 @@ type IconProps = {
 }
 
 export default function Icon({ name, ...props }: IconProps) {
-  const Icon = icons[name]
+  const Icon = icons[name as keyof typeof icons]
 
   return <Icon {...props} />
 }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-export default function ModuleRender({ id }) {
+export default function ModuleRender({ id }: { id: string }) {
   const [data, setData] = useState<any>({})
   const [loading, setLoading] = useState<boolean>(true)
   const [render, setRender] = useState<string>('')

@@ -19,6 +19,15 @@
     },
     {
       "path": "./packages/server"
+    },
+    {
+      "path": "./packages/module"
+    },
+    {
+      "path": "./packages/hello-module"
+    },
+    {
+      "path": "./packages/hour-module"
     }
   ]
 }
