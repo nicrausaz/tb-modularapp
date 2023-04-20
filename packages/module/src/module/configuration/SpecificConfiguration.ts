@@ -16,6 +16,7 @@ export class SpecificConfiguration {
   }
 
   toArray(): SpecificConfigurationEntry[] {
+    console.log(this.entries.values())
     return Array.from(this.entries.values())
   }
 

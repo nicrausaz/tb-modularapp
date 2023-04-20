@@ -1,9 +1,10 @@
 import { Request, Response } from 'express'
 import { Manager } from '@yalk/module-manager'
 import { renderToStaticMarkup } from 'react-dom/server'
+import ModuleMapper from '../mappers/ModuleMapper'
 
 export default class ModulesController {
-  constructor(/* private homeRepository: ModulesRepository */ private manager: Manager) {}
+  constructor(/*private modulesRepository: ModulesRepository, */ private manager: Manager) {}
 
   /**
    * GET
@@ -59,7 +60,10 @@ export default class ModulesController {
     if (!module) {
       res.status(404).send('Module not found')
     } else {
-      res.send(module.toDTO())
+      res.send({
+        default: ModuleMapper.toModuleConfigurationDTO(module.defaultConfig),
+        current: ModuleMapper.toModuleConfigurationDTO(module.currentConfig),
+      })
     }
   }
 

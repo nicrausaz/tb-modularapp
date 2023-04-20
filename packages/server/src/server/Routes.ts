@@ -1,5 +1,6 @@
 import express from 'express'
 import { AuthController, HomeController, ModulesController } from './controllers'
+import { ModulesService } from './services'
 import { UserRepository, HomeRepository } from './repositories'
 import { Manager } from '@yalk/module-manager'
 import authMiddleware from './middlewares/AuthMiddleware'
@@ -10,10 +11,15 @@ import authMiddleware from './middlewares/AuthMiddleware'
  * @param app The express application
  */
 const configureRoutes = (app: express.Application, manager: Manager) => {
+  // Create the services
+  // const moduleService = new ModulesService(manager)
+
+
+
   // Create the repositories
   const homeRepository = new HomeRepository()
   const userRepository = new UserRepository()
-  // const modulesRepository = new ModulesController(manager)
+  const modulesRepository = new ModulesController(manager)
 
   // Create the controllers
   const authController = new AuthController(userRepository)
@@ -39,8 +45,6 @@ const configureRoutes = (app: express.Application, manager: Manager) => {
   app.get('/api/modules', authMiddleware, modulesController.index)
 
   app.get('/api/modules/:id', authMiddleware, modulesController.module)
-
-  // app.patch('/api/modules/:id/status')
 
   app.get('/api/modules/:id/configuration', authMiddleware, modulesController.moduleConfiguration)
 

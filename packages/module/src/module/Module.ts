@@ -52,12 +52,16 @@ export default abstract class Module extends EventEmitter {
     return this._renderer
   }
 
+  get currentConfig(): SpecificConfiguration {
+    return this.configuration.specificConfig
+  }
+
   /**
    * Get a the default configuration for this module
    * @returns The default configuration for this module
    */
-  defaultConfig(): SpecificConfiguration {
-    return this.configuration.default()
+  get defaultConfig(): SpecificConfiguration {
+    return this.configuration.default
   }
 
   // tmp

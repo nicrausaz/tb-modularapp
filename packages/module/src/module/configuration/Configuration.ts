@@ -31,11 +31,11 @@ export class Configuration {
     return this._author
   }
 
-  get specificConfig(): SpecificConfiguration {
+  get specificConfig() {
     return this._specificEntries || ({} as SpecificConfiguration)
   }
 
-  public default(): SpecificConfiguration {
+  get default(): SpecificConfiguration {
     return this._defaultEntries
   }
 }
