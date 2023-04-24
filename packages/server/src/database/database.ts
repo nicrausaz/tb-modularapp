@@ -1,15 +1,30 @@
-import fs from 'fs'
+import { Sequelize, DataTypes } from 'sequelize'
 
-import { Database } from 'sqlite3'
-
-// Open a SQLite database, stored in the file db.sqlite
-const db = new Database('db.sqlite')
-
-// Read and execute the SQL queries
-db.exec(fs.readFileSync(__dirname + '/model.sql').toString(), (err) => {
-  if (err) {
-    console.error(err)
-    return
-  }
-  console.log('Database seeded')
+const sequelize = new Sequelize({
+  dialect: 'sqlite',
+  storage: 'db.sqlite',
 })
+
+sequelize.define('User', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  username: DataTypes.STRING,
+  password: DataTypes.STRING,
+})
+
+sequelize.define('Module', {
+  id: {
+    type: DataTypes.TEXT,
+    primaryKey: true,
+  },
+  name: DataTypes.TEXT,
+  description: DataTypes.TEXT,
+  version: DataTypes.TEXT,
+  author: DataTypes.TEXT,
+  configuration: DataTypes.JSON,
+})
+
+export default sequelize

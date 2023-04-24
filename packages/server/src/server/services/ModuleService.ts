@@ -1,12 +1,16 @@
-import { Manager } from '@yalk/module-manager'
+import { ModuleRepository } from '../repositories'
 
 /**
  * The module service implements the business logic for the modules
  */
-export default class ModulesService {
-  constructor(private manager: Manager) {}
+export default class ModuleService {
+  constructor(private moduleRepository: ModuleRepository) {}
 
   getModules = () => {
-    return this.manager.getModules().map((m) => m)
+    return this.moduleRepository.getModules()
+  }
+
+  getModule = (id: string) => {
+    return this.moduleRepository.getModuleById(id)
   }
 }

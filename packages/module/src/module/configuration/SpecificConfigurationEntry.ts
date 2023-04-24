@@ -1,7 +1,7 @@
 /**
  * Defines the allowed types for a specific configuration entry.
  */
-type SpecificConfigurationEntryType = 'string' | 'number' | 'boolean' | 'array'
+type SpecificConfigurationEntryType = 'text' | 'number' | 'bool' | 'option'
 
 /**
  * Defines the allowed values for a specific configuration entry.

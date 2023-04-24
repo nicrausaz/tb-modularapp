@@ -1,4 +1,4 @@
-import { Configuration, Module, SpecificConfiguration } from '@yalk/module'
+import { Configuration, Module, ModuleProps, SpecificConfiguration } from '@yalk/module'
 import { readdir, lstatSync } from 'fs'
 import { join } from 'path'
 import { randomUUID } from 'crypto'
@@ -138,6 +138,25 @@ export default class Manager {
    */
   getModule(id: ModuleId): Module {
     return this.getEntryOrThrow(id).module
+  }
+
+  /**
+   * Subscribe to a module update event
+   * @param moduleId the module id to subscribe to
+   * @param callback the callback to call when the module is updated
+   * @throws ModuleNotFoundError if the module is not registered
+   */
+  subscribeTo(moduleId: ModuleId, callback: (data: ModuleProps) => void) {
+    this.getModule(moduleId).on('update', callback)
+  }
+
+  /**
+   * 
+   * @param moduleId 
+   * @param callback 
+   */
+  unsubscribeFrom(moduleId: ModuleId, callback: (data: ModuleProps) => void) {
+    this.getModule(moduleId).off('update', callback)
   }
 
   /**

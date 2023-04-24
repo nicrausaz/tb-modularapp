@@ -32,7 +32,15 @@ export default abstract class Module extends EventEmitter {
   /**
    * Stop the module
    */
-  abstract stop(): void
+  stop(): void {
+    this.removeAllListeners()
+  }
+
+  /**
+   * Called when the module receives data
+   * @param data The data to process
+   */
+  abstract onReceive(data: ModuleProps): void
 
   get name(): string {
     return this._configuration.name

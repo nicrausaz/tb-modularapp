@@ -16,6 +16,7 @@
     "@yalk/module-manager": "^1.0.0",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "sequelize": "^6.31.0",
     "sqlite3": "^5.1.6",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.2"

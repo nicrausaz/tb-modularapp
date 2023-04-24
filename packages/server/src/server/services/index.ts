@@ -1,3 +1,4 @@
-import ModulesService from './ModuleService'
+import ModuleService from './ModuleService'
+import UserService from './UserService'
 
-export { ModulesService }
+export { ModuleService, UserService }

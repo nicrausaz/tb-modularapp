@@ -22,4 +22,8 @@ export default class HelloModule extends Module {
   stop(): void {
     this.removeAllListeners()
   }
+
+  onReceive(data: HelloModuleProps): void {
+    console.log(data)
+  }
 }

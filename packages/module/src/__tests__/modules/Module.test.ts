@@ -1,4 +1,4 @@
-import { Configuration, Module, SpecificConfiguration } from '@yalk/module/src'
+import { Configuration, Module, ModuleProps, SpecificConfiguration } from '@yalk/module/src'
 
 class TestModule extends Module {
   init(): this {
@@ -11,6 +11,9 @@ class TestModule extends Module {
     throw new Error('Method not implemented.')
   }
   stop(): void {
+    throw new Error('Method not implemented.')
+  }
+  onReceive(data: ModuleProps): void {
     throw new Error('Method not implemented.')
   }
 }

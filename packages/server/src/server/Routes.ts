@@ -1,7 +1,7 @@
 import express from 'express'
-import { AuthController, HomeController, ModulesController } from './controllers'
-import { ModulesService } from './services'
-import { UserRepository, HomeRepository } from './repositories'
+import { AuthController, ModulesController } from './controllers'
+import { ModuleService, UserService } from './services'
+import { UserRepository, ModuleRepository } from './repositories'
 import { Manager } from '@yalk/module-manager'
 import authMiddleware from './middlewares/AuthMiddleware'
 
@@ -11,26 +11,24 @@ import authMiddleware from './middlewares/AuthMiddleware'
  * @param app The express application
  */
 const configureRoutes = (app: express.Application, manager: Manager) => {
-  // Create the services
-  // const moduleService = new ModulesService(manager)
-
-
 
   // Create the repositories
-  const homeRepository = new HomeRepository()
   const userRepository = new UserRepository()
-  const modulesRepository = new ModulesController(manager)
+  const modulesRepository = new ModuleRepository(manager)
+
+  // Create the services
+  const userService = new UserService(userRepository)
+  const moduleService = new ModuleService(modulesRepository)
 
   // Create the controllers
-  const authController = new AuthController(userRepository)
-  const homeController = new HomeController(homeRepository)
-  const modulesController = new ModulesController(manager)
+  const authController = new AuthController(userService)
+  const modulesController = new ModulesController(moduleService)
 
   // Defines the routes used by the application
-  app.get('/', homeController.index)
+  // app.get('/', homeController.index)
 
   // Defines the routes used to expose the API for device interaction
-  app.get('/api', homeController.index)
+  // app.get('/api', homeController.index)
 
   /**
    * Auth routes
