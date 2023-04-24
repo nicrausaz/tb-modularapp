@@ -17,14 +17,10 @@ export default class HourModule extends Module {
 
   start(): void {
     this.interval = setInterval(() => {
-      this.emit('update', {
+      this.notify<HourModuleProps>({
         date: new Date().toLocaleString(),
       })
     }, this.getEntryValue<number>('refreshRate'))
-
-    // this.on('create', (data) => {
-    //   console.log('Received create event from the HelloModule!', data)
-    // })
   }
 
   stop(): void {

@@ -1,7 +1,7 @@
 import express from 'express'
 import configureRoutes from './Routes'
 import { Manager } from '@yalk/module-manager'
-// import "../database/database"
+import "../database/database"
 
 export default class Server {
   private readonly app: express.Application

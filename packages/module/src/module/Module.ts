@@ -8,7 +8,9 @@ export interface ModuleProps {
 }
 
 export default abstract class Module extends EventEmitter {
-  constructor(private readonly configuration: Configuration, private readonly _renderer?: ModuleRenderer) {
+  static readonly EMIT_KEY = 'update'
+
+  constructor(private readonly _configuration: Configuration, private readonly _renderer?: ModuleRenderer) {
     super()
   }
 
@@ -33,19 +35,19 @@ export default abstract class Module extends EventEmitter {
   abstract stop(): void
 
   get name(): string {
-    return this.configuration.name
+    return this._configuration.name
   }
 
   get description(): string {
-    return this.configuration.description
+    return this._configuration.description
   }
 
   get version(): string {
-    return this.configuration.version
+    return this._configuration.version
   }
 
   get author(): string {
-    return this.configuration.author
+    return this._configuration.author
   }
 
   get renderer(): ModuleRenderer | undefined {
@@ -53,7 +55,7 @@ export default abstract class Module extends EventEmitter {
   }
 
   get currentConfig(): SpecificConfiguration {
-    return this.configuration.specificConfig
+    return this._configuration.specificConfig
   }
 
   /**
@@ -61,7 +63,7 @@ export default abstract class Module extends EventEmitter {
    * @returns The default configuration for this module
    */
   get defaultConfig(): SpecificConfiguration {
-    return this.configuration.default
+    return this._configuration.default
   }
 
   /**
@@ -70,6 +72,14 @@ export default abstract class Module extends EventEmitter {
    * @returns The value of the associated entry key
    */
   protected getEntryValue<T>(key: string): T {
-    return this.configuration.specificConfig.getEntry(key)?.value as T
+    return this._configuration.specificConfig.getEntry(key)?.value as T
+  }
+
+  /**
+   * Emit an update event
+   * @param data The data to send
+   */
+  protected notify<T extends ModuleProps>(data: T): void {
+    this.emit(Module.EMIT_KEY, data)
   }
 }

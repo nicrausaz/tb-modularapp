@@ -14,7 +14,7 @@ export default class HelloModule extends Module {
   }
 
   start(): void {
-    this.emit('update', {
+    this.notify<HelloModuleProps>({
       name: 'Nicolas',
     })
   }
