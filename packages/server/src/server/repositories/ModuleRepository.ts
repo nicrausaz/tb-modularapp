@@ -1,10 +1,10 @@
-import { Manager } from '@yalk/module-manager'
+import ModuleDatabaseManager from '../helpers/ModuleDatabaseManager'
 
 export default class ModuleRepository {
-  constructor(private manager: Manager) {}
+  constructor(private manager: ModuleDatabaseManager) {}
 
   getModules() {
-    return this.manager.getModules().map((m) => m)
+    return this.manager.getModules()
   }
 
   getModuleById(id: string) {

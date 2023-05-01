@@ -1,7 +1,7 @@
 import { Configuration, Module, ModuleProps, SpecificConfiguration } from '@yalk/module'
 import { readdir, lstatSync } from 'fs'
 import { join } from 'path'
-import { randomUUID } from 'crypto'
+// import { randomUUID } from 'crypto'
 
 type ModuleId = string
 
@@ -33,9 +33,10 @@ export default class Manager {
 
         for await (const file of files) {
           if (lstatSync(join(this.modulesPath, file)).isDirectory()) {
-            await this.loadModule(join(this.modulesPath, file))
+            await this.loadModule(this.modulesPath, file)
           }
         }
+        console.log("Loading modules... done")
         resolve()
       })
     })
@@ -121,11 +122,7 @@ export default class Manager {
     return Array.from(this.modules).map(([key, entry]) => {
       return {
         id: key,
-        name: entry.module.name,
-        description: entry.module.description,
-        version: entry.module.version,
-        author: entry.module.author,
-        enabled: entry.enabled,
+        module: entry.module,
       }
     })
   }
@@ -137,6 +134,7 @@ export default class Manager {
    * @throws ModuleNotFoundError if the module is not registered
    */
   getModule(id: ModuleId): Module {
+    console.log("getModule", id)
     return this.getEntryOrThrow(id).module
   }
 
@@ -151,9 +149,9 @@ export default class Manager {
   }
 
   /**
-   * 
-   * @param moduleId 
-   * @param callback 
+   *
+   * @param moduleId
+   * @param callback
    */
   unsubscribeFrom(moduleId: ModuleId, callback: (data: ModuleProps) => void) {
     this.getModule(moduleId).off('update', callback)
@@ -176,15 +174,17 @@ export default class Manager {
   /**
    * Load a module, its configuration and registrers it into the manager
    */
-  private async loadModule(path: string) {
+  private async loadModule(path: string, filename: string) {
     // Generate a random id for the module entry
-    const id = randomUUID()
+    const id = filename // randomUUID()
+
+    const modulePath = join(path, filename)
 
     // Load the module
-    const module = await import(join(path, Manager.MODULE_ENTRY_FILENAME))
+    const module = await import(join(modulePath, Manager.MODULE_ENTRY_FILENAME))
 
     // Load the configuration
-    const config = (await import(join(path, Manager.CONFIG_FILENAME))).default
+    const config = (await import(join(modulePath, Manager.CONFIG_FILENAME))).default
 
     // Load the specific configuration
     const specific = SpecificConfiguration.fromObject(config.specificConfig)
@@ -193,7 +193,7 @@ export default class Manager {
     const configuration = new Configuration(config.name, config.description, config.version, config.author, specific)
 
     // Load the renderer
-    const renderer = new (await import(join(path, Manager.MODULE_RENDERED_FILENAME))).default()
+    const renderer = new (await import(join(modulePath, Manager.MODULE_RENDERED_FILENAME))).default()
 
     // Load the configuration into the module and register it
     this.registerModule(id, new module.default(configuration, renderer))

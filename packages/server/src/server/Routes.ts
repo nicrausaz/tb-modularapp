@@ -2,15 +2,15 @@ import express from 'express'
 import { AuthController, ModulesController } from './controllers'
 import { ModuleService, UserService } from './services'
 import { UserRepository, ModuleRepository } from './repositories'
-import { Manager } from '@yalk/module-manager'
 import authMiddleware from './middlewares/AuthMiddleware'
+import ModuleDatabaseManager from './helpers/ModuleDatabaseManager'
 
 /**
  * Define all the routes for the application
  *
  * @param app The express application
  */
-const configureRoutes = (app: express.Application, manager: Manager) => {
+const configureRoutes = (app: express.Application, manager: ModuleDatabaseManager) => {
 
   // Create the repositories
   const userRepository = new UserRepository()
