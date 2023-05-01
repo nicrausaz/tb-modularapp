@@ -1,4 +1,9 @@
 import { join } from 'path'
 import Server from './server/Server'
+import dotenv from 'dotenv'
 
-new Server(3000, join(__dirname, '../modules')).start()
+dotenv.config()
+
+const PORT = Number(process.env.PORT) || 3000
+
+new Server(PORT, join(__dirname, '../modules')).start()

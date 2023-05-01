@@ -1,7 +1,7 @@
 import express from 'express'
 import configureRoutes from './Routes'
 import { Manager } from '@yalk/module-manager'
-import sequelize from '../database/database'
+import '../database/database'
 
 export default class Server {
   private readonly app: express.Application
@@ -11,8 +11,8 @@ export default class Server {
     this.app = express()
     this.manager = new Manager(dirModules)
 
-    // Load database
-    sequelize.sync()
+    // Configure app
+    this.app.use(express.json())
 
     // Load existing modules, then start them all
     // TODO: this will need to be done according to the database
