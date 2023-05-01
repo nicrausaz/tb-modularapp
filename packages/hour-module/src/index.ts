@@ -7,8 +7,8 @@ export interface HourModuleProps extends ModuleProps {
 export default class HourModule extends Module {
   private interval!: NodeJS.Timer
 
-  init(): this {
-    return this
+  init(): void {
+    // Nothing to do here
   }
 
   destroy(): void {
@@ -27,5 +27,9 @@ export default class HourModule extends Module {
     console.log('Stop from the HelloModule!')
     clearInterval(this.interval)
     this.removeAllListeners()
+  }
+
+  onReceive(data: ModuleProps): void {
+    // Nothing to do here
   }
 }

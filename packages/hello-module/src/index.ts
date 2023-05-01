@@ -5,9 +5,9 @@ export interface HelloModuleProps extends ModuleProps {
 }
 
 export default class HelloModule extends Module {
-  init(): this {
-    return this
-  }
+  init(): void {
+    // Nothing to do here
+   }
 
   destroy(): void {
     // Nothing to do here

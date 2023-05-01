@@ -17,7 +17,7 @@ export default abstract class Module extends EventEmitter {
   /**
    * Initialize the module
    */
-  abstract init(): this
+  abstract init(): void
 
   /**
    * Clear the module
