@@ -10,7 +10,6 @@ export default class AuthController {
    */
   login = async (req: Request, res: Response) => {
     const token = await this.userService.authenticateUser(req.body)
-    console.log(token)
     if (!token) {
       res.sendStatus(401)
     } else {
