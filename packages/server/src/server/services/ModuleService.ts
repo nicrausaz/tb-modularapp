@@ -9,18 +9,19 @@ export default class ModuleService {
   constructor(private moduleRepository: ModuleRepository) {}
 
   getModules = () => {
-    return this.moduleRepository.getModules().map((entry) => ModuleMapper.toModuleDTO(entry.id, entry.module))
+    return this.moduleRepository
+      .getModules()
+      .map((entry) => ModuleMapper.toModuleDTO(entry.id, entry.module, entry.enabled))
   }
 
   getModule = (id: string) => {
-    const module = this.moduleRepository.getModuleById(id)
+    const entry = this.moduleRepository.getModuleById(id)
 
     if (!module) {
       return null
     }
-    const moduleDTO = ModuleMapper.toModuleDTOWithConfigs(id, module)
 
-    return moduleDTO
+    return ModuleMapper.toModuleDTOWithConfigs(id, entry.module, entry.enabled)
   }
 
   getModuleWithEvents = (id: string) => {

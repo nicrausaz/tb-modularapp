@@ -43,7 +43,9 @@ export default class ModuleDatabaseManager {
   }
 
   registerModule(moduleId: string) {
-    const moduleEntity = ModuleMapper.toModuleEntity(moduleId, this.manager.getModule(moduleId))
+    const entry = this.manager.getModule(moduleId)
+
+    const moduleEntity = ModuleMapper.toModuleEntity(moduleId, entry.module, entry.enabled)
 
     const db = getDB()
     db.run(

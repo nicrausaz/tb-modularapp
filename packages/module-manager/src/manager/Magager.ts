@@ -128,6 +128,7 @@ export default class Manager {
       return {
         id: key,
         module: entry.module,
+        enabled: entry.enabled,
       }
     })
   }
@@ -138,8 +139,12 @@ export default class Manager {
    * @returns the module
    * @throws ModuleNotFoundError if the module is not registered
    */
-  getModule(id: ModuleId): Module {
-    return this.getEntryOrThrow(id).module
+  getModule(id: ModuleId): { module: Module; enabled: boolean } {
+    const entry = this.getEntryOrThrow(id)
+    return {
+      module: entry.module,
+      enabled: entry.enabled,
+    }
   }
 
   /**
@@ -149,7 +154,7 @@ export default class Manager {
    * @throws ModuleNotFoundError if the module is not registered
    */
   subscribeTo(moduleId: ModuleId, callback: (data: ModuleProps) => void) {
-    this.getModule(moduleId).on('update', callback)
+    this.getModule(moduleId).module.on('update', callback)
   }
 
   /**
@@ -158,7 +163,7 @@ export default class Manager {
    * @param callback
    */
   unsubscribeFrom(moduleId: ModuleId, callback: (data: ModuleProps) => void) {
-    this.getModule(moduleId).off('update', callback)
+    this.getModule(moduleId).module.off('update', callback)
   }
 
   setConfiguration(

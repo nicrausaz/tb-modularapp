@@ -6,6 +6,7 @@ export type ModuleDTO = {
   readonly description: string
   readonly author: string
   readonly version: string
+  readonly enabled: boolean
 }
 
 export type ModuleDTOWithConfigs = {

@@ -4,5 +4,6 @@ export type ModuleEntity = {
   description: string
   version: string
   author: string
+  configuration: object
   enabled: boolean
 }

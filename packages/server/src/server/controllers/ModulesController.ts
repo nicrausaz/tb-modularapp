@@ -37,12 +37,21 @@ export default class ModulesController {
   moduleEvents = async (req: Request, res: Response) => {
     // Get the module
     const moduleId = req.params.id
-    const module = this.moduleService.getModuleWithEvents(moduleId)
+    const entry = this.moduleService.getModuleWithEvents(moduleId)
 
-    if (!module) {
+    // TODO: check if the module is enabled
+
+    if (!entry) {
       res.status(404).send('Module not found')
       return
     }
+
+    if (!entry.enabled) {
+      res.status(400).send('Module not enabled')
+      return
+    }
+
+    const module = entry.module
 
     const handleModuleEvent = (data: ModuleProps) => {
       const reponseData = {
