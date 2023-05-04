@@ -1,6 +1,7 @@
 import { Manager } from '@yalk/module-manager'
 import { getDB } from '../../database/database'
 import { ModuleEntity } from '../models/Module'
+import ModuleMapper from '../mappers/ModuleMapper'
 
 /**
  * This class is a wrapper / adapter around the Manager class to add database functionalities
@@ -42,12 +43,19 @@ export default class ModuleDatabaseManager {
   }
 
   registerModule(moduleId: string) {
-    const { name, description, version, author, defaultConfig } = this.manager.getModule(moduleId)
+    const moduleEntity = ModuleMapper.toModuleEntity(moduleId, this.manager.getModule(moduleId))
 
     const db = getDB()
     db.run(
       'INSERT INTO Modules (id, name, description, version, author, configuration) VALUES (?, ?, ?, ?, ?, ?)',
-      [moduleId, name, description, version, author, JSON.stringify(defaultConfig)],
+      [
+        moduleId,
+        moduleEntity.name,
+        moduleEntity.description,
+        moduleEntity.version,
+        moduleEntity.author,
+        JSON.stringify(moduleEntity.configuration),
+      ],
       (err) => {
         if (err) {
           console.log(err)

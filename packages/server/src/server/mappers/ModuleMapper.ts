@@ -14,9 +14,9 @@ export default class ModuleMapper {
 
   static toModuleDTOWithConfigs(id: string, module: Module): ModuleDTOWithConfigs {
     return {
-      ...ModuleMapper.toModuleDTO(id, module),
-      defaultConfig: ModuleMapper.toModuleConfigurationDTO(module.defaultConfig),
-      currentConfig: ModuleMapper.toModuleConfigurationDTO(module.currentConfig),
+      ...this.toModuleDTO(id, module),
+      defaultConfig: this.toModuleConfigurationDTO(module.defaultConfig),
+      currentConfig: this.toModuleConfigurationDTO(module.currentConfig),
     }
   }
 
@@ -27,5 +27,16 @@ export default class ModuleMapper {
       entries.push(value)
     }
     return entries
+  }
+
+  static toModuleEntity(id: string, module: Module) {
+    return {
+      id: id,
+      name: module.name,
+      description: module.description,
+      author: module.author,
+      version: module.version,
+      configuration: this.toModuleConfigurationDTO(module.currentConfig),
+    }
   }
 }

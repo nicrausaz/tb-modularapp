@@ -1,5 +1,6 @@
 import { getDB } from '../../database/database'
 import ModuleDatabaseManager from '../helpers/ModuleDatabaseManager'
+import ModuleMapper from '../mappers/ModuleMapper'
 import { ModuleConfigurationUpdateDTO } from '../models/DTO/ModuleDTO'
 
 export default class ModuleRepository {
@@ -22,8 +23,10 @@ export default class ModuleRepository {
 
     module.setConfiguration(config.fields)
 
+    const moduleEntity = ModuleMapper.toModuleEntity(id, module)
+
     const db = getDB()
-    db.run('UPDATE Modules SET configuration = ? WHERE id = ?', [JSON.stringify(module.currentConfig), id], (err) => {
+    db.run('UPDATE Modules SET configuration = ? WHERE id = ?', [JSON.stringify(moduleEntity.configuration), id], (err) => {
       if (err) {
         console.log(err)
       }
