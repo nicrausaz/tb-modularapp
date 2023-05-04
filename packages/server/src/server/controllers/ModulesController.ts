@@ -1,6 +1,5 @@
 import { Request, Response } from 'express'
 import { renderToStaticMarkup } from 'react-dom/server'
-import ModuleMapper from '../mappers/ModuleMapper'
 import { ModuleProps } from '@yalk/module'
 import { ModuleService } from '../services'
 
@@ -17,12 +16,28 @@ export default class ModulesController {
 
   /**
    * GET
-   * Register to a module's events & render trough SSE
+   * Get a module by its id
    */
-  module = async (req: Request, res: Response) => {
-    // Get the module
+  module = (req: Request, res: Response) => {
     const moduleId = req.params.id
     const module = this.moduleService.getModule(moduleId)
+
+    if (!module) {
+      res.status(404).send('Module not found')
+      return
+    }
+
+    res.send(module)
+  }
+
+  /**
+   * GET
+   * Register to a module's events & render trough SSE
+   */
+  moduleEvents = async (req: Request, res: Response) => {
+    // Get the module
+    const moduleId = req.params.id
+    const module = this.moduleService.getModuleWithEvents(moduleId)
 
     if (!module) {
       res.status(404).send('Module not found')
@@ -66,24 +81,19 @@ export default class ModulesController {
       res.status(404).send('Module not found')
     } else {
       res.send({
-        default: ModuleMapper.toModuleConfigurationDTO(module.defaultConfig),
-        current: ModuleMapper.toModuleConfigurationDTO(module.currentConfig),
+        default: module.defaultConfig,
+        current: module.currentConfig,
       })
     }
   }
 
   /**
-   * POST
+   * PUT
    * Update a module's configuration
    */
   moduleConfigurationUpdate = (req: Request, res: Response) => {
-    res.send({
-      fields: [
-        {
-          name: 'test',
-          type: 'text',
-        },
-      ],
-    })
+    this.moduleService.updateModuleConfiguration(req.params.id, req.body)
+
+    res.send(req.body)
   }
 }

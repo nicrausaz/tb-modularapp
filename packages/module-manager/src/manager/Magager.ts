@@ -1,4 +1,10 @@
-import { Configuration, Module, ModuleProps, SpecificConfiguration } from '@yalk/module'
+import {
+  Configuration,
+  Module,
+  ModuleProps,
+  SpecificConfiguration,
+  SpecificConfigurationEntryTypeValue,
+} from '@yalk/module'
 import { readdir, lstatSync } from 'fs'
 import { join } from 'path'
 // import { randomUUID } from 'crypto'
@@ -36,7 +42,6 @@ export default class Manager {
             await this.loadModule(this.modulesPath, file)
           }
         }
-        console.log("Loading modules... done")
         resolve()
       })
     })
@@ -134,7 +139,6 @@ export default class Manager {
    * @throws ModuleNotFoundError if the module is not registered
    */
   getModule(id: ModuleId): Module {
-    console.log("getModule", id)
     return this.getEntryOrThrow(id).module
   }
 
@@ -155,6 +159,17 @@ export default class Manager {
    */
   unsubscribeFrom(moduleId: ModuleId, callback: (data: ModuleProps) => void) {
     this.getModule(moduleId).off('update', callback)
+  }
+
+  setConfiguration(
+    moduleId: ModuleId,
+    configuration: Array<{
+      name: string
+      value: SpecificConfigurationEntryTypeValue
+    }>,
+  ) {
+    const module = this.getEntryOrThrow(moduleId).module
+    module.setConfiguration(configuration)
   }
 
   /**

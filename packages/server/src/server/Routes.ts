@@ -44,6 +44,8 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
 
   app.get('/api/modules/:id', authMiddleware, modulesController.module)
 
+  app.get('/api/modules/:id/events', authMiddleware, modulesController.moduleEvents)
+
   app.get('/api/modules/:id/configuration', authMiddleware, modulesController.moduleConfiguration)
 
   app.put('/api/modules/:id/configuration', authMiddleware, modulesController.moduleConfigurationUpdate)

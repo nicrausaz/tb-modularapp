@@ -63,6 +63,18 @@ test('Module should have a method to get the specific configuration', () => {
   expect(module.currentConfig).toBe(specificConfig)
 })
 
+test('Should be able to set a key of the current configuration', () => {
+  const module = new TestModule(config)
+
+  module.setConfiguration([
+    {
+      name: 'test',
+      value: 'new test',
+    },
+  ])
+  expect(module.currentConfig.getEntry('test')?.value).toBe('new test')
+})
+
 //
 // Module lifecycle tests
 //

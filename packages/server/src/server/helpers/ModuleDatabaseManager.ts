@@ -108,7 +108,6 @@ export default class ModuleDatabaseManager {
    */
   private async syncDBToLocalModules(): Promise<void> {
     await this.manager.loadModulesFromPath()
-    console.log(this.manager.getModules())
 
     // Check if the module is in the database, if not, add it
     for (const entry of this.manager.getModules()) {

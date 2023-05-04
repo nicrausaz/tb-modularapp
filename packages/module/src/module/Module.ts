@@ -2,6 +2,7 @@ import EventEmitter from 'events'
 import { Configuration } from './configuration/Configuration'
 import { SpecificConfiguration } from './configuration/SpecificConfiguration'
 import ModuleRenderer from './ModuleRenderer'
+import { SpecificConfigurationEntryTypeValue } from './configuration/SpecificConfigurationEntry'
 
 export interface ModuleProps {
   [key: string]: unknown
@@ -41,6 +42,16 @@ export default abstract class Module extends EventEmitter {
    * @param data The data to process
    */
   abstract onReceive(data: ModuleProps): void
+
+  /**
+   * Apply configuration changes to the module, only existing fiels will be updated, others will be ignored
+   * @param configuration The configuration to apply
+   */
+  setConfiguration(configuration: Array<{ name: string; value: SpecificConfigurationEntryTypeValue }>) {
+    configuration.forEach((field) => {
+      this.currentConfig.updateEntryFromKey(field.name, field.value)
+    })
+  }
 
   get name(): string {
     return this._configuration.name

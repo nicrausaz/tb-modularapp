@@ -1,12 +1,12 @@
 /**
  * Defines the allowed types for a specific configuration entry.
  */
-type SpecificConfigurationEntryType = 'text' | 'number' | 'bool' | 'option'
+export type SpecificConfigurationEntryType = 'text' | 'number' | 'bool' | 'option'
 
 /**
  * Defines the allowed values for a specific configuration entry.
  */
-type SpecificConfigurationEntryTypeValue = string | number | boolean | Array<unknown>
+export type SpecificConfigurationEntryTypeValue = string | number | boolean | Array<unknown>
 
 /**
  * Defines a specific configuration entry.

@@ -12,16 +12,13 @@ export default class UserService {
   authenticateUser = async (loginUser: LoginUserDTO) => {
     return this.userRepository.userAuthentification(loginUser)
       .then(user => {
-        console.log(user)
         // Generate auth token
         const token = generateToken({
           id: user.id,
           username: user.username,
         })
 
-        console.log(token)
-
-        // TODO: save the token in the database
+        // TODO: save the token in the database ?
 
         return token
       })

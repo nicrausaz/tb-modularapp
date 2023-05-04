@@ -1,4 +1,4 @@
-import { SpecificConfigurationEntry } from './SpecificConfigurationEntry'
+import { SpecificConfigurationEntry, SpecificConfigurationEntryTypeValue } from './SpecificConfigurationEntry'
 
 type EntryName = string
 
@@ -39,5 +39,17 @@ export class SpecificConfiguration {
       })
     })
     return new SpecificConfiguration(entries)
+  }
+
+  /**
+   * Update a specific configuration entry from its key, only if it exists
+   * @param key key to update
+   * @param value new value
+   */
+  updateEntryFromKey(key: EntryName, value: SpecificConfigurationEntryTypeValue) {
+    const entry = this.entries.get(key)
+    if (entry) {
+      entry.value = value
+    }
   }
 }
