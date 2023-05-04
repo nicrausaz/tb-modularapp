@@ -6,7 +6,7 @@ export type SpecificConfigurationEntryType = 'text' | 'number' | 'bool' | 'optio
 /**
  * Defines the allowed values for a specific configuration entry.
  */
-export type SpecificConfigurationEntryTypeValue = string | number | boolean | Array<unknown>
+export type SpecificConfigurationEntryTypeValue = string | number | boolean | Array<string>
 
 /**
  * Defines a specific configuration entry.
@@ -23,4 +23,6 @@ export type SpecificConfigurationEntry = {
   description?: string
 
   value: SpecificConfigurationEntryTypeValue
+
+  options?: Array<string>
 }

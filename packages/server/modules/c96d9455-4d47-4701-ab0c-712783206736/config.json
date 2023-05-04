@@ -26,7 +26,8 @@
       "type": "array",
       "label": "Background color",
       "description": "The color of the background",
-      "value": ["#FFFFFF", "#000000", "#FF0000"]
+      "value": "#FFFFFF",
+      "options": ["#FFFFFF", "#000000", "#FF0000"]
     }
   }
 }
