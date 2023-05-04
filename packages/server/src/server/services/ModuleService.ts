@@ -35,6 +35,22 @@ export default class ModuleService {
   }
 
   updateModuleConfiguration = (id: string, config: ModuleConfigurationUpdateDTO) => {
+    const entry = this.moduleRepository.getModuleById(id)
+
+    if (!entry) {
+      return null
+    }
+
     return this.moduleRepository.updateModuleConfiguration(id, config)
+  }
+
+  updateModuleEnabled = (id: string, enabled: boolean) => {
+    const entry = this.moduleRepository.getModuleById(id)
+
+    if (!entry) {
+      return null
+    }
+
+    return this.moduleRepository.updateModuleEnabled(id, enabled)
   }
 }

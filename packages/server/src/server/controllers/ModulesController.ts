@@ -102,7 +102,15 @@ export default class ModulesController {
    */
   moduleConfigurationUpdate = (req: Request, res: Response) => {
     this.moduleService.updateModuleConfiguration(req.params.id, req.body)
+    res.status(204).send()
+  }
 
-    res.send(req.body)
+  /**
+   * POST
+   * Update a module's status (enabled or disabled)
+   */
+  moduleStatusUpdate = (req: Request, res: Response) => {
+    this.moduleService.updateModuleEnabled(req.params.id, req.body.enabled)
+    res.status(204).send()
   }
 }

@@ -5,7 +5,6 @@ import ModuleDatabaseManager from './helpers/ModuleDatabaseManager'
 export default class Server {
   private readonly app: express.Application
   private readonly manager: ModuleDatabaseManager
-  // private readonly manager: Manager
 
   constructor(readonly port: number, dirModules: string) {
     this.app = express()

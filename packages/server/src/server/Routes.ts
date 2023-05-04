@@ -37,6 +37,8 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
 
   app.post('/api/auth/logout', authController.logout)
 
+  app.get('/api/auth/me', authMiddleware, authController.me)
+
   /**
    * Modules routes
    */
@@ -49,6 +51,10 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
   app.get('/api/modules/:id/configuration', authMiddleware, modulesController.moduleConfiguration)
 
   app.put('/api/modules/:id/configuration', authMiddleware, modulesController.moduleConfigurationUpdate)
+
+  // app.post('api/modules/:id/events', authMiddleware, modulesController.moduleEventCreate)
+
+  app.post('/api/modules/:id/status', authMiddleware, modulesController.moduleStatusUpdate)
 }
 
 export default configureRoutes

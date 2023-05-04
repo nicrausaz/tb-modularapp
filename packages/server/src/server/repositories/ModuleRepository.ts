@@ -37,4 +37,8 @@ export default class ModuleRepository {
     )
     db.close()
   }
+
+  updateModuleEnabled(id: string, enabled: boolean) {
+    enabled ? this.manager.enableModule(id) : this.manager.disableModule(id)
+  }
 }

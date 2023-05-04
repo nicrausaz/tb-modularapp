@@ -18,7 +18,7 @@ export type SpecificConfigurationEntry = {
 
   label: string
 
-  placeholder?: string
+  // placeholder?: string
 
   description?: string
 

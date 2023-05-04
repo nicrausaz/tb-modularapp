@@ -5,7 +5,7 @@
   "author": "Nicolas Crausaz",
   "specificConfig": {
     "message": {
-      "type": "string",
+      "type": "text",
       "label": "Message",
       "description": "The message to say",
       "value": "Hello"
@@ -17,13 +17,13 @@
       "value": 5000
     },
     "showDate": {
-      "type": "boolean",
+      "type": "bool",
       "label": "Show date",
       "description": "Show the date",
       "value": true
     },
     "color": {
-      "type": "array",
+      "type": "option",
       "label": "Background color",
       "description": "The color of the background",
       "value": "#FFFFFF",
