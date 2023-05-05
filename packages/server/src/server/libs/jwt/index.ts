@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 /**
  * Generate a JWT token containing the specified payload
  * @param payload
- * @returns
+ * @returns The generated JWT token
  */
 const generateToken = (payload: object) => {
   const SECRET = process.env.JWT_SECRET ?? ''

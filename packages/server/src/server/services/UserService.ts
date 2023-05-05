@@ -18,8 +18,6 @@ export default class UserService {
           username: user.username,
         })
 
-        // TODO: save the token in the database ?
-
         return token
       })
       .catch(() => {

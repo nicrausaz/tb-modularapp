@@ -1,4 +1,5 @@
 import { getDB } from '../../database/database'
+import { ScreenEntity } from '../models/Screen'
 
 export default class ScreenRepository {
   getAll() {
@@ -28,6 +29,6 @@ export default class ScreenRepository {
   }
 
   create(screen: ScreenEntity) {
-    
+    //
   }
 }

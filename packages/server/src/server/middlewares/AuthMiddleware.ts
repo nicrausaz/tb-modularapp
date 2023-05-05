@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import { verifyAndDecodeToken } from '../libs/jwt'
 import { User } from '../models/User'
 
-const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+const JwtAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization
   const token = authHeader && authHeader.split(' ')[1]
 
@@ -20,4 +20,8 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
     .catch(() => res.sendStatus(403))
 }
 
-export default authMiddleware
+const ApiKeyAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  // TODO: Implement API Key authentication
+}
+
+export { JwtAuthMiddleware, ApiKeyAuthMiddleware }

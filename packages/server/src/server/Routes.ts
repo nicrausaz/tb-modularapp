@@ -2,7 +2,7 @@ import express from 'express'
 import { AuthController, ModulesController, ScreenController } from './controllers'
 import { ModuleService, ScreenService, UserService } from './services'
 import { UserRepository, ModuleRepository, ScreenRepository } from './repositories'
-import authMiddleware from './middlewares/AuthMiddleware'
+import { JwtAuthMiddleware } from './middlewares/AuthMiddleware'
 import ModuleDatabaseManager from './helpers/ModuleDatabaseManager'
 
 /**
@@ -39,24 +39,24 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
 
   app.post('/api/auth/logout', authController.logout)
 
-  app.get('/api/auth/me', authMiddleware, authController.me)
+  app.get('/api/auth/me', JwtAuthMiddleware, authController.me)
 
   /**
    * Modules routes
    */
-  app.get('/api/modules', authMiddleware, modulesController.index)
+  app.get('/api/modules', JwtAuthMiddleware, modulesController.index)
 
-  app.get('/api/modules/:id', authMiddleware, modulesController.module)
+  app.get('/api/modules/:id', JwtAuthMiddleware, modulesController.module)
 
-  app.get('/api/modules/:id/events', authMiddleware, modulesController.moduleEvents)
+  app.get('/api/modules/:id/events', JwtAuthMiddleware, modulesController.moduleEvents)
 
-  app.get('/api/modules/:id/configuration', authMiddleware, modulesController.moduleConfiguration)
+  app.get('/api/modules/:id/configuration', JwtAuthMiddleware, modulesController.moduleConfiguration)
 
-  app.put('/api/modules/:id/configuration', authMiddleware, modulesController.moduleConfigurationUpdate)
+  app.put('/api/modules/:id/configuration', JwtAuthMiddleware, modulesController.moduleConfigurationUpdate)
 
-  // app.post('api/modules/:id/events', authMiddleware, modulesController.moduleEventCreate)
+  // app.post('api/modules/:id/events', JwtAuthMiddleware, modulesController.moduleEventCreate)
 
-  app.post('/api/modules/:id/status', authMiddleware, modulesController.moduleStatusUpdate)
+  app.post('/api/modules/:id/status', JwtAuthMiddleware, modulesController.moduleStatusUpdate)
 
   /**
    * Screens routes

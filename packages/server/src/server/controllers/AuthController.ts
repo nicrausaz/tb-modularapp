@@ -11,7 +11,9 @@ export default class AuthController {
   login = async (req: Request, res: Response) => {
     const token = await this.userService.authenticateUser(req.body)
     if (!token) {
-      res.sendStatus(401)
+      res.status(401).send({
+        message: 'Invalid credentials',
+      })
     } else {
       res.send({
         token: token,
