@@ -16,9 +16,10 @@ CREATE TABLE IF NOT EXISTS Modules (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS ScreenConfigurations (
+CREATE TABLE IF NOT EXISTS Screen (
   id INTEGER NOT NULL,
-  configuration json,
+  name VARCHAR(255),
+  -- configuration json,
   PRIMARY KEY (id)
 );
 

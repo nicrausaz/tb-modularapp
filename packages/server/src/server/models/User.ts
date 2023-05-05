@@ -1,4 +1,4 @@
-export type User = {
+export type UserEntity = {
   id?: string
   username: string
 }
