@@ -2,6 +2,7 @@ import { getDB } from '../../database/database'
 import ModuleDatabaseManager from '../helpers/ModuleDatabaseManager'
 import ModuleMapper from '../mappers/ModuleMapper'
 import { ModuleConfigurationUpdateDTO } from '../models/DTO/ModuleDTO'
+import { ModuleProps } from '@yalk/module'
 
 export default class ModuleRepository {
   constructor(private manager: ModuleDatabaseManager) {}
@@ -40,5 +41,13 @@ export default class ModuleRepository {
 
   updateModuleEnabled(id: string, enabled: boolean) {
     enabled ? this.manager.enableModule(id) : this.manager.disableModule(id)
+  }
+
+  subscribeToModuleEvents(id: string, handler: (data: ModuleProps) => void) {
+    this.manager.subscribeTo(id, handler)
+  }
+
+  unsubscribeFromModuleEvents(id: string, handler: (data: ModuleProps) => void) {
+    this.manager.unsubscribeFrom(id, handler)
   }
 }

@@ -16,6 +16,10 @@ type ModuleEntry = {
   enabled: boolean
 }
 
+type ModuleStateEntry = ModuleEntry & {
+  id: ModuleId
+}
+
 /**
  * The module manager is responsible for loading, starting and stopping modules and their configuration.
  * It is the entry point to access the modules and their events.
@@ -123,7 +127,7 @@ export default class Manager {
    * Get all the registered modules
    * @returns Array of registered modules
    */
-  getModules() {
+  getModules(): ModuleStateEntry[] {
     return Array.from(this.modules).map(([key, entry]) => {
       return {
         id: key,
@@ -158,7 +162,7 @@ export default class Manager {
   }
 
   /**
-   *
+   * Unsubscribe from a module update event
    * @param moduleId
    * @param callback
    */
@@ -166,6 +170,11 @@ export default class Manager {
     this.getModule(moduleId).module.off('update', callback)
   }
 
+  /**
+   * Set the configuration of a module. Only the specified existing keys will be updated.
+   * @param moduleId module id
+   * @param configuration configuration to set
+   */
   setConfiguration(
     moduleId: ModuleId,
     configuration: Array<{

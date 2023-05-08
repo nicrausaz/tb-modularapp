@@ -19,4 +19,8 @@ const verifyString = async (hash: string, value: string): Promise<boolean> => {
   return await argon2.verify(hash, value)
 }
 
+// const generateApiKey = async(length = 32): Promise<{key: string, hash: string}> => {
+
+// }
+
 export { hashString, verifyString }

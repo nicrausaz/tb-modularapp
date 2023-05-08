@@ -9,10 +9,13 @@ export interface ModuleProps {
 }
 
 export default abstract class Module extends EventEmitter {
-  static readonly EMIT_KEY = 'update'
+  static readonly UPDATE_STATE_KEY = 'update'
+  static readonly RECEIVE_DATA_KEY = 'data'
 
   constructor(private readonly _configuration: Configuration, private readonly _renderer?: ModuleRenderer) {
     super()
+    // Bind the onReceive event
+    this.on(Module.RECEIVE_DATA_KEY, () => this.onReceive)
   }
 
   /**
@@ -99,6 +102,6 @@ export default abstract class Module extends EventEmitter {
    * @param data The data to send
    */
   protected notify<T extends ModuleProps>(data: T): void {
-    this.emit(Module.EMIT_KEY, data)
+    this.emit(Module.UPDATE_STATE_KEY, data)
   }
 }

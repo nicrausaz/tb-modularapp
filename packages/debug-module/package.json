@@ -1,7 +1,7 @@
 {
-  "name": "@yalk/hello-module",
+  "name": "@yalk/debug-module",
   "version": "1.0.0",
-  "description": "Hello module",
+  "description": "A module used for debug",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "scripts": {

@@ -10,26 +10,52 @@ const getDB = () => {
   return new Database('db.sqlite')
 }
 
-const createAndSeed = () => {
+/**
+ * Create the database structure
+ */
+const create = async () => {
   const db = getDB()
-
-  // Create the database
-  db.exec(fs.readFileSync(__dirname + '/model.sql').toString(), (err) => {
-    if (err) {
-      console.error(err)
-      return
-    }
-    console.log('Database created')
-  })
-
-  // Seed the database
-  db.exec(fs.readFileSync(__dirname + '/seed.sql').toString(), (err) => {
-    if (err) {
-      console.error(err)
-      return
-    }
-    console.log('Database seeded')
+  return new Promise<void>((resolve, reject) => {
+    // Create the database
+    db.exec(fs.readFileSync(__dirname + '/model.sql').toString(), (err) => {
+      if (err) {
+        reject(err)
+        return
+      }
+      resolve()
+    })
+    db.close()
   })
 }
 
-export { getDB, createAndSeed }
+/**
+ * Seed the database with initial data
+ *
+ */
+const seed = async () => {
+  const db = getDB()
+  return new Promise<void>((resolve, reject) => {
+    // Seed the database
+    db.exec(fs.readFileSync(__dirname + '/seed.sql').toString(), (err) => {
+      if (err) {
+        reject(err)
+        return
+      }
+      resolve()
+    })
+  })
+}
+
+/**
+ * Create and seed the database
+ */
+const buildDB = async () => {
+  return new Promise<void>((resolve, reject) => {
+    create()
+      .then(() => seed())
+      .then(() => resolve())
+      .catch((err) => reject(err))
+  })
+}
+
+export { getDB, buildDB }

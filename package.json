@@ -16,7 +16,7 @@
     "packages/server",
     "packages/module-manager",
     "packages/module",
-    "packages/hello-module",
+    "packages/debug-module",
     "packages/hour-module"
   ],
   "devDependencies": {

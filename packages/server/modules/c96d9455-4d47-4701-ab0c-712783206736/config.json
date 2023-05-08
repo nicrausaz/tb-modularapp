@@ -1,29 +1,29 @@
 {
-  "name": "Hello Module",
-  "description": "A simple module to say hello",
+  "name": "Debug-Module",
+  "description": "A module used for debug",
   "version": "1.0.0",
   "author": "Nicolas Crausaz",
   "specificConfig": {
     "message": {
-      "type": "string",
+      "type": "text",
       "label": "Message",
       "description": "The message to say",
-      "value": "Hello"
+      "value": "DEBUG"
     },
     "refreshRate": {
       "type": "number",
       "label": "Refresh rate",
       "description": "The refresh rate in ms",
-      "value": 5000
+      "value": 1000
     },
     "showDate": {
-      "type": "boolean",
+      "type": "bool",
       "label": "Show date",
       "description": "Show the date",
       "value": true
     },
     "color": {
-      "type": "array",
+      "type": "option",
       "label": "Background color",
       "description": "The color of the background",
       "value": "#FFFFFF",

@@ -2,6 +2,7 @@ import { Manager } from '@yalk/module-manager'
 import { getDB } from '../../database/database'
 import { ModuleEntity } from '../models/Module'
 import ModuleMapper from '../mappers/ModuleMapper'
+import { ModuleProps } from '@yalk/module'
 
 /**
  * This class is a wrapper / adapter around the Manager class to add database functionalities
@@ -18,6 +19,10 @@ export default class ModuleDatabaseManager {
     this.startEnabledModules()
   }
 
+  /**
+   * Set module enabled in the manager and in the database
+   * @param moduleId module id
+   */
   enableModule(moduleId: string) {
     this.manager.enableModule(moduleId)
 
@@ -87,6 +92,18 @@ export default class ModuleDatabaseManager {
 
   getModule(id: string) {
     return this.manager.getModule(id)
+  }
+
+  subscribeTo(moduleId: string, callback: (data: ModuleProps) => void) {
+    this.manager.subscribeTo(moduleId, callback)
+  }
+
+  unsubscribeFrom(moduleId: string, callback: (data: ModuleProps) => void) {
+    this.manager.unsubscribeFrom(moduleId, callback)
+  }
+
+  stop() {
+    this.manager.stop()
   }
 
   private async startEnabledModules() {

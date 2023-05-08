@@ -39,15 +39,8 @@ export default class ModulesController {
     const moduleId = req.params.id
     const entry = this.moduleService.getModuleWithEvents(moduleId)
 
-    // TODO: check if the module is enabled
-
     if (!entry) {
-      res.status(404).send('Module not found')
-      return
-    }
-
-    if (!entry.enabled) {
-      res.status(400).send('Module not enabled')
+      res.status(404).send('The specified module does not exist or is not enabled')
       return
     }
 
@@ -61,9 +54,8 @@ export default class ModulesController {
       res.write(`data: ${JSON.stringify(reponseData)}\n\n`)
     }
 
-    // Register to the module's events
-    // todo: this.manager.subscribeTo(moduleId, handleModuleEvent)
-    module.on('update', handleModuleEvent)
+    // Subscribe to the module's events
+    this.moduleService.subscribeToModuleEvents(moduleId, handleModuleEvent)
 
     // Configure the SSE
     res.setHeader('Content-Type', 'text/event-stream')
@@ -74,9 +66,27 @@ export default class ModulesController {
 
     // Gestion de la fin de la connexion SSE
     req.on('close', () => {
-      // TODO: this.manager.unsubscribeFrom(moduleId, handleModuleEvent)
-      module.removeListener('update', handleModuleEvent)
+      this.moduleService.unsubscribeFromModuleEvents(moduleId, handleModuleEvent)
     })
+  }
+
+  /**
+   * POST
+   * Send an event to a module
+   */
+  sendEvent = (req: Request, res: Response) => {
+    console.log(req.body)
+    const moduleId = req.params.id
+    const entry = this.moduleService.getModuleWithEvents(moduleId)
+
+    if (!entry) {
+      res.status(404).send('The specified module does not exist or is not enabled')
+      return
+    }
+
+    entry.module.emit('data', req.body)
+
+    res.status(204).send()
   }
 
   /**

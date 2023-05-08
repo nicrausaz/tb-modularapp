@@ -13,12 +13,20 @@ export default class Server {
     // Configure app
     this.app.use(express.json())
 
+    // Bind router
     configureRoutes(this.app, this.manager)
   }
 
   start() {
-    this.app.listen(this.port, () => {
+    const srv = this.app.listen(this.port, () => {
       console.log(`⚡ Server running on port ${this.port}`)
+    })
+
+    // Handle process exit
+    process.on('SIGINT', () => {
+      this.manager.stop()
+      srv.close()
+      console.log('Modules stopped & Server closed')
     })
   }
 }

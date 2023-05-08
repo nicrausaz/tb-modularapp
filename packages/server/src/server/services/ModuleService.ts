@@ -1,6 +1,7 @@
 import ModuleMapper from '../mappers/ModuleMapper'
 import { ModuleConfigurationUpdateDTO } from '../models/DTO/ModuleDTO'
 import { ModuleRepository } from '../repositories'
+import { ModuleProps } from '@yalk/module'
 
 /**
  * The module service implements the business logic for the modules
@@ -27,7 +28,7 @@ export default class ModuleService {
   getModuleWithEvents = (id: string) => {
     const module = this.moduleRepository.getModuleById(id)
 
-    if (!module) {
+    if (!module || !module.enabled) {
       return null
     }
 
@@ -52,5 +53,13 @@ export default class ModuleService {
     }
 
     return this.moduleRepository.updateModuleEnabled(id, enabled)
+  }
+
+  subscribeToModuleEvents = (id: string, handler: (data: ModuleProps) => void) => {
+    return this.moduleRepository.subscribeToModuleEvents(id, handler)
+  }
+
+  unsubscribeFromModuleEvents = (id: string, handler: (data: ModuleProps) => void) => {
+    return this.moduleRepository.unsubscribeFromModuleEvents(id, handler)
   }
 }
