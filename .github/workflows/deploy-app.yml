@@ -26,9 +26,9 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v3
         with:
-          context: ./labeldetector
-          dockerfile: ./labeldetector/Dockerfile
+          context: .
+          dockerfile: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/labeldetector:latest
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/tb-modular-app:latest
 
 
