@@ -29,7 +29,7 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
 
   // Defines the routes used by the application
   app.get('/', (req: Request, res: Response) => {
-    if (process.env.ENV === 'production') {
+    if (process.env.NODE_ENV === 'production') {
       res.sendFile(join(__dirname, '../public', 'index.html'))
     } else {
       res.send('The app is running in development mode')

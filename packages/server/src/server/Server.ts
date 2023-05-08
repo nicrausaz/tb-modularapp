@@ -14,7 +14,7 @@ export default class Server {
     // Configure app
     this.app.use(express.json())
 
-    if (process.env.ENV === 'production') {
+    if (process.env.NODE_ENV === 'production') {
       this.app.use(express.static(join(__dirname, '../', 'public')))
     }
 
