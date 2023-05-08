@@ -1,4 +1,5 @@
 import fs from 'fs'
+import { join } from 'path'
 import { Database } from 'sqlite3'
 
 /**
@@ -7,7 +8,7 @@ import { Database } from 'sqlite3'
  * @returns a Database connection object
  */
 const getDB = () => {
-  return new Database('db.sqlite')
+  return new Database(join(process.env.DB_DIR || '', 'db.sqlite'))
 }
 
 /**
@@ -17,7 +18,7 @@ const create = async () => {
   const db = getDB()
   return new Promise<void>((resolve, reject) => {
     // Create the database
-    db.exec(fs.readFileSync(__dirname + '/model.sql').toString(), (err) => {
+    db.exec(fs.readFileSync(join(process.env.DB_DIR || '' , 'model.sql')).toString(), (err) => {
       if (err) {
         reject(err)
         return
@@ -36,7 +37,7 @@ const seed = async () => {
   const db = getDB()
   return new Promise<void>((resolve, reject) => {
     // Seed the database
-    db.exec(fs.readFileSync(__dirname + '/seed.sql').toString(), (err) => {
+    db.exec(fs.readFileSync(join(process.env.DB_DIR || '' , 'seed.sql')).toString(), (err) => {
       if (err) {
         reject(err)
         return

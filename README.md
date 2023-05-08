@@ -11,3 +11,10 @@ Usefull monorepo commands:
 - npm install packagename --workspace ./packages/ui
 
 - npm run dev --workspace packages/server
+
+
+Command to run on production (PI):
+
+`docker build -t modapp .`
+
+`docker run -p 3000:3000  modapp`
