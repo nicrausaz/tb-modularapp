@@ -1,6 +1,7 @@
 import express from 'express'
 import configureRoutes from './Routes'
 import ModuleDatabaseManager from './helpers/ModuleDatabaseManager'
+import { join } from 'path'
 
 export default class Server {
   private readonly app: express.Application
@@ -12,6 +13,10 @@ export default class Server {
 
     // Configure app
     this.app.use(express.json())
+
+    if (process.env.NODE_ENV === 'production') {
+      this.app.use(express.static(join(__dirname, '../', 'public')))
+    }
 
     // Bind router
     configureRoutes(this.app, this.manager)
