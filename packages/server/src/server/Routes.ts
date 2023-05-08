@@ -1,9 +1,10 @@
-import express from 'express'
+import express, { Request, Response } from 'express'
 import { AuthController, ModulesController, ScreenController } from './controllers'
 import { ModuleService, ScreenService, UserService } from './services'
 import { UserRepository, ModuleRepository, ScreenRepository } from './repositories'
 import { JwtAuthMiddleware } from './middlewares/AuthMiddleware'
 import ModuleDatabaseManager from './helpers/ModuleDatabaseManager'
+import { join } from 'path';
 
 /**
  * Define all the routes for the application
@@ -27,7 +28,13 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
   const screensController = new ScreenController(screenService)
 
   // Defines the routes used by the application
-  // app.get('/', homeController.index)
+  app.get('/', (req: Request, res: Response) => {
+    if (process.env.ENV === 'production') {
+      res.sendFile(join(__dirname, '../public', 'index.html'))
+    } else {
+      res.send('The app is running in development mode')
+    }
+  })
 
   // Defines the routes used to expose the API for device interaction
   // app.get('/api', homeController.index)
