@@ -12,7 +12,7 @@ export const ThemeContext = createContext({
   switchTheme: (theme: string) => {},
 })
 
-const ThemeProvider = ({ children }) => {
+const ThemeProvider = ({ children }: { children: any }) => {
   const [theme, setTheme] = useState(localStorage.getItem(STORAGE_KEY) || DEFAULT_THEME)
 
   const switchTheme = (theme: string) => {

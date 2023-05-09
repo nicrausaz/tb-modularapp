@@ -2,7 +2,6 @@
   "name": "tb-modular-application",
   "version": "1.0.0",
   "description": "A modular app",
-  "main": "index.ts",
   "scripts": {
     "test": "jest",
     "build": "tsc --build --verbose",

@@ -1,4 +1,5 @@
-import { Configuration, Module, ModuleProps, SpecificConfiguration } from '@yalk/module/src'
+import { Configuration, Module, ModuleProps, SpecificConfiguration } from '../..'
+import { test, expect } from '@jest/globals'
 
 /**
  * Mock module for testing
