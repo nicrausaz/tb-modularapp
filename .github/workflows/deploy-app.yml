@@ -27,7 +27,6 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          dockerfile: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/tb-modular-app:latest
 
