@@ -11,7 +11,6 @@ RUN npm run build
 VOLUME /var/modapp/database
 VOLUME /var/modapp/modules
 
-# COPY --chown=node:node ./packages/server/build /app/packages/server
 COPY --chown=node:node ./packages/frontend/dist /app/packages/server/build/public
 
 # Copy database to volume
