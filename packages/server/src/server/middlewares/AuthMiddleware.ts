@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { verifyAndDecodeToken } from '../libs/jwt'
-import { User } from '../models/User'
+import { User } from '../models/entities/User'
 
 const JwtAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization

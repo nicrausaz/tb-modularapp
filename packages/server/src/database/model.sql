@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS Modules (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS Screen (
+CREATE TABLE IF NOT EXISTS Screens (
   id INTEGER NOT NULL,
   name VARCHAR(255),
   -- configuration json,

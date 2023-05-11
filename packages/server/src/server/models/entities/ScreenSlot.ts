@@ -1,8 +1,7 @@
-import { ModuleEntity } from './Module'
-
 export type ScreenSlotEntity = {
   id: number
-  module: ModuleEntity
+  moduleId: string
+  screenId: string
 
   // TODO: add fields to handle the position of the module on the screen grid
 }

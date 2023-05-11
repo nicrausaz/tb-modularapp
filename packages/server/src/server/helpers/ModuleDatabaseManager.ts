@@ -1,6 +1,6 @@
 import { Manager } from '@yalk/module-manager'
 import { getDB } from '../../database/database'
-import { ModuleEntity } from '../models/Module'
+import { ModuleEntity } from '../models/entities/Module'
 import ModuleMapper from '../mappers/ModuleMapper'
 import { ModuleProps } from '@yalk/module'
 

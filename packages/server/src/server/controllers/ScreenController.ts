@@ -4,18 +4,21 @@ import { ScreenService } from '../services'
 export default class ScreenController {
   constructor(private screenService: ScreenService) {}
 
+  /**
+   * GET
+   * Get all screens
+   */
   index = async (req: Request, res: Response) => {
-    res.send(this.screenService.getScreens())
-    //
+    res.send(await this.screenService.getScreens())
   }
 
   screen = async (req: Request, res: Response) => {
     const id = req.params.id
-    const screen = await this.screenService.getScreen(id)
+    res.send(await this.screenService.getScreen(id))
   }
 
   createOrUpdate = async (req: Request, res: Response) => {
-    //
+    // 
   }
 
   delete = async (req: Request, res: Response) => { 

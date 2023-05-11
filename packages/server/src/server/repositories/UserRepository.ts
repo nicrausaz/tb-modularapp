@@ -1,6 +1,6 @@
 import { LoginUserDTO } from '../models/DTO/UserDTO'
 import { getDB } from '../../database/database'
-import { UserEntity } from '../models/User'
+import { UserEntity } from '../models/entities/User'
 import { verifyString } from '../libs/security'
 
 export default class UserRepository {

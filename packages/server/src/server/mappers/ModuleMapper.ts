@@ -1,6 +1,6 @@
 import { SpecificConfiguration, Module } from '@yalk/module'
 import { ModuleDTO, ModuleDTOWithConfigs } from '../models/DTO/ModuleDTO'
-import { ModuleEntity } from '../models/Module'
+import { ModuleEntity } from '../models/entities/Module'
 
 export default class ModuleMapper {
   static toModuleDTO(id: string, module: Module, enabled: boolean): ModuleDTO {

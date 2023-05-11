@@ -3,6 +3,6 @@
  */
 declare namespace Express {
   interface Request {
-    user: import('../../server/models/User').User
+    user: import('../../server/models/entities/User').User
   }
 }

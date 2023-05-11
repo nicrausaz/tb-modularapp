@@ -1,13 +1,19 @@
+import ScreenMapper from '../mappers/ScreenMapper'
+import { ScreenDTO } from '../models/DTO/ScreenDTO'
 import { ScreenRepository } from '../repositories'
 
 export default class ScreenService {
   constructor(private screenRepository: ScreenRepository) {}
 
-  getScreens() {
-    return this.screenRepository.getAll()
+  async getScreens(): Promise<ScreenDTO[]> {
+    const screens = await this.screenRepository.getAll()
+
+    return screens.map((screen) => ScreenMapper.toDTO(screen))
   }
 
-  getScreen(id: string) {
-    return this.screenRepository.getById(id)
+  async getScreen(id: string): Promise<ScreenDTO> {
+    const screen = await this.screenRepository.getById(id)
+
+    return ScreenMapper.toDTO(screen)
   }
 }
