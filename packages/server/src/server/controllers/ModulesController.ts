@@ -2,9 +2,7 @@ import { Request, Response } from 'express'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { ModuleProps } from '@yalk/module'
 import { ModuleService } from '../services'
-import { randomUUID } from 'crypto'
 import type { UploadedFile } from 'express-fileupload'
-import { mkdirSync, rm, rmSync } from 'fs'
 
 export default class ModulesController {
   constructor(private moduleService: ModuleService) {}
@@ -126,32 +124,18 @@ export default class ModulesController {
     res.status(204).send()
   }
 
+  /**
+   * POST
+   * Upload a module (from zip) and register it
+   */
   upload = (req: Request, res: Response) => {
     if (!req.files || Object.keys(req.files).length === 0) {
       return res.status(400).send('No files were uploaded.')
     }
 
-    // TODO: move this in service
-
-    const file = req.files.file as UploadedFile
-    const moduleId = randomUUID()
-
-    // Create the module directory
-    mkdirSync(`${process.env.MODULES_DIR}/${moduleId}`)
-
-    // todo: Extract the zip in a temporary directory
-
-    // Move the files to the module directory
-    file.mv(`${process.env.MODULES_DIR}/${moduleId}/${file.name}`, async (err) => {
-      if (err) return res.status(500).send(err)
-
-      // Add the module to the database
-      if (!(await this.moduleService.registerModule(moduleId))) {
-        res.send('The module could not be registered. Please check its configuration.')
-        rmSync(`${process.env.MODULES_DIR}/${moduleId}`, { recursive: true })
-      } else {
-        res.send('File uploaded!')
-      }
-    })
+    this.moduleService
+      .uploadModule(req.files.file as UploadedFile)
+      .then(() => res.send('Module uploaded and registered successfully'))
+      .catch(() => res.send('The module could not be registered. Please check its configuration.'))
   }
 }

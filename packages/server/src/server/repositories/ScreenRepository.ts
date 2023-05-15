@@ -18,7 +18,7 @@ export default class ScreenRepository {
 
   async getById(id: number): Promise<ScreenEntity> {
     return {
-      ...this.getScreen(id),
+      ...(await this.getScreen(id)),
       slots: await this.getScreenSlots(id),
     }
   }
@@ -47,9 +47,27 @@ export default class ScreenRepository {
   }
 
   async delete(id: number): Promise<void> {
+    await this.deleteScreen(id)
+    await this.deleteScreenSlots(id)
+  }
+
+  async deleteScreen(id: number): Promise<void> {
     const db = getDB()
     return new Promise<void>((resolve, reject) => {
       db.run('DELETE FROM Screens WHERE id = ?', [id], (err) => {
+        if (err) {
+          reject(err)
+        }
+        resolve()
+      })
+      db.close()
+    })
+  }
+
+  async deleteScreenSlots(id: number): Promise<void> {
+    const db = getDB()
+    return new Promise<void>((resolve, reject) => {
+      db.run('DELETE FROM ScreenSlots WHERE screenId = ?', [id], (err) => {
         if (err) {
           reject(err)
         }
@@ -66,6 +84,7 @@ export default class ScreenRepository {
         if (err) {
           reject(err)
         }
+        console.log(rows[0])
         resolve(rows[0] as ScreenEntity)
       })
       db.close()

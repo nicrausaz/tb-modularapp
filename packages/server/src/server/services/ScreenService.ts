@@ -10,9 +10,9 @@ export default class ScreenService {
     return await Promise.all(screens.map((screen) => ScreenMapper.toDTO(screen)))
   }
 
-  async getScreen(id: number): Promise<ScreenDTO> {
+  async getScreen(id: number): Promise<ScreenDTO | null> {
     const screen = await this.screenRepository.getById(id)
-    return ScreenMapper.toDTO(screen)
+    return screen ? ScreenMapper.toDTO(screen) : null
   }
 
   async createOrUpdateScreen(screen: UpdateScreenDTO): Promise<void> {

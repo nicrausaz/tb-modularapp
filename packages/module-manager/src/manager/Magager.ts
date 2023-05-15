@@ -33,6 +33,7 @@ export default class Manager {
   constructor(private readonly modulesPath: string, private readonly watch: boolean = true) {}
 
   async loadModulesFromPath() {
+    console.log('loadModulesFromPath')
     return new Promise<void>((resolve, reject) => {
       readdir(this.modulesPath, async (err, files) => {
         if (err) {

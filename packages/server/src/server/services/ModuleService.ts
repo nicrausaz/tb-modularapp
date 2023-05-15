@@ -2,6 +2,7 @@ import ModuleMapper from '../mappers/ModuleMapper'
 import { ModuleConfigurationUpdateDTO } from '../models/DTO/ModuleDTO'
 import { ModuleRepository } from '../repositories'
 import { ModuleProps } from '@yalk/module'
+import type { UploadedFile } from 'express-fileupload'
 
 /**
  * The module service implements the business logic for the modules
@@ -65,5 +66,9 @@ export default class ModuleService {
 
   registerModule = (id: string) => {
     return this.moduleRepository.registerModule(id)
+  }
+
+  uploadModule = (file: UploadedFile) => {
+    return this.moduleRepository.uploadModule(file) 
   }
 }

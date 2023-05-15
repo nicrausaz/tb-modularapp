@@ -12,9 +12,19 @@ export default class ScreenController {
     res.send(await this.screenService.getScreens())
   }
 
+  /**
+   * GET
+   * Get a screen by its id
+   */
   screen = async (req: Request, res: Response) => {
     const id = req.params.id
-    res.send(await this.screenService.getScreen(Number(id)))
+    const screen = await this.screenService.getScreen(Number(id))
+
+    if (!screen) {
+      res.status(404).send('Screen not found')
+      return
+    }
+    res.send(screen)
   }
 
   createOrUpdate = async (req: Request, res: Response) => {

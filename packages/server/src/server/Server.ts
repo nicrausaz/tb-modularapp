@@ -1,8 +1,8 @@
 import express from 'express'
-import fileUpload from 'express-fileupload'
 import configureRoutes from './Routes'
 import ModuleDatabaseManager from './helpers/ModuleDatabaseManager'
 import { join } from 'path'
+import { uploader } from './libs/file-upload'
 
 export default class Server {
   private readonly app: express.Application
@@ -14,7 +14,7 @@ export default class Server {
 
     // Configure app
     this.app.use(express.json())
-    this.app.use(fileUpload())
+    this.app.use(uploader)
 
     if (process.env.NODE_ENV === 'production') {
       this.app.use(express.static(join(__dirname, '../', 'public')))
