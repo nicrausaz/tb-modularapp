@@ -75,7 +75,6 @@ export default class ModulesController {
    * Send an event to a module
    */
   sendEvent = (req: Request, res: Response) => {
-    console.log(req.body)
     const moduleId = req.params.id
     const entry = this.moduleService.getModuleWithEvents(moduleId)
 

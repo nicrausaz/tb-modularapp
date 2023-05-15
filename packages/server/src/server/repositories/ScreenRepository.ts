@@ -46,6 +46,19 @@ export default class ScreenRepository {
     })
   }
 
+  async delete(id: number): Promise<void> {
+    const db = getDB()
+    return new Promise<void>((resolve, reject) => {
+      db.run('DELETE FROM Screens WHERE id = ?', [id], (err) => {
+        if (err) {
+          reject(err)
+        }
+        resolve()
+      })
+      db.close()
+    })
+  }
+
   private getScreen(id: number): Promise<ScreenEntity> {
     const db = getDB()
     return new Promise((resolve, reject) => {
@@ -138,7 +151,6 @@ export default class ScreenRepository {
             console.log(err)
             reject(err)
           }
-          console.log('dddd', slot)
           resolve(slot)
         },
       )

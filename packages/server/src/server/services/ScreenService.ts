@@ -24,4 +24,8 @@ export default class ScreenService {
       await this.screenRepository.create(screenEntity)
     }
   }
+
+  async deleteScreen(id: number): Promise<void> {
+    await this.screenRepository.delete(id)
+  }
 }
