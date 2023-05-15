@@ -47,9 +47,15 @@ export default class ModuleDatabaseManager {
     db.close()
   }
 
-  registerModule(moduleId: string) {
-    const entry = this.manager.getModule(moduleId)
+  async registerModule(moduleId: string) {
+    if (!await this.manager.loadModule(process.env.MODULES_DIR!, moduleId)) {
+      console.log("Couldn't register module, because the load failed. It means the module is not correctly structured.")
+      return false
+    }
 
+    // TODO: check this, no need to give the path ?
+
+    const entry = this.manager.getModule(moduleId)
     const moduleEntity = ModuleMapper.toModuleEntity(moduleId, entry.module, entry.enabled)
 
     const db = getDB()
@@ -70,13 +76,13 @@ export default class ModuleDatabaseManager {
       },
     )
     db.close()
+    return true
   }
 
   unregisterModule(moduleId: string) {
     this.manager.unregisterModule(moduleId)
 
     const db = getDB()
-
     db.run('DELETE FROM modules WHERE id = ?', [moduleId], (err) => {
       if (err) {
         console.log(err)

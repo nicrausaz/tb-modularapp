@@ -53,6 +53,8 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    */
   app.get('/api/modules', JwtAuthMiddleware, modulesController.index)
 
+  app.post('/api/modules', JwtAuthMiddleware, modulesController.upload)
+
   app.get('/api/modules/:id', JwtAuthMiddleware, modulesController.module)
 
   app.get('/api/modules/:id/events', JwtAuthMiddleware, modulesController.moduleEvents)

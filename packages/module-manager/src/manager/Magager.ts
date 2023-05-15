@@ -7,7 +7,6 @@ import {
 } from '@yalk/module'
 import { readdir, lstatSync } from 'fs'
 import { join } from 'path'
-// import { randomUUID } from 'crypto'
 
 type ModuleId = string
 
@@ -201,31 +200,41 @@ export default class Manager {
   }
 
   /**
-   * Load a module, its configuration and registrers it into the manager
+   * Load a module, its configuration and registers it into the manager
    */
-  private async loadModule(path: string, filename: string) {
-    // Generate a random id for the module entry
-    const id = filename // randomUUID()
+  async loadModule(path: string, filename: string): Promise<boolean> {
+    const id = filename
+
+    if (this.modules.has(id)) {
+      console.log(`Module '${filename}', already loaded. Ignoring`)
+      return false
+    }
 
     const modulePath = join(path, filename)
 
-    // Load the module
-    const module = await import(join(modulePath, Manager.MODULE_ENTRY_FILENAME))
+    try {
+      // Load the module
+      const module = await import(join(modulePath, Manager.MODULE_ENTRY_FILENAME))
 
-    // Load the configuration
-    const config = (await import(join(modulePath, Manager.CONFIG_FILENAME))).default
+      // Load the configuration
+      const config = (await import(join(modulePath, Manager.CONFIG_FILENAME))).default
 
-    // Load the specific configuration
-    const specific = SpecificConfiguration.fromObject(config.specificConfig)
+      // Load the specific configuration
+      const specific = SpecificConfiguration.fromObject(config.specificConfig)
 
-    // Build the module configuration
-    const configuration = new Configuration(config.name, config.description, config.version, config.author, specific)
+      // Build the module configuration
+      const configuration = new Configuration(config.name, config.description, config.version, config.author, specific)
 
-    // Load the renderer
-    const renderer = new (await import(join(modulePath, Manager.MODULE_RENDERED_FILENAME))).default()
+      // Load the renderer
+      const renderer = new (await import(join(modulePath, Manager.MODULE_RENDERED_FILENAME))).default()
 
-    // Load the configuration into the module and register it
-    this.registerModule(id, new module.default(configuration, renderer))
+      // Load the configuration into the module and register it
+      this.registerModule(id, new module.default(configuration, renderer))
+      return true
+    } catch (e) {
+      console.log(`Module '${filename}', was not loaded because it has invalid structure: ${e}`)
+      return false
+    }
   }
 }
 

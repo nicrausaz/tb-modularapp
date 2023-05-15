@@ -50,4 +50,8 @@ export default class ModuleRepository {
   unsubscribeFromModuleEvents(id: string, handler: (data: ModuleProps) => void) {
     this.manager.unsubscribeFrom(id, handler)
   }
+
+  registerModule(id: string) {
+    return this.manager.registerModule(id)
+  }
 }

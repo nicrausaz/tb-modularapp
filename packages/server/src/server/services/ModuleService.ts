@@ -62,4 +62,8 @@ export default class ModuleService {
   unsubscribeFromModuleEvents = (id: string, handler: (data: ModuleProps) => void) => {
     return this.moduleRepository.unsubscribeFromModuleEvents(id, handler)
   }
+
+  registerModule = (id: string) => {
+    return this.moduleRepository.registerModule(id)
+  }
 }
