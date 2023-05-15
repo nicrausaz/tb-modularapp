@@ -84,7 +84,6 @@ export default class ScreenRepository {
         if (err) {
           reject(err)
         }
-        console.log(rows[0])
         resolve(rows[0] as ScreenEntity)
       })
       db.close()

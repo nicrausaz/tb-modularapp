@@ -30,10 +30,9 @@ export default class Manager {
 
   private modules: Map<ModuleId, ModuleEntry> = new Map()
 
-  constructor(private readonly modulesPath: string, private readonly watch: boolean = true) {}
+  constructor(private readonly modulesPath: string) {}
 
   async loadModulesFromPath() {
-    console.log('loadModulesFromPath')
     return new Promise<void>((resolve, reject) => {
       readdir(this.modulesPath, async (err, files) => {
         if (err) {
