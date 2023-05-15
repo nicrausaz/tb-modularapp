@@ -42,4 +42,15 @@ export default class ModuleMapper {
       enabled: enabled,
     }
   }
+
+  static toSlotModule(module: ModuleEntity): ModuleDTO {
+    return {
+      id: module.id,
+      name: module.name,
+      description: module.description,
+      author: module.author,
+      version: module.version,
+      enabled: module.enabled,
+    }
+  }
 }

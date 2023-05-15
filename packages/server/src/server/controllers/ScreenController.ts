@@ -14,14 +14,16 @@ export default class ScreenController {
 
   screen = async (req: Request, res: Response) => {
     const id = req.params.id
-    res.send(await this.screenService.getScreen(id))
+    res.send(await this.screenService.getScreen(Number(id)))
   }
 
   createOrUpdate = async (req: Request, res: Response) => {
-    // 
+    const screen = req.body
+    await this.screenService.createOrUpdateScreen(screen)
+    res.send()
   }
 
-  delete = async (req: Request, res: Response) => { 
+  delete = async (req: Request, res: Response) => {
     //
   }
 

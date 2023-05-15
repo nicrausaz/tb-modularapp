@@ -1,5 +1,5 @@
 import ScreenMapper from '../mappers/ScreenMapper'
-import { ScreenDTO } from '../models/DTO/ScreenDTO'
+import { ScreenDTO, UpdateScreenDTO } from '../models/DTO/ScreenDTO'
 import { ScreenRepository } from '../repositories'
 
 export default class ScreenService {
@@ -7,13 +7,21 @@ export default class ScreenService {
 
   async getScreens(): Promise<ScreenDTO[]> {
     const screens = await this.screenRepository.getAll()
-
-    return screens.map((screen) => ScreenMapper.toDTO(screen))
+    return await Promise.all(screens.map((screen) => ScreenMapper.toDTO(screen)))
   }
 
-  async getScreen(id: string): Promise<ScreenDTO> {
+  async getScreen(id: number): Promise<ScreenDTO> {
     const screen = await this.screenRepository.getById(id)
-
     return ScreenMapper.toDTO(screen)
+  }
+
+  async createOrUpdateScreen(screen: UpdateScreenDTO): Promise<void> {
+    const screenEntity = ScreenMapper.screenUpdatetoEntity(screen)
+
+    if (await this.screenRepository.exists(screen.id)) {
+      await this.screenRepository.update(screenEntity)
+    } else {
+      await this.screenRepository.create(screenEntity)
+    }
   }
 }
