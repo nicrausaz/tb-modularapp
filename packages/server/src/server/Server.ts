@@ -5,6 +5,9 @@ import { join } from 'path'
 import { uploader } from './libs/file-upload'
 import { ErrorMiddleware } from './middlewares/ErrorMiddleware'
 import logger from './libs/logger'
+import { swaggerSpec } from './libs/swagger/swagger'
+
+import swaggerUi from 'swagger-ui-express';
 
 export default class Server {
   private readonly app: express.Application
@@ -25,6 +28,9 @@ export default class Server {
 
     // Bind router
     configureRoutes(this.app, this.manager)
+
+    // Bind swagger
+    this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
   }
 
   start() {
