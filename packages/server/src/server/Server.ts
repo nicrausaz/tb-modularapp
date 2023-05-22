@@ -3,6 +3,8 @@ import configureRoutes from './Routes'
 import ModuleDatabaseManager from './helpers/ModuleDatabaseManager'
 import { join } from 'path'
 import { uploader } from './libs/file-upload'
+import { ErrorMiddleware } from './middlewares/ErrorMiddleware'
+import logger from './libs/logger'
 
 export default class Server {
   private readonly app: express.Application
@@ -15,6 +17,7 @@ export default class Server {
     // Configure app
     this.app.use(express.json())
     this.app.use(uploader)
+    this.app.use(ErrorMiddleware)
 
     if (process.env.NODE_ENV === 'production') {
       this.app.use(express.static(join(__dirname, '../', 'public')))
@@ -26,14 +29,14 @@ export default class Server {
 
   start() {
     const srv = this.app.listen(this.port, () => {
-      console.log(`⚡ Server running on port ${this.port}`)
+      logger.info(`Server running on port ${this.port}`)
     })
 
     // Handle process exit
     process.on('SIGINT', () => {
       this.manager.stop()
       srv.close()
-      console.log('Modules stopped & Server closed')
+      logger.info(`Modules stopped & Server closed`)
     })
   }
 }

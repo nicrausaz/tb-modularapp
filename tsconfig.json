@@ -28,6 +28,9 @@
     },
     {
       "path": "./packages/hour-module"
+    },
+    {
+      "path": "./packages/rfid-module"
     }
   ]
 }

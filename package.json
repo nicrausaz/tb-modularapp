@@ -16,7 +16,8 @@
     "packages/module-manager",
     "packages/module",
     "packages/debug-module",
-    "packages/hour-module"
+    "packages/hour-module",
+    "packages/rfid-module"
   ],
   "devDependencies": {
     "@jest/globals": "^29.5.0",

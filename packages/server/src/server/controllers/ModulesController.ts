@@ -24,7 +24,9 @@ export default class ModulesController {
     const module = this.moduleService.getModule(moduleId)
 
     if (!module) {
-      res.status(404).send('Module not found')
+      res.status(404).send({
+        message: 'Module not found',
+      })
       return
     }
 
@@ -41,7 +43,9 @@ export default class ModulesController {
     const entry = this.moduleService.getModuleWithEvents(moduleId)
 
     if (!entry) {
-      res.status(404).send('The specified module does not exist or is not enabled')
+      res.status(404).send({
+        message: 'The specified module does not exist or is not enabled',
+      })
       return
     }
 
@@ -80,7 +84,9 @@ export default class ModulesController {
     const entry = this.moduleService.getModuleWithEvents(moduleId)
 
     if (!entry) {
-      res.status(404).send('The specified module does not exist or is not enabled')
+      res.status(404).send({
+        message: 'The specified module does not exist or is not enabled',
+      })
       return
     }
 
@@ -97,7 +103,9 @@ export default class ModulesController {
     const module = this.moduleService.getModule(req.params.id)
 
     if (!module) {
-      res.status(404).send('Module not found')
+      res.status(404).send({
+        message: 'Module not found',
+      })
     } else {
       res.send({
         default: module.defaultConfig,
@@ -111,7 +119,15 @@ export default class ModulesController {
    * Update a module's configuration
    */
   moduleConfigurationUpdate = (req: Request, res: Response) => {
-    this.moduleService.updateModuleConfiguration(req.params.id, req.body)
+    const entry = this.moduleService.updateModuleConfiguration(req.params.id, req.body)
+
+    if (!entry) {
+      res.status(404).send({
+        message: 'Module not found',
+      })
+      return
+    }
+
     res.status(204).send()
   }
 
@@ -120,7 +136,15 @@ export default class ModulesController {
    * Update a module's status (enabled or disabled)
    */
   moduleStatusUpdate = (req: Request, res: Response) => {
-    this.moduleService.updateModuleEnabled(req.params.id, req.body.enabled)
+    const entry = this.moduleService.updateModuleEnabled(req.params.id, req.body.enabled)
+
+    if (!entry) {
+      res.status(404).send({
+        message: 'Module not found',
+      })
+      return
+    }
+
     res.status(204).send()
   }
 

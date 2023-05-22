@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import { UserService } from '../services'
+import logger from '../libs/logger'
 
 export default class AuthController {
   constructor(private userService: UserService) {}
@@ -11,6 +12,7 @@ export default class AuthController {
   login = async (req: Request, res: Response) => {
     const token = await this.userService.authenticateUser(req.body)
     if (!token) {
+      logger.warn('Authentication failed for user %s', req.body.username)
       res.status(401).send({
         message: 'Invalid credentials',
       })

@@ -1,0 +1,16 @@
+{
+  "name": "@yalk/rfid-module",
+  "version": "1.0.0",
+  "description": "RFID module",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "scripts": {
+    "build": "tsc --build"
+  },
+  "author": "nicrausaz",
+  "license": "MIT",
+  "keywords": [],
+  "dependencies": {
+    "serialport": "^11.0.0"
+  }
+}

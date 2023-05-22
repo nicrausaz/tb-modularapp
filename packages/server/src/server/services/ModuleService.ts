@@ -17,27 +17,21 @@ export default class ModuleService {
   }
 
   getModule = (id: string) => {
-    const entry = this.moduleRepository.getModuleById(id)
+    const entry = this.getModuleEntry(id)
 
-    if (!module) {
+    if (!entry) {
       return null
     }
-
     return ModuleMapper.toModuleDTOWithConfigs(id, entry.module, entry.enabled)
   }
 
   getModuleWithEvents = (id: string) => {
-    const module = this.moduleRepository.getModuleById(id)
-
-    if (!module || !module.enabled) {
-      return null
-    }
-
-    return module
+    const entry = this.getModuleEntry(id)
+    return entry?.enabled ? entry : null
   }
 
   updateModuleConfiguration = (id: string, config: ModuleConfigurationUpdateDTO) => {
-    const entry = this.moduleRepository.getModuleById(id)
+    const entry = this.getModuleEntry(id)
 
     if (!entry) {
       return null
@@ -47,7 +41,7 @@ export default class ModuleService {
   }
 
   updateModuleEnabled = (id: string, enabled: boolean) => {
-    const entry = this.moduleRepository.getModuleById(id)
+    const entry = this.getModuleEntry(id)
 
     if (!entry) {
       return null
@@ -69,6 +63,14 @@ export default class ModuleService {
   }
 
   uploadModule = (file: UploadedFile) => {
-    return this.moduleRepository.uploadModule(file) 
+    return this.moduleRepository.uploadModule(file)
+  }
+
+  private getModuleEntry = (id: string) => {
+    try {
+      return this.moduleRepository.getModuleById(id)
+    } catch (_) {
+      return null
+    }
   }
 }
