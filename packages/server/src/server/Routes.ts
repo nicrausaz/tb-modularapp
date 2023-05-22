@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express'
-import { AuthController, ModulesController, ScreenController } from './controllers'
-import { ModuleService, ScreenService, UserService } from './services'
-import { UserRepository, ModuleRepository, ScreenRepository } from './repositories'
+import { AuthController, ModulesController, ScreenController, BoxController } from './controllers'
+import { BoxService, ModuleService, ScreenService, UserService } from './services'
+import { UserRepository, ModuleRepository, ScreenRepository, BoxRepository } from './repositories'
 import { JwtAuthMiddleware } from './middlewares/AuthMiddleware'
 import ModuleDatabaseManager from './helpers/ModuleDatabaseManager'
 import { join } from 'path'
@@ -16,16 +16,19 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
   const userRepository = new UserRepository()
   const modulesRepository = new ModuleRepository(manager)
   const screenRepository = new ScreenRepository()
+  const boxRepository = new BoxRepository()
 
   // Create the services
   const userService = new UserService(userRepository)
   const moduleService = new ModuleService(modulesRepository)
   const screenService = new ScreenService(screenRepository)
+  const boxService = new BoxService(boxRepository)
 
   // Create the controllers
   const authController = new AuthController(userService)
   const modulesController = new ModulesController(moduleService)
   const screensController = new ScreenController(screenService)
+  const boxController = new BoxController(boxService)
 
   // Defines the routes used by the application
   app.get('/', (req: Request, res: Response) => {
@@ -124,6 +127,15 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
   app.put('/api/screens/:id', screensController.createOrUpdate)
 
   app.delete('/api/screens/:id', screensController.delete)
+
+  /**
+   * Box routes
+   */
+  app.get('/api/box', JwtAuthMiddleware, boxController.index)
+
+  app.get('/api/box/static/:filename', boxController.staticFile)
+
+  app.post('api/box', JwtAuthMiddleware, boxController.update)
 }
 
 export default configureRoutes
