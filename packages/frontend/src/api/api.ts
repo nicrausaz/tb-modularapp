@@ -23,7 +23,14 @@ export const authenticate = async (username: string, password: string): Promise<
       password,
     }),
   })
-  return (await response.json()).token
+
+  const data = await response.json()
+
+  if (!response.ok) {
+    throw new Error(data.message)
+  }
+  
+  return data.token
 }
 
 export const getAuthenticatedUser = async () => {

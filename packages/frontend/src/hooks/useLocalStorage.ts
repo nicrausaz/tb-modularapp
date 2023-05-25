@@ -1,23 +1,15 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-export const useLocalStorage = (key: string) => {
-  const [value, setValue] = useState<string | null>(null)
+export const useLocalStorage = (key: string, fallback: string) => {
+  const [value, setValue] = useState(localStorage.getItem(key) ?? fallback)
 
-  const setItem = (value: string) => {
+  useEffect(() => {
     localStorage.setItem(key, value)
-    setValue(value)
-  }
+  }, [value, key])
 
-  const getItem = () => {
-    const value = localStorage.getItem(key)
-    setValue(value)
-    return value
-  }
-
-  const removeItem = () => {
+  const remove = () => {
     localStorage.removeItem(key)
-    setValue(null)
   }
 
-  return { value, setItem, getItem, removeItem }
+  return [value, setValue, remove] as const
 }

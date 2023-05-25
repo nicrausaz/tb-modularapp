@@ -5,11 +5,11 @@ export default function Modules() {
   const { data, error, loading } = useFetchAuth('/api/modules')
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>Loading...</div>
   }
 
   if (error) {
-    return <div>Error: {error.message}</div>;
+    return <div>Error: {error.message}</div>
   }
 
   return (
@@ -40,7 +40,13 @@ export default function Modules() {
 
       <div className="grid grid-cols-2 xl:grid-cols-3 gap-8 items-center">
         {data.map((module, i) => (
-          <ModuleCard key={i} id={module.id} title={module.name} description={module.description} active={module.enabled} />
+          <ModuleCard
+            key={i}
+            id={module.id}
+            title={module.name}
+            description={module.description}
+            active={module.enabled}
+          />
         ))}
       </div>
     </div>
