@@ -3,12 +3,15 @@ import { useContext } from 'react'
 
 import router from '@/router'
 import { ThemeContext } from './contexts/ThemeContext'
+import { AuthProvider } from './contexts/AuthContext'
 
 const App: React.FC = () => {
   const { theme } = useContext(ThemeContext)
   return (
     <div className="App" data-theme={theme}>
-      <RouterProvider router={router} />
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
     </div>
   )
 }

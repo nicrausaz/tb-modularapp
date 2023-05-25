@@ -1,4 +1,4 @@
-import { Navigate, RouteObject } from 'react-router-dom'
+import { RouteObject } from 'react-router-dom'
 
 import MainLayout from '@/layouts/MainLayout'
 import Login from '@/views/Login'
@@ -7,9 +7,8 @@ import Settings from '@/views/Settings'
 import Dashboard from '@/views/Dashboard'
 import Module from '@/views/Module'
 import Modules from '@/views/Modules'
-import * as Api from '@/api/api'
+import AuthenticatedRoute from './AuthenticatedRoute'
 
-// TODO: use loader
 const routes: RouteObject[] = [
   {
     path: '/login',
@@ -18,12 +17,16 @@ const routes: RouteObject[] = [
   },
   {
     path: '/',
-    element: <MainLayout />,
+    element: (
+      <AuthenticatedRoute>
+        <MainLayout />
+      </AuthenticatedRoute>
+    ),
     errorElement: <Error />,
     children: [
       {
         path: '/dashboard',
-        element: <Dashboard />,
+        element: <Modules />,
       },
       {
         path: '/modules',
@@ -32,7 +35,6 @@ const routes: RouteObject[] = [
       {
         path: '/modules/:moduleId',
         element: <Module />,
-        // loader: ({ id }: { id: string }) => Api.getModuleById(id),
       },
       {
         path: '/settings',

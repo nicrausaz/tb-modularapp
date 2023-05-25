@@ -1,19 +1,16 @@
 import ModuleCard from '@/components/module/ModuleCard'
-import { useEffect, useState } from 'react'
+import { useFetchAuth } from '@/hooks/useFetch'
 
 export default function Modules() {
-  const [modules, setModules] = useState<any[]>([])
+  const { data, error, loading } = useFetchAuth('/api/modules')
 
-  const getModules = async () => {
-    const modules = await fetch('/api/modules')
-    const data = await modules.json()
-    setModules(data)
+  if (loading) {
+    return <div>Loading...</div>;
   }
 
-  useEffect(() => {
-    // Load modules
-    getModules()
-  }, [])
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
 
   return (
     <div className="flex flex-col h-full pb-20 container mx-auto">
@@ -42,7 +39,7 @@ export default function Modules() {
       </div>
 
       <div className="grid grid-cols-2 xl:grid-cols-3 gap-8 items-center">
-        {modules.map((module, i) => (
+        {data.map((module, i) => (
           <ModuleCard key={i} id={module.id} title={module.name} description={module.description} active={module.enabled} />
         ))}
       </div>

@@ -9,6 +9,4 @@ export default class BoxService {
     const box = await this.boxRepository.get()
     return BoxMapper.toDTO(box)
   }
-
-  
 }
