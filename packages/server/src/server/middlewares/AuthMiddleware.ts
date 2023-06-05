@@ -21,7 +21,7 @@ const JwtAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
     })
     .catch(() => {
       logger.warn('Error while verifying token')
-      res.sendStatus(403)
+      res.sendStatus(401)
     })
 }
 

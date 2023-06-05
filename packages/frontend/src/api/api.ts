@@ -33,9 +33,16 @@ export const authenticate = async (username: string, password: string): Promise<
   return data.token
 }
 
-export const getAuthenticatedUser = async () => {
-  return {
-    id: '1',
-    username: 'test',
+export const getAuthenticatedUser = async (token: string) => {
+  const response = await fetch('/api/auth/me', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  if (!response.ok) {
+    throw new Error('Not authenticated')
   }
+
+  return await response.json()
 }

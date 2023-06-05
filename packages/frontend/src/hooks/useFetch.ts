@@ -55,11 +55,11 @@ const useFetchAuth = <T>(url: string, options?: RequestInit): FetchProps<T> => {
     const fetchData = async (): Promise<void> => {
       try {
         const response = await fetch(url, opts)
-        const jsonData = await response.json()
 
         if (!response.ok) {
-          throw new Error(jsonData.message)
+          throw new Error(response.statusText)
         }
+        const jsonData = await response.json()
 
         setData(jsonData)
         setLoading(false)

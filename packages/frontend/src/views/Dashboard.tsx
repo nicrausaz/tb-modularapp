@@ -1,25 +1,38 @@
 import { useEffect, useState } from 'react'
 import ModuleRender from '@/components/module/ModuleRender'
+import { useFetchAuth } from '@/hooks/useFetch'
+import { Module } from '@/models/Module'
 
 export default function Dashboard() {
-  // tmp
-  const [modules, setModules] = useState<any[]>([])
-  const getModules = async () => {
-    const modules = await fetch('/api/modules')
-    const data = await modules.json()
-    setModules(data)
+  const { data, error, loading } = useFetchAuth<Module[]>('/api/modules')
+
+  if (loading) {
+    return <div>Loading...</div>
   }
 
-  useEffect(() => {
-    // Load modules
-    getModules()
-  }, [])
+  if (error) {
+    return <div>Error: {error.message}</div>
+  }
+
+
+  // // tmp
+  // const [modules, setModules] = useState<any[]>([])
+  // const getModules = async () => {
+  //   const modules = await fetch('/api/modules')
+  //   const data = await modules.json()
+  //   setModules(data)
+  // }
+
+  // useEffect(() => {
+  //   // Load modules
+  //   getModules()
+  // }, [])
 
   return (
     <div className="flex flex-col h-full pb-20">
       <h1 className="text-2xl font-bold">Dashboard</h1>
       <div className="grid grid-cols-2 xl:grid-cols-3 gap-8 items-center">
-        {modules.map((module) => (
+        {data && data.map((module) => (
           <ModuleRender key={module.id} id={module.id} />
         ))}
       </div>

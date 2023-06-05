@@ -1,8 +1,9 @@
 import ModuleCard from '@/components/module/ModuleCard'
 import { useFetchAuth } from '@/hooks/useFetch'
+import { Module } from '@/models/Module'
 
 export default function Modules() {
-  const { data, error, loading } = useFetchAuth('/api/modules')
+  const { data, error, loading } = useFetchAuth<Module[]>('/api/modules')
 
   if (loading) {
     return <div>Loading...</div>
@@ -11,6 +12,8 @@ export default function Modules() {
   if (error) {
     return <div>Error: {error.message}</div>
   }
+
+  console.log(data)
 
   return (
     <div className="flex flex-col h-full pb-20 container mx-auto">
@@ -39,15 +42,16 @@ export default function Modules() {
       </div>
 
       <div className="grid grid-cols-2 xl:grid-cols-3 gap-8 items-center">
-        {data.map((module, i) => (
-          <ModuleCard
-            key={i}
-            id={module.id}
-            title={module.name}
-            description={module.description}
-            active={module.enabled}
-          />
-        ))}
+        {data &&
+          data.map((module, i) => (
+            <ModuleCard
+              key={i}
+              id={module.id}
+              title={module.name}
+              description={module.description}
+              active={module.enabled}
+            />
+          ))}
       </div>
     </div>
   )

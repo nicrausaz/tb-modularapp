@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export default function Login() {
-  const { login, token } = useAuth()
+  const { login, token, getAuthenticatedUser } = useAuth()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export default function Login() {
 
     login(username, password)
       .then(() => {
-        navigate('/dashboard')
+        getAuthenticatedUser().then(() =>  navigate('/dashboard'))
       })
       .catch((err) => {
         console.log("TODO: display error", err)

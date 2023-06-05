@@ -29,9 +29,15 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [authenticatedUser, setAuthenticatedUser] = useState(null)
 
   const login = async (username: string, password: string) => {
-    await Api.authenticate(username, password).then(async (t) => {
-      setToken(t)
-      await getAuthenticatedUser()
+    return new Promise<void>((resolve, reject) => {
+      Api.authenticate(username, password)
+        .then((token) => {
+          setToken(token)
+          resolve()
+        })
+        .catch((err) => {
+          reject(err)
+        })
     })
   }
 
@@ -40,12 +46,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   const getAuthenticatedUser = async () => {
-    await Api.getAuthenticatedUser()
+    await Api.getAuthenticatedUser(token)
       .then((user) => {
         setAuthenticatedUser(user)
-      })
-      .catch((err) => {
-        console.log(err)
       })
   }
 
