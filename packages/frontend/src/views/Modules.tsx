@@ -1,3 +1,4 @@
+import fetcher from '@/api/fetcher'
 import ModuleCard from '@/components/module/ModuleCard'
 import { useFetchAuth } from '@/hooks/useFetch'
 import { Module } from '@/models/Module'
@@ -11,6 +12,34 @@ export default function Modules() {
 
   if (error) {
     return <div>Error: {error.message}</div>
+  }
+
+
+  const handleAction = async (type: string, id: string) => {
+    if (type === 'enable') {
+      await fetcher(`/api/modules/${id}/status`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          enabled: true
+        }),
+      })
+    }
+    else if (type === 'disable') {
+      await fetcher(`/api/modules/${id}/status`, {
+        method: 'POST',
+        body: JSON.stringify({
+          enabled: false
+        }),
+      })
+    }
+    else if (type === 'delete') {
+      await fetcher(`/api/modules/${id}`, {
+        method: 'DELETE',
+      })
+    }
   }
 
   console.log(data)
@@ -50,6 +79,7 @@ export default function Modules() {
               title={module.name}
               description={module.description}
               active={module.enabled}
+              onAction={handleAction}
             />
           ))}
       </div>

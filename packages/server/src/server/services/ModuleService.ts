@@ -42,7 +42,7 @@ export default class ModuleService {
 
   updateModuleEnabled = (id: string, enabled: boolean) => {
     const entry = this.getModuleEntry(id)
-
+    
     if (!entry) {
       return null
     }

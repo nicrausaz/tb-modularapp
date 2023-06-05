@@ -1,8 +1,11 @@
+import { Configuration } from "./Configuration"
+
 export type Module = {
   id: string
   name: string
   description: string
   author: string
   version: string
-  currentConfig: any
+  enabled: boolean
+  currentConfig: Configuration
 }

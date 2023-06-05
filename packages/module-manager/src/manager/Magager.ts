@@ -205,10 +205,10 @@ export default class Manager {
   async loadModule(path: string, filename: string): Promise<boolean> {
     const id = filename
 
-    if (this.modules.has(id)) {
-      console.log(`Module '${filename}', already loaded. Ignoring`)
-      return false
-    }
+    // if (this.modules.has(id)) {
+    //   console.log(`Module '${filename}', already loaded. Ignoring`)
+    //   return false
+    // }
 
     const modulePath = join(path, filename)
 

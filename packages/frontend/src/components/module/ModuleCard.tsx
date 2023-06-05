@@ -6,26 +6,28 @@ type ModuleCardProps = {
   title: string
   description: string
   active: boolean
+  onAction?: (type: string, id: string) => void
 }
 
-export default function ModuleCard({ id, title, description, active }: ModuleCardProps) {
-  const actions = [
-    {
-      label: 'Enable',
-      onClick: () => {
-        console.log('Enable')
-      },
-    },
-    {
+export default function ModuleCard({ id, title, description, active, onAction }: ModuleCardProps) {
+  const actions = []
+
+  if (active) {
+    actions.push({
       label: 'Disable',
-      onClick: () => {
-        console.log('Disable')
-      },
-    },
-  ]
+      onClick: () => onAction && onAction('disable', id),
+    })
+  } else {
+    actions.push({
+      label: 'Enable',
+      onClick: () => onAction && onAction('enable', id),
+    })
+  }
+
+  const disabledStyle = active ? {} : { filter: 'grayscale(80%)', fontStyle: 'italic' }
 
   return (
-    <div className="card card-side bg-base-200 shadow-xl">
+    <div className="card card-side bg-base-200 shadow-xl" style={disabledStyle}>
       <Link to={`/modules/${id}`}>
         <div className="card-body flex flex-row items-center gap-4" title={description}>
           <img
@@ -35,11 +37,9 @@ export default function ModuleCard({ id, title, description, active }: ModuleCar
             height={100}
           />
           <div>
-            <h2 className="card-title">{title}</h2>
+            <h2 className="card-title">{title}</h2> {active ? 'active': 'tamer'}
             <p>{description}</p>
-            <div className="card-actions justify-end">
-              {/* <button className="btn btn-primary">Enable | Disable</button> */}
-            </div>
+            <div className="card-actions justify-end"></div>
           </div>
           <div></div>
         </div>

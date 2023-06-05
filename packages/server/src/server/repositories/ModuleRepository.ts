@@ -45,6 +45,7 @@ export default class ModuleRepository {
 
   updateModuleEnabled(id: string, enabled: boolean) {
     enabled ? this.manager.enableModule(id) : this.manager.disableModule(id)
+    return this.manager.getModule(id)
   }
 
   subscribeToModuleEvents(id: string, handler: (data: ModuleProps) => void) {

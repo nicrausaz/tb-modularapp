@@ -1,3 +1,4 @@
+import fetcher from '@/api/fetcher'
 import { useState, useEffect } from 'react'
 
 interface FetchProps<T> {
@@ -14,16 +15,9 @@ const useFetch = <T>(url: string, options?: RequestInit): FetchProps<T> => {
   const [loading, setLoading] = useState<boolean>(true)
 
   useEffect(() => {
-    console.log(localStorage.getItem('auth_token'))
     const fetchData = async (): Promise<void> => {
       try {
-        const response = await fetch(url, options)
-        const jsonData = await response.json()
-
-        if (!response.ok) {
-          throw new Error(jsonData.message)
-        }
-
+        const jsonData = await fetcher<T>(url, options, false)
         setData(jsonData)
         setLoading(false)
       } catch (error) {
@@ -39,14 +33,6 @@ const useFetch = <T>(url: string, options?: RequestInit): FetchProps<T> => {
 }
 
 const useFetchAuth = <T>(url: string, options?: RequestInit): FetchProps<T> => {
-  const opts = {
-    ...options,
-    headers: {
-      ...options?.headers,
-      Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
-    },
-  }
-
   const [data, setData] = useState<T | null>(null)
   const [error, setError] = useState<Error | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
@@ -54,13 +40,7 @@ const useFetchAuth = <T>(url: string, options?: RequestInit): FetchProps<T> => {
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       try {
-        const response = await fetch(url, opts)
-
-        if (!response.ok) {
-          throw new Error(response.statusText)
-        }
-        const jsonData = await response.json()
-
+        const jsonData = await fetcher<T>(url, options)
         setData(jsonData)
         setLoading(false)
       } catch (error) {
