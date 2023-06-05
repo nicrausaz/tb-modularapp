@@ -10,7 +10,16 @@ type ModuleCardProps = {
 }
 
 export default function ModuleCard({ id, title, description, active, onAction }: ModuleCardProps) {
-  const actions = []
+  const actions = [
+    {
+      label: 'Edit',
+      onClick: () => onAction && onAction('edit', id),
+    },
+    {
+      label: 'Delete',
+      onClick: () => onAction && onAction('delete', id),
+    },
+  ]
 
   if (active) {
     actions.push({
@@ -24,7 +33,7 @@ export default function ModuleCard({ id, title, description, active, onAction }:
     })
   }
 
-  const disabledStyle = active ? {} : { filter: 'grayscale(80%)', fontStyle: 'italic' }
+  const disabledStyle = active ? {} : { filter: 'opacity(0.7)' }
 
   return (
     <div className="card card-side bg-base-200 shadow-xl" style={disabledStyle}>
@@ -37,7 +46,7 @@ export default function ModuleCard({ id, title, description, active, onAction }:
             height={100}
           />
           <div>
-            <h2 className="card-title">{title}</h2> {active ? 'active': 'tamer'}
+            <h2 className="card-title">{title}</h2>
             <p>{description}</p>
             <div className="card-actions justify-end"></div>
           </div>

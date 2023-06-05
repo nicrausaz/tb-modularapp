@@ -1,72 +1,106 @@
+import fetcher from '@/api/fetcher'
 import ConfigurationEditor from '@/components/module/ConfigurationEditor'
+import ModuleRender from '@/components/module/ModuleRender'
 import { useFetchAuth } from '@/hooks/useFetch'
+import { use } from 'i18next'
 import type { Module } from 'models/Module'
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 export default function Module() {
   const { moduleId } = useParams()
 
   const { data, error, loading } = useFetchAuth<Module>(`/api/modules/${moduleId}`)
+  const [module, setModule] = useState(data)
+
+  useEffect(() => {
+    setModule(data)
+  }, [data])
 
   if (loading) {
     return <div>Loading...</div>
   }
 
-  if (error || !data) {
+  if (error) {
     return <div>Error: {error.message}</div>
   }
 
+  if (!module) {
+    return <div>Module not found</div>
+  }
+
+  const handleChangeStatus = async (action: string) => {
+    const enabled = action === 'enable'
+
+    await fetcher(`/api/modules/${module.id}/status`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        enabled: enabled,
+      }),
+    })
+
+    setModule({
+      ...module,
+      enabled: enabled,
+    })
+  }
+
   return (
-    <div className="flex flex-col h-full overflow-scroll pb-20">
-      {/* <h1 className="text-2xl font-bold">Module (id: )</h1> */}
-      <div className="flex flex-col w-full items-center">
-        <div className="bg-gray-100 rounded-box flex items-center p-4 mb-4 shadow-lg md:w-3/4">
-          <div className="flex-1 px-2">
-            <div className="flex items-center gap-4">
-              <img
-                className="mask mask-squircle"
-                src="https://daisyui.com/images/stock/photo-1494232410401-ad00d5433cfa.jpg"
-                width={100}
-                height={100}
-              />
+    <div className="flex flex-col h-full pb-20">
+      <div className="hero">
+        <div className="hero-content flex-col lg:flex-row-reverse justify-between">
+          <img
+            className="mask mask-squircle w-40 lg:w-60 shadow-2xl"
+            src="https://daisyui.com/images/stock/photo-1494232410401-ad00d5433cfa.jpg"
+          />
+          <div>
+            <h1 className="text-5xl font-bold">{module.name}</h1>
+            <p className="py-6">{module.description}</p>
+            <div className="flex justify-between">
               <div>
-                <h2 className="text-3xl font-extrabold">{data.name}</h2>
-                <small>{moduleId}</small>
-                <h3 className="mt-2">{data.description}</h3>
+                <svg className="w-6 h-6 mr-2" viewBox="0 0 24 24" />
+                <p className="font-bold">{module.author}</p>
+              </div>
+              <div>
+                <svg className="w-6 h-6 mr-2" viewBox="0 0 24 24" />
+                <p className="font-bold">{module.version}</p>
               </div>
             </div>
-          </div>
-          <div className="flex-0">
-            <p>{data.version}</p>
-            <p>{data.author}</p>
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col w-full items-center">
+      <div className="flex flex-col w-full items-center mb-4">
         <div className="divider text-2xl text-neutral font-bold mb-6">Actions</div>
 
-        <div className="bg-base-100 shadow rounded-box w-full md:w-3/4 p-4">
+        <div className="shadow rounded-box w-full md:w-3/4 p-4">
           <div className="flex flex-col w-full lg:flex-row">
-            <div className="gap-2">
-              <button className="btn btn-primary">Start</button>
-              <button className="btn btn-error">Save</button>
+            <div className="grid flex-grow card rounded-box place-items-center border-2 border-dotted">
+              {module.enabled ? <ModuleRender id={module.id} /> : <p>Activate module to see the preview</p>}
+            </div>
+            <div className="divider divider-horizontal"></div>
+            <div className="grid card rounded-box place-items-center">
+              {module.enabled ? (
+                <button className="btn btn-error" onClick={() => handleChangeStatus('disabled')}>
+                  Stop
+                </button>
+              ) : (
+                <button className="btn btn-success" onClick={() => handleChangeStatus('enable')}>
+                  Start
+                </button>
+              )}
             </div>
           </div>
         </div>
-
+      </div>
+      <div className="flex flex-col w-full items-center">
         <div className="divider text-2xl text-neutral font-bold my-6">Configuration</div>
-
-        {/* <h2 className="text-2xl font-bold">Configuration</h2> */}
         <div className="bg-base-100 shadow rounded-box w-full md:w-3/4 p-4">
-          <ConfigurationEditor configuration={data.currentConfig} />
-          
+          <ConfigurationEditor configuration={module.currentConfig} />
         </div>
-        {/* <div className="divider"></div>
-        <div className="rounded-box shadow w-1/2">
-          <h2 className="text-2xl font-bold">Other informations</h2>
-          <button className="btn"> Disable </button>
-        </div> */}
       </div>
     </div>
   )

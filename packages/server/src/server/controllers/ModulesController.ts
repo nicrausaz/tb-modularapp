@@ -67,7 +67,7 @@ export default class ModulesController {
     res.setHeader('Cache-Control', 'no-cache')
     res.setHeader('Connection', 'keep-alive')
 
-    res.write('data: Connected\n\n')
+    // res.write('data: Connected\n\n')
 
     // Gestion de la fin de la connexion SSE
     req.on('close', () => {

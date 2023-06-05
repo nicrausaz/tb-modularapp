@@ -107,7 +107,7 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
 
   app.get('/api/modules/:id', JwtAuthMiddleware, modulesController.module)
 
-  app.get('/api/modules/:id/events', JwtAuthMiddleware, modulesController.moduleEvents)
+  app.get('/api/modules/:id/events', modulesController.moduleEvents)
 
   app.post('/api/modules/:id/events', JwtAuthMiddleware, modulesController.sendEvent)
 

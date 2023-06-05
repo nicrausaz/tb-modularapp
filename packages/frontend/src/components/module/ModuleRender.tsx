@@ -7,12 +7,11 @@ export default function ModuleRender({ id }: { id: string }) {
   const [status, setStatus] = useState<string>('')
 
   useEffect(() => {
-    const source = new EventSource(`/api/modules/${id}`)
+    const source = new EventSource(`/api/modules/${id}/events`)
 
     source.addEventListener(
       'message',
       (e) => {
-        console.log(e)
         setData(JSON.parse(e.data).data)
         setRender(JSON.parse(e.data).render)
       },
@@ -22,7 +21,6 @@ export default function ModuleRender({ id }: { id: string }) {
     source.addEventListener(
       'open',
       function (e) {
-        console.log('open')
         setLoading(false)
         setStatus('active')
       },
@@ -43,7 +41,7 @@ export default function ModuleRender({ id }: { id: string }) {
   }, [])
 
   return (
-    <div className="border rounded-xl bg-base-200">
+    <div className="w-full h-full ">
       {loading ? <div>Loading...</div> : <div dangerouslySetInnerHTML={{ __html: render }} />}
     </div>
   )

@@ -13,12 +13,17 @@ export default async function fetcher<T>(url: string, options?: RequestInit, aut
 
   try {
     const response = await fetch(url, opts)
-    const jsonData = await response.json()
 
     if (!response.ok) {
+      const jsonData = await response.json()
       throw new Error(jsonData.message)
     }
 
+    if (response.status === 204) {
+      return null
+    }
+
+    const jsonData = await response.json()
     return jsonData as T
   } catch (error) {
     throw new Error(error)

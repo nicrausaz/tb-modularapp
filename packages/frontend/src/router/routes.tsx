@@ -8,6 +8,7 @@ import Dashboard from '@/views/Dashboard'
 import Module from '@/views/Module'
 import Modules from '@/views/Modules'
 import AuthenticatedRoute from './AuthenticatedRoute'
+import Home from '@/views/Home'
 
 const routes: RouteObject[] = [
   {
@@ -24,6 +25,10 @@ const routes: RouteObject[] = [
     ),
     errorElement: <Error />,
     children: [
+      {
+        path: '/',
+        element: <Home />,
+      },
       {
         path: '/dashboard',
         element: <Dashboard />,
