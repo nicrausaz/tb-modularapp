@@ -1,5 +1,7 @@
 import fetcher from '@/api/fetcher'
+import { UploadIcon } from '@/assets/icons'
 import Modal from '@/components/Modal'
+import SearchBar from '@/components/SearchBar'
 import ModuleCard from '@/components/module/ModuleCard'
 import { useFetchAuth } from '@/hooks/useFetch'
 import { Module } from '@/models/Module'
@@ -12,6 +14,10 @@ export default function Modules() {
   const navigate = useNavigate()
 
   const [confirmDelete, setConfirmDelete] = useState<boolean>(false)
+  const [uploadModalOpen, setUploadModalOpen] = useState<boolean>(false)
+
+  const [searchQuery, setSearchQuery] = useState<string>('')
+  const [searchFilter, setSearchFilter] = useState<string>('All')
 
   useEffect(() => {
     if (data) {
@@ -26,6 +32,14 @@ export default function Modules() {
   if (error) {
     return <div>Error: {error.message}</div>
   }
+
+  const searchFilters = [
+    'All',
+    'Enabled',
+    'Disabled',
+  ]
+
+
 
   const changeModuleStatus = async (id: string, enabled: boolean) => {
     const data = [...modules]
@@ -80,35 +94,13 @@ export default function Modules() {
     <div className="flex flex-col h-full pb-20">
       <h1 className="text-2xl font-bold">Modules</h1>
 
-      <div className="my-4">
-        <div className="join w-full shadow">
-          <div className="flex-grow">
-            <div>
-              <input className="input input-bordered  join-item w-full" placeholder="Search..." />
-            </div>
-          </div>
-          <select className="select select-bordered join-item flex-grow-0">
-            <option selected>All</option>
-            <option>Active</option>
-            <option>Inactive</option>
-          </select>
-          <button className="btn join-item flex-grow-0 border border-gray-300">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </button>
-        </div>
+      <div className="my-4 flex gap-2">
+        <SearchBar query={searchQuery} typeFilters={searchFilters} currentTypeFilter={searchFilter}/>
+        
+        <button className="btn border border-gray-300" onClick={() => setUploadModalOpen(true)}>
+          <UploadIcon className="w-5 h-5" />
+          Add
+        </button>
       </div>
 
       <div className="grid grid-cols-2 xl:grid-cols-3 gap-8 items-center">
@@ -127,6 +119,21 @@ export default function Modules() {
       <Modal isOpen={confirmDelete} title="Confirm deletion" onClose={() => setConfirmDelete(false)}>
         <div className="modal-body">
           <p>Are you sure you want to delete this module ?</p>
+        </div>
+      </Modal>
+
+      <Modal isOpen={uploadModalOpen} title="Add a new module from archive" onClose={() => setUploadModalOpen(false)}>
+        <div className="modal-body">
+          <div className="form-control w-full">
+            <label className="label">
+              <span className="label-text">Pick a file</span>
+              <span className="label-text-alt">.zip allowed</span>
+            </label>
+            <input type="file" className="file-input file-input-bordered w-full" accept=".zip" />
+            <label className="label">
+              <span className="label-text-alt text-error">Error label</span>
+            </label>
+          </div>
         </div>
       </Modal>
     </div>
