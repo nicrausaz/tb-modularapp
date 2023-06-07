@@ -36,25 +36,17 @@ export default function ModuleCard({ id, title, description, active, onAction }:
   const disabledStyle = active ? {} : { filter: 'opacity(0.7)' }
 
   return (
-    <div className="card card-side bg-base-200 shadow-xl" style={disabledStyle}>
-      <Link to={`/modules/${id}`}>
-        <div className="card-body flex flex-row items-center gap-4" title={description}>
-          <img
-            className="mask mask-squircle"
-            src="https://daisyui.com/images/stock/photo-1494232410401-ad00d5433cfa.jpg"
-            width={100}
-            height={100}
-          />
-          <div>
-            <h2 className="card-title">{title}</h2>
-            <p>{description}</p>
-            <div className="card-actions justify-end"></div>
-          </div>
-          <div></div>
+    <div className="card card-side bg-base-200 shadow-xl disabled" style={disabledStyle}>
+      <Link className="card-body flex flex-row items-center" title={description} to={`/modules/${id}`}>
+        <img className="mask" src="/assets/module_placeholder.svg" width={100} height={100} />
+        <div>
+          <h2 className="card-title">{title}</h2>
+          <p>{description}</p>
+          <div className="card-actions justify-end"></div>
         </div>
       </Link>
       <div>
-        <div className="card-actions justify-end translate-x-2 -translate-y-2">
+        <div className="justify-end translate-x-2 -translate-y-2">
           <ModuleContextDropdown actions={actions} />
         </div>
       </div>

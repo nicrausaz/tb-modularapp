@@ -1,4 +1,4 @@
-import { RouteObject } from 'react-router-dom'
+import { Navigate, RouteObject } from 'react-router-dom'
 
 import MainLayout from '@/layouts/MainLayout'
 import Login from '@/views/Login'
@@ -9,11 +9,18 @@ import Module from '@/views/Module'
 import Modules from '@/views/Modules'
 import AuthenticatedRoute from './AuthenticatedRoute'
 import Home from '@/views/Home'
+import Visualize from '@/views/Visualize'
+import Profile from '@/views/Profile'
 
 const routes: RouteObject[] = [
   {
     path: '/login',
     element: <Login />,
+    errorElement: <Error />,
+  },
+  {
+    path: '/visualize/:screenId',
+    element: <Visualize />,
     errorElement: <Error />,
   },
   {
@@ -45,12 +52,20 @@ const routes: RouteObject[] = [
         path: '/settings',
         element: <Settings />,
       },
+      {
+        path: '/profile',
+        element: <Profile />,
+      },
     ],
   },
-  // {
-  //   path: '*',
-  //   element: <Navigate to="/404" replace />,
-  // },
+  {
+    path: '/404',
+    element: <Error />,
+  },
+  {
+    path: '*',
+    element: <Navigate to="/404" replace />,
+  },
 ]
 
 export default routes

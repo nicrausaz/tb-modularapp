@@ -9,7 +9,7 @@ function MainLayout() {
     {
       to: '/dashboard',
       icon: 'DashboardIcon',
-      label: 'Dashboard',
+      label: 'Dashboard edition',
     },
     {
       to: '/modules',
