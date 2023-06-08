@@ -15,7 +15,7 @@ export default function Modules() {
 
   const [confirmDelete, setConfirmDelete] = useState<boolean>(false)
   const [uploadModalOpen, setUploadModalOpen] = useState<boolean>(false)
-  
+
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [searchFilter, setSearchFilter] = useState<string>('All')
 
@@ -24,6 +24,28 @@ export default function Modules() {
       setModules(data)
     }
   }, [data])
+
+  useEffect(() => {
+    if (data) {
+      applySearchAndFilter(data)
+    }
+  }, [searchQuery, searchFilter])
+
+  const applySearchAndFilter = (modules: Module[]) => {
+    let filteredModules = modules
+
+    if (searchQuery) {
+      filteredModules = filteredModules.filter((module) =>
+        module.name.toLowerCase().includes(searchQuery.toLowerCase()),
+      )
+    }
+
+    if (searchFilter !== 'All') {
+      filteredModules = filteredModules.filter((module) => module.enabled === (searchFilter === 'Enabled'))
+    }
+
+    setModules(filteredModules)
+  }
 
   if (loading) {
     return <div>Loading...</div>

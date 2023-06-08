@@ -1,4 +1,4 @@
-import { NewScreenIcon, OpenNewTabIcon } from '@/assets/icons'
+import { ArrowDownIcon, NewScreenIcon, OpenNewTabIcon, SaveIcon, TrashIcon } from '@/assets/icons'
 import { Screen } from '@/models/Screen'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -20,7 +20,7 @@ export default function ScreenToolbar({ currentScreen, screens, onScreenSelectio
   }
 
   const handleAddScreen = () => {
-    onScreenAdd('Screen' + (screens.length + 1))
+    onScreenAdd(`Screen ${screens.length + 1}`)
   }
 
   return (
@@ -35,9 +35,10 @@ export default function ScreenToolbar({ currentScreen, screens, onScreenSelectio
         />
       </div>
       <div>
-        <div className="dropdown dropdown-end mr-2">
+        <div className="dropdown dropdown-hover dropdown-end mr-2">
           <label tabIndex={0} className="btn m-1">
             {currentScreen?.name}
+            <ArrowDownIcon className="w-4 h-4" />
           </label>
           <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
             {otherScreens.map((screen) => (
@@ -53,6 +54,14 @@ export default function ScreenToolbar({ currentScreen, screens, onScreenSelectio
             </li>
           </ul>
         </div>
+        <button className="btn btn-error mr-2">
+          Delete
+          <TrashIcon className="w-4 h-4" />
+        </button>
+        <button className="btn btn-success mr-2">
+          save
+          <SaveIcon />
+        </button>
         <Link className="btn btn-info" to={`/visualize/${currentScreen?.id}`} target="_blank">
           Preview
           <OpenNewTabIcon className="w-4 h-4" />
