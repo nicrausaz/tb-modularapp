@@ -1,13 +1,16 @@
 import fetcher from '@/api/fetcher'
 import ConfigurationEditor from '@/components/module/ConfigurationEditor'
 import ModuleRender from '@/components/module/ModuleRender'
+import { useToast } from '@/contexts/ToastContext'
 import { useFetchAuth } from '@/hooks/useFetch'
+import { Configuration } from '@/models/Configuration'
 import type { Module } from 'models/Module'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 export default function Module() {
   const { moduleId } = useParams()
+  const { tSuccess, tError } = useToast()
 
   const { data, error, loading } = useFetchAuth<Module>(`/api/modules/${moduleId}`)
   const [module, setModule] = useState(data)
@@ -45,6 +48,25 @@ export default function Module() {
       ...module,
       enabled: enabled,
     })
+  }
+
+  const saveConfiguration = async (configuration: Configuration) => {
+    fetcher(`/api/modules/${module.id}/configuration`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        fields: configuration,
+      }),
+    })
+      .then((res) => {
+        console.log(res)
+        tSuccess('Configuration saved', 'The configuration has been saved successfully')
+      })
+      .catch((err) => {
+        tError('Error', err.message)
+      })
   }
 
   return (
@@ -98,7 +120,7 @@ export default function Module() {
       <div className="flex flex-col w-full items-center">
         <div className="divider text-2xl text-neutral font-bold my-6">Configuration</div>
         <div className="bg-base-100 shadow rounded-box w-full md:w-3/4 p-4">
-          <ConfigurationEditor configuration={module.currentConfig} />
+          <ConfigurationEditor configuration={module.currentConfig} onSave={saveConfiguration} />
         </div>
       </div>
     </div>

@@ -130,6 +130,9 @@ export default function Modules() {
         console.log(err)
         tError('Error', err.message)
       })
+      .finally(() => {
+        setUploadModalOpen(false)
+      })
     // TODO: reload modules
   }
 

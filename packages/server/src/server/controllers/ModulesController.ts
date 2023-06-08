@@ -121,7 +121,7 @@ export default class ModulesController {
   moduleConfigurationUpdate = (req: Request, res: Response) => {
     const entry = this.moduleService.updateModuleConfiguration(req.params.id, req.body)
 
-    if (!entry) {
+    if (entry === null) {
       res.status(404).send({
         message: 'Module not found',
       })
