@@ -1,24 +1,41 @@
 type SearchBarProps = {
+  hasFilters?: boolean
   query: string
-  setQuery?: (search: string) => void
-  typeFilters: string[]
-  setTypeFilter?: (filter: string) => void
-  currentTypeFilter: string
+  filters: string[]
+  currentFilter: string
+  onQueryChange?: (search: string) => void
+  onFilterChange?: (filter: string) => void
 }
 
-export default function SearchBar({ query, typeFilters, currentTypeFilter }: SearchBarProps) {
+export default function SearchBar({ hasFilters, query, filters, currentFilter, onQueryChange, onFilterChange }: SearchBarProps) {
+  
+  const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (onQueryChange) {
+      onQueryChange(event.target.value)
+    }
+  }
+
+  const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    if (onFilterChange) {
+      onFilterChange(event.target.value)
+    }
+  }
+  
+  
   return (
     <div className="join w-full shadow">
       <div className="flex-grow">
         <div>
-          <input className="input input-bordered join-item w-full" placeholder="Search..." defaultValue={query} />
+          <input className="input input-bordered join-item w-full" placeholder="Search..." defaultValue={query} onChange={handleQueryChange} />
         </div>
       </div>
-      <select className="select select-bordered join-item flex-grow-0" defaultValue={currentTypeFilter}>
-        {typeFilters.map((filter) => (
-          <option value={filter}>{filter}</option>
-        ))}
-      </select>
+      {hasFilters && (
+        <select className="select select-bordered join-item flex-grow-0" defaultValue={currentFilter} onChange={handleFilterChange}>
+          {filters.map((filter) => (
+            <option value={filter}>{filter}</option>
+          ))}
+        </select>
+      )}
       <button className="btn join-item flex-grow-0 border border-gray-300">
         <svg
           xmlns="http://www.w3.org/2000/svg"

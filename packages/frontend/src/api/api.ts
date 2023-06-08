@@ -46,3 +46,4 @@ export const getAuthenticatedUser = async (token: string) => {
 
   return await response.json()
 }
+

@@ -15,7 +15,7 @@ export default function Modules() {
 
   const [confirmDelete, setConfirmDelete] = useState<boolean>(false)
   const [uploadModalOpen, setUploadModalOpen] = useState<boolean>(false)
-
+  
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [searchFilter, setSearchFilter] = useState<string>('All')
 
@@ -33,13 +33,7 @@ export default function Modules() {
     return <div>Error: {error.message}</div>
   }
 
-  const searchFilters = [
-    'All',
-    'Enabled',
-    'Disabled',
-  ]
-
-
+  const searchFilters = ['All', 'Enabled', 'Disabled']
 
   const changeModuleStatus = async (id: string, enabled: boolean) => {
     const data = [...modules]
@@ -95,8 +89,15 @@ export default function Modules() {
       <h1 className="text-2xl font-bold">Modules</h1>
 
       <div className="my-4 flex gap-2">
-        <SearchBar query={searchQuery} typeFilters={searchFilters} currentTypeFilter={searchFilter}/>
-        
+        <SearchBar
+          hasFilters={true}
+          query={searchQuery}
+          filters={searchFilters}
+          currentFilter={searchFilter}
+          onQueryChange={(query) => setSearchQuery(query)}
+          onFilterChange={(filter) => setSearchFilter(filter)}
+        />
+
         <button className="btn border border-gray-300" onClick={() => setUploadModalOpen(true)}>
           <UploadIcon className="w-5 h-5" />
           Add
