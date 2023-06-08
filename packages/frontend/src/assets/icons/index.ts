@@ -9,6 +9,8 @@ import ArrowUpIcon from './ArrowUpIcon'
 import ArrowDownIcon from './ArrowDownIcon'
 import SaveIcon from './SaveIcon'
 import TrashIcon from './TrashIcon'
+import PlayIcon from './PlayIcon'
+import StopIcon from './StopIcon'
 
 export {
   BoxIcon,
@@ -22,4 +24,6 @@ export {
   ArrowDownIcon,
   SaveIcon,
   TrashIcon,
+  PlayIcon,
+  StopIcon,
 }

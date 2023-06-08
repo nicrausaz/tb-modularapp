@@ -1,5 +1,6 @@
 import FooterNav from '@/components/FooterNav'
 import Navbar from '@/components/Navbar'
+import ToastContainer from '@/components/ToastContainer'
 import { Outlet, useLocation } from 'react-router-dom'
 
 function MainLayout() {
@@ -25,6 +26,7 @@ function MainLayout() {
 
   return (
     <div>
+      <ToastContainer />
       <Navbar />
       <div className="mx-4 my-2">
         <Outlet />

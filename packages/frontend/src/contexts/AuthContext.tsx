@@ -1,14 +1,9 @@
 import { createContext, useContext, useState } from 'react'
 import { useLocalStorage } from '@/hooks/useLocalStorage'
+import { User } from '@/models/User'
 import * as Api from '@/api/api'
 
-// tmp
-type User = {
-  id: number
-  username: string
-}
-
-type ContextType = {
+type AuthContextType = {
   token: string
   authenticatedUser: User | null
   login(username: string, password: string): Promise<void>
@@ -16,13 +11,7 @@ type ContextType = {
   getAuthenticatedUser(): Promise<void>
 }
 
-const AuthContext = createContext<ContextType>({
-  token: '',
-  authenticatedUser: null,
-  login: async (username: string, password: string) => {},
-  logout: async () => {},
-  getAuthenticatedUser: async () => {},
-})
+const AuthContext = createContext<AuthContextType>({} as AuthContextType)
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [token, setToken, remove] = useLocalStorage('auth_token', '')
@@ -46,10 +35,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   const getAuthenticatedUser = async () => {
-    await Api.getAuthenticatedUser(token)
-      .then((user) => {
-        setAuthenticatedUser(user)
-      })
+    await Api.getAuthenticatedUser(token).then((user) => {
+      setAuthenticatedUser(user)
+    })
   }
 
   return (

@@ -7,12 +7,16 @@ import React, { createContext, useState } from 'react'
 const DEFAULT_THEME = 'light'
 const STORAGE_KEY = 'theme'
 
-export const ThemeContext = createContext({
+type ThemeContextType = {
+  theme: string
+  switchTheme?: (theme: string) => void
+}
+
+const ThemeContext = createContext<ThemeContextType>({
   theme: DEFAULT_THEME,
-  switchTheme: (theme: string) => {},
 })
 
-const ThemeProvider = ({ children }: { children: any }) => {
+const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const [theme, setTheme] = useState(localStorage.getItem(STORAGE_KEY) || DEFAULT_THEME)
 
   const switchTheme = (theme: string) => {
@@ -23,4 +27,4 @@ const ThemeProvider = ({ children }: { children: any }) => {
   return <ThemeContext.Provider value={{ theme, switchTheme }}>{children}</ThemeContext.Provider>
 }
 
-export default ThemeProvider
+export { ThemeContext, ThemeProvider }

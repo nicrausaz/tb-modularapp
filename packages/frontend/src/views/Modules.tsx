@@ -4,6 +4,7 @@ import Modal from '@/components/Modal'
 import SearchBar from '@/components/SearchBar'
 import UploadModal from '@/components/UploadModal'
 import ModuleCard from '@/components/module/ModuleCard'
+import { useToast } from '@/contexts/ToastContext'
 import { useFetchAuth } from '@/hooks/useFetch'
 import { Module } from '@/models/Module'
 import { useState, useEffect } from 'react'
@@ -19,6 +20,8 @@ export default function Modules() {
 
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [searchFilter, setSearchFilter] = useState<string>('All')
+
+  const { tSuccess, tError } = useToast()
 
   useEffect(() => {
     if (data) {
@@ -108,16 +111,26 @@ export default function Modules() {
   }
 
   const handleUpload = async (file: File) => {
-    console.log(file)
     const formData = new FormData()
     formData.append('file', file)
 
-    await fetcher('/api/modules', {
+    fetcher('/api/modules', {
       method: 'POST',
       body: formData,
     })
-    // TODO: reload modules & display success message (https://daisyui.com/components/alert/)
-    // TODO: handle error
+      .then((res) => {
+        console.log(res)
+        tSuccess('Success', 'Module uploaded successfully', 'modules/TODO')
+        
+        fetcher<Module[]>(`/api/modules`).then(res => {
+          setModules(res!)
+        })
+      })
+      .catch((err) => {
+        console.log(err)
+        tError('Error', err.message)
+      })
+    // TODO: reload modules
   }
 
   return (
@@ -159,7 +172,12 @@ export default function Modules() {
         </div>
       </Modal>
 
-      <UploadModal open={uploadModalOpen} onClose={() => setUploadModalOpen(false)} onUpload={handleUpload} allowedFormats={['application/zip']}  />
+      <UploadModal
+        open={uploadModalOpen}
+        onClose={() => setUploadModalOpen(false)}
+        onUpload={handleUpload}
+        allowedFormats={['application/zip']}
+      />
     </div>
   )
 }
