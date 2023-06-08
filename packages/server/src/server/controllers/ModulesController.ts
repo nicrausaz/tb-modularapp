@@ -159,7 +159,9 @@ export default class ModulesController {
 
     this.moduleService
       .uploadModule(req.files.file as UploadedFile)
-      .then(() => res.send('Module uploaded and registered successfully'))
-      .catch(() => res.send('The module could not be registered. Please check its configuration.'))
+      .then(() => res.status(201).send({ message: 'Module uploaded and registered successfully' }))
+      .catch(() =>
+        res.status(400).send({ message: 'The module could not be registered. Please check its configuration.' }),
+      )
   }
 }

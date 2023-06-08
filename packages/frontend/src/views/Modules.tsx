@@ -2,6 +2,7 @@ import fetcher from '@/api/fetcher'
 import { UploadIcon } from '@/assets/icons'
 import Modal from '@/components/Modal'
 import SearchBar from '@/components/SearchBar'
+import UploadModal from '@/components/UploadModal'
 import ModuleCard from '@/components/module/ModuleCard'
 import { useFetchAuth } from '@/hooks/useFetch'
 import { Module } from '@/models/Module'
@@ -106,6 +107,19 @@ export default function Modules() {
     }
   }
 
+  const handleUpload = async (file: File) => {
+    console.log(file)
+    const formData = new FormData()
+    formData.append('file', file)
+
+    await fetcher('/api/modules', {
+      method: 'POST',
+      body: formData,
+    })
+    // TODO: reload modules & display success message (https://daisyui.com/components/alert/)
+    // TODO: handle error
+  }
+
   return (
     <div className="flex flex-col h-full pb-20">
       <h1 className="text-2xl font-bold">Modules</h1>
@@ -145,20 +159,7 @@ export default function Modules() {
         </div>
       </Modal>
 
-      <Modal isOpen={uploadModalOpen} title="Add a new module from archive" onClose={() => setUploadModalOpen(false)}>
-        <div className="modal-body">
-          <div className="form-control w-full">
-            <label className="label">
-              <span className="label-text">Pick a file</span>
-              <span className="label-text-alt">.zip allowed</span>
-            </label>
-            <input type="file" className="file-input file-input-bordered w-full" accept=".zip" />
-            <label className="label">
-              <span className="label-text-alt text-error">Error label</span>
-            </label>
-          </div>
-        </div>
-      </Modal>
+      <UploadModal open={uploadModalOpen} onClose={() => setUploadModalOpen(false)} onUpload={handleUpload} allowedFormats={['application/zip']}  />
     </div>
   )
 }

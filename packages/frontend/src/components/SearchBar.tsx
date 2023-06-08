@@ -32,7 +32,7 @@ export default function SearchBar({ hasFilters, query, filters, currentFilter, o
       {hasFilters && (
         <select className="select select-bordered join-item flex-grow-0" defaultValue={currentFilter} onChange={handleFilterChange}>
           {filters.map((filter) => (
-            <option value={filter}>{filter}</option>
+            <option value={filter} key={filter}>{filter}</option>
           ))}
         </select>
       )}
