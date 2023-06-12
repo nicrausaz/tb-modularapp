@@ -5,7 +5,7 @@ import {
   SpecificConfiguration,
   SpecificConfigurationEntryTypeValue,
 } from '@yalk/module'
-import { readdir, lstatSync } from 'fs'
+import { readdir, lstatSync, existsSync, rmSync } from 'fs'
 import { join } from 'path'
 
 type ModuleId = string
@@ -42,7 +42,7 @@ export default class Manager {
 
         for await (const file of files) {
           if (lstatSync(join(this.modulesPath, file)).isDirectory()) {
-            await this.loadModule(this.modulesPath, file)
+            await this.loadModule(file)
           }
         }
         resolve()
@@ -76,6 +76,7 @@ export default class Manager {
     }
 
     this.modules.delete(id)
+    this.deleteModule(id)
   }
 
   /**
@@ -202,7 +203,7 @@ export default class Manager {
   /**
    * Load a module, its configuration and registers it into the manager
    */
-  async loadModule(path: string, filename: string): Promise<boolean> {
+  async loadModule(filename: string): Promise<boolean> {
     const id = filename
 
     // if (this.modules.has(id)) {
@@ -210,7 +211,7 @@ export default class Manager {
     //   return false
     // }
 
-    const modulePath = join(path, filename)
+    const modulePath = join(this.modulesPath, filename)
 
     try {
       // Load the module
@@ -235,6 +236,16 @@ export default class Manager {
       console.log(`Module '${filename}', was not loaded because it has invalid structure: ${e}`)
       return false
     }
+  }
+
+  private deleteModule(filename: string) {
+    const modulePath = join(this.modulesPath, filename)
+
+    if (!existsSync(modulePath)) {
+      throw new Error('Module sources not found')
+    }
+
+    rmSync(modulePath, { recursive: true })
   }
 }
 
