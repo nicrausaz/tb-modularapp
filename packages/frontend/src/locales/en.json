@@ -1,0 +1,15 @@
+{
+  "menu": {
+
+  },
+  "login": {
+    "title": "Log in",
+    "subtitle": "Log in to your account and start automating your workflow.",
+    "form": {
+      "email": "Email",
+      "password": "Password",
+      "forgot": "Forgot your password ?",
+      "submit": "Log in"
+    }
+  }
+}

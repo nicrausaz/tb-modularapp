@@ -1,10 +1,12 @@
 import { useAuth } from '@/contexts/AuthContext'
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
 export default function Login() {
   const { login, token, getAuthenticatedUser } = useAuth()
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (token) {
@@ -23,7 +25,7 @@ export default function Login() {
     setPassword(e.target.value)
   }
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     if (username === '' || password === '') {
@@ -32,10 +34,10 @@ export default function Login() {
 
     login(username, password)
       .then(() => {
-        getAuthenticatedUser().then(() =>  navigate('/dashboard'))
+        getAuthenticatedUser().then(() => navigate('/dashboard'))
       })
       .catch((err) => {
-        console.log("TODO: display error", err)
+        console.log('TODO: display error', err)
       })
   }
 
@@ -43,8 +45,8 @@ export default function Login() {
     <div className="hero min-h-screen bg-base-200">
       <div className="hero-content flex-col lg:flex-row">
         <div className="text-center lg:text-left">
-          <h1 className="text-5xl font-bold">Log in</h1>
-          <p className="py-6">Log in to your account and start automating your workflow.</p>
+          <h1 className="text-5xl font-bold">{t('login.title')}</h1>
+          <p className="py-6">{t('login.subtitle')}</p>
         </div>
         <form
           className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100"
@@ -54,13 +56,13 @@ export default function Login() {
           <div className="card-body">
             <div className="form-control">
               <label className="label">
-                <span className="label-text">Email</span>
+                <span className="label-text">{t('login.form.email')}</span>
               </label>
               <input type="text" placeholder="email" className="input input-bordered" onChange={handleUsernameChange} />
             </div>
             <div className="form-control">
               <label className="label">
-                <span className="label-text">Password</span>
+                <span className="label-text">{t('login.form.password')}</span>
               </label>
               <input
                 type="password"
@@ -70,12 +72,12 @@ export default function Login() {
               />
               <label className="label">
                 <a href="#" className="label-text-alt link link-hover">
-                  Forgot password?
+                {t('login.form.forgot')}
                 </a>
               </label>
             </div>
             <div className="form-control mt-6">
-              <input type="submit" className="btn btn-primary" value="Login" />
+              <input type="submit" className="btn btn-primary" value={t('login.form.submit') ?? ''} />
             </div>
           </div>
         </form>
