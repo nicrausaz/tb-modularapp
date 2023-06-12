@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS Modules (
 CREATE TABLE IF NOT EXISTS Screens (
   id INTEGER NOT NULL,
   name VARCHAR(255),
-  -- configuration json,
+  enabled BOOLEAN NOT NULL DEFAULT 1,
   PRIMARY KEY (id)
 );
 

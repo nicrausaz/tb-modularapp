@@ -9,5 +9,6 @@ export type ScreenSlot = {
 export type Screen = {
   id: number
   name: string
+  enabled: boolean
   slots: ScreenSlot[]
 }

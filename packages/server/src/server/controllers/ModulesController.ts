@@ -1,8 +1,9 @@
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { ModuleProps } from '@yalk/module'
 import { ModuleService } from '../services'
 import type { UploadedFile } from 'express-fileupload'
+import { NotFoundError } from '../middlewares/HTTPError'
 
 export default class ModulesController {
   constructor(private moduleService: ModuleService) {}
@@ -19,18 +20,18 @@ export default class ModulesController {
    * GET
    * Get a module by its id
    */
-  module = (req: Request, res: Response) => {
+  module = (req: Request, res: Response, next: NextFunction) => {
     const moduleId = req.params.id
     const module = this.moduleService.getModule(moduleId)
+    try {
+      if (!module) {
+        throw new NotFoundError('Module not found')
+      }
 
-    if (!module) {
-      res.status(404).send({
-        message: 'Module not found',
-      })
-      return
+      res.send(module)
+    } catch (err) {
+      next(err)
     }
-
-    res.send(module)
   }
 
   /**

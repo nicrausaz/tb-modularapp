@@ -3,6 +3,7 @@ import { ModuleDTO } from './ModuleDTO'
 export type ScreenDTO = {
   readonly id: number
   readonly name: string
+  readonly enabled: boolean
   slots: ScreenSlotDTO[]
 }
 
@@ -14,6 +15,7 @@ export type ScreenSlotDTO = {
 export type UpdateScreenDTO = {
   readonly id: number
   readonly name: string
+  readonly enabled: boolean
   readonly slots: UpdateScreenSlotDTO[]
 }
 

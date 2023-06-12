@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import { verifyAndDecodeToken } from '../libs/jwt'
 import { User } from '../models/entities/User'
 import logger from '../libs/logger'
+import { UnauthorizedError } from './HTTPError'
 
 const JwtAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization
@@ -9,9 +10,7 @@ const JwtAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
 
   if (!token) {
     logger.warn('Unauthorized request')
-    return res.status(401).json({
-      message: 'Unauthorized',
-    })
+    throw new UnauthorizedError('Unauthorized')
   }
 
   verifyAndDecodeToken(token)
@@ -21,7 +20,7 @@ const JwtAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
     })
     .catch(() => {
       logger.warn('Error while verifying token')
-      res.sendStatus(401)
+      next(new UnauthorizedError('Token invalid or expired'))
     })
 }
 

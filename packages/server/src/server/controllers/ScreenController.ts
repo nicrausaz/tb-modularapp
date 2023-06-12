@@ -20,7 +20,7 @@ export default class ScreenController {
     const id = req.params.id
     const screen = await this.screenService.getScreen(Number(id))
 
-    if (!screen) {
+    if (!screen || !screen.enabled) {
       res.status(404).send('Screen not found')
       return
     }
@@ -37,5 +37,9 @@ export default class ScreenController {
     const id = req.params.id
     await this.screenService.deleteScreen(Number(id))
     res.status(204).send()
+  }
+
+  screenStatusUpdate = async (req: Request, res: Response) => {
+    // TODO: toggle screen enabled/disabled
   }
 }

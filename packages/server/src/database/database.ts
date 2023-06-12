@@ -18,7 +18,7 @@ const create = async () => {
   const db = getDB()
   return new Promise<void>((resolve, reject) => {
     // Create the database
-    db.exec(fs.readFileSync(join(process.env.DB_DIR || '' , 'model.sql')).toString(), (err) => {
+    db.exec(fs.readFileSync(join(process.env.DB_DIR || '', 'model.sql')).toString(), (err) => {
       if (err) {
         reject(err)
         return
@@ -37,7 +37,7 @@ const seed = async () => {
   const db = getDB()
   return new Promise<void>((resolve, reject) => {
     // Seed the database
-    db.exec(fs.readFileSync(join(process.env.DB_DIR || '' , 'seed.sql')).toString(), (err) => {
+    db.exec(fs.readFileSync(join(process.env.DB_DIR || '', 'seed.sql')).toString(), (err) => {
       if (err) {
         reject(err)
         return
@@ -51,9 +51,13 @@ const seed = async () => {
  * Create and seed the database
  */
 const buildDB = async () => {
+  const shouldSeed = !fs.existsSync(join(process.env.DB_DIR || '', 'db.sqlite'))
+
   return new Promise<void>((resolve, reject) => {
     create()
-      .then(() => seed())
+      .then(() => {
+        if (shouldSeed) seed()
+      })
       .then(() => resolve())
       .catch((err) => reject(err))
   })

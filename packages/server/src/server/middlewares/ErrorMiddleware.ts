@@ -1,11 +1,8 @@
 import { ErrorRequestHandler } from 'express'
+import { HTTPError } from './HTTPError'
 
-const ErrorMiddleware: ErrorRequestHandler = (err, req, res, next) => {
-  console.log('ErrorMiddleware was called')
-  console.log(err.stack)
-  res.status(500).send({
-    message: 'Internal server error',
-  })
+const ErrorMiddleware: ErrorRequestHandler = (err: HTTPError, req, res, next) => {
+  res.status(err.status).send(err.toResponse())
 }
 
 export { ErrorMiddleware }

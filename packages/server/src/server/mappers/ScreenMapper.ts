@@ -11,6 +11,7 @@ export default class ScreenMapper {
     return {
       id: screen.id,
       name: screen.name,
+      enabled: screen.enabled,
       slots: await Promise.all(screen.slots?.map((slot) => ScreenMapper.slotToDTO(slot)) ?? []),
     }
     // todo: check this to always have an array of slots
@@ -20,6 +21,7 @@ export default class ScreenMapper {
     return {
       id: screen.id,
       name: screen.name,
+      enabled: screen.enabled,
       slots: [],
     }
   }
@@ -28,6 +30,7 @@ export default class ScreenMapper {
     return {
       id: screen.id,
       name: screen.name,
+      enabled: screen.enabled,
       slots: screen.slots.map((slot) => ScreenMapper.slotUpdateToEntity(screen.id, slot)),
     }
   }

@@ -20,17 +20,18 @@ export default class Server {
     // Configure app
     this.app.use(express.json())
     this.app.use(uploader)
-    this.app.use(ErrorMiddleware)
-
+    
     if (process.env.NODE_ENV === 'production') {
       this.app.use(express.static(join(__dirname, '../', 'public')))
     }
-
+    
     // Bind router
     configureRoutes(this.app, this.manager)
-
+    
     // Bind swagger
     this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+    
+    this.app.use(ErrorMiddleware)
   }
 
   start() {
