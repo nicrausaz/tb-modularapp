@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import { UserService } from '../services'
 import logger from '../libs/logger'
+import { UnauthorizedError } from '../middlewares/HTTPError'
 
 export default class AuthController {
   constructor(private userService: UserService) {}
@@ -13,14 +14,12 @@ export default class AuthController {
     const token = await this.userService.authenticateUser(req.body)
     if (!token) {
       logger.warn('Authentication failed for user %s', req.body.username)
-      res.status(401).send({
-        message: 'Invalid credentials',
-      })
-    } else {
-      res.send({
-        token: token,
-      })
+      throw new UnauthorizedError('Invalid credentials')
     }
+
+    res.send({
+      token: token,
+    })
   }
 
   /**

@@ -3,7 +3,7 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { ModuleProps } from '@yalk/module'
 import { ModuleService } from '../services'
 import type { UploadedFile } from 'express-fileupload'
-import { NotFoundError } from '../middlewares/HTTPError'
+import { BadRequestError, NotFoundError } from '../middlewares/HTTPError'
 
 export default class ModulesController {
   constructor(private moduleService: ModuleService) {}
@@ -20,18 +20,15 @@ export default class ModulesController {
    * GET
    * Get a module by its id
    */
-  module = (req: Request, res: Response, next: NextFunction) => {
+  module = (req: Request, res: Response) => {
     const moduleId = req.params.id
     const module = this.moduleService.getModule(moduleId)
-    try {
-      if (!module) {
-        throw new NotFoundError('Module not found')
-      }
 
-      res.send(module)
-    } catch (err) {
-      next(err)
+    if (!module) {
+      throw new NotFoundError('Module not found')
     }
+
+    res.send(module)
   }
 
   /**
@@ -44,10 +41,7 @@ export default class ModulesController {
     const entry = this.moduleService.getModuleWithEvents(moduleId)
 
     if (!entry) {
-      res.status(404).send({
-        message: 'The specified module does not exist or is not enabled',
-      })
-      return
+      throw new NotFoundError('The specified module does not exist or is not enabled')
     }
 
     const module = entry.module
@@ -85,10 +79,7 @@ export default class ModulesController {
     const entry = this.moduleService.getModuleWithEvents(moduleId)
 
     if (!entry) {
-      res.status(404).send({
-        message: 'The specified module does not exist or is not enabled',
-      })
-      return
+      throw new NotFoundError('The specified module does not exist or is not enabled')
     }
 
     entry.module.emit('data', req.body)
@@ -104,15 +95,13 @@ export default class ModulesController {
     const module = this.moduleService.getModule(req.params.id)
 
     if (!module) {
-      res.status(404).send({
-        message: 'Module not found',
-      })
-    } else {
-      res.send({
-        default: module.defaultConfig,
-        current: module.currentConfig,
-      })
+      throw new NotFoundError('Module not found')
     }
+
+    res.send({
+      default: module.defaultConfig,
+      current: module.currentConfig,
+    })
   }
 
   /**
@@ -123,10 +112,7 @@ export default class ModulesController {
     const entry = this.moduleService.updateModuleConfiguration(req.params.id, req.body)
 
     if (entry === null) {
-      res.status(404).send({
-        message: 'Module not found',
-      })
-      return
+      throw new NotFoundError('Module not found')
     }
 
     res.status(204).send()
@@ -140,10 +126,7 @@ export default class ModulesController {
     const entry = this.moduleService.updateModuleEnabled(req.params.id, req.body.enabled)
 
     if (!entry) {
-      res.status(404).send({
-        message: 'Module not found',
-      })
-      return
+      throw new NotFoundError('Module not found')
     }
 
     res.status(204).send()
@@ -153,17 +136,15 @@ export default class ModulesController {
    * POST
    * Upload a module (from zip) and register it
    */
-  upload = (req: Request, res: Response) => {
+  upload = (req: Request, res: Response, next: NextFunction) => {
     if (!req.files || Object.keys(req.files).length === 0) {
-      return res.status(400).send('No files were uploaded.')
+      throw new BadRequestError('No files were uploaded.')
     }
 
     this.moduleService
       .uploadModule(req.files.file as UploadedFile)
       .then(() => res.status(201).send({ message: 'Module uploaded and registered successfully' }))
-      .catch(() =>
-        res.status(400).send({ message: 'The module could not be registered. Please check its configuration.' }),
-      )
+      .catch(() => next(new BadRequestError('The module could not be uploaded. Please check its configuration.')))
   }
 
   /**

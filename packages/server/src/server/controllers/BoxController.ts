@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import { BoxService } from '../services'
 import { join } from 'path'
+import { NotFoundError } from '../middlewares/HTTPError'
 
 export default class BoxController {
   constructor(private boxService: BoxService) {}
@@ -20,9 +21,7 @@ export default class BoxController {
     if (file) {
       res.sendFile(file)
     } else {
-      res.status(404).send({
-        message: 'File not found',
-      })
+      throw new NotFoundError('The specified file does not exist')
     }
   }
 }

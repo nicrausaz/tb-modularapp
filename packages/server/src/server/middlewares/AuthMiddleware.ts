@@ -24,8 +24,8 @@ const JwtAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
     })
 }
 
-const ApiKeyAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  // TODO: Implement API Key authentication
-}
+// const ApiKeyAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
+//   // TODO: Implement API Key authentication
+// }
 
-export { JwtAuthMiddleware, ApiKeyAuthMiddleware }
+export { JwtAuthMiddleware }

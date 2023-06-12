@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import { ScreenService } from '../services'
+import { NotFoundError } from '../middlewares/HTTPError'
 
 export default class ScreenController {
   constructor(private screenService: ScreenService) {}
@@ -21,12 +22,15 @@ export default class ScreenController {
     const screen = await this.screenService.getScreen(Number(id))
 
     if (!screen || !screen.enabled) {
-      res.status(404).send('Screen not found')
-      return
+      throw new NotFoundError('Screen not found')
     }
     res.send(screen)
   }
 
+  /**
+   * PUT
+   * Create or update a screen
+   */
   createOrUpdate = async (req: Request, res: Response) => {
     const screen = req.body
     await this.screenService.createOrUpdateScreen(screen)
@@ -37,9 +41,5 @@ export default class ScreenController {
     const id = req.params.id
     await this.screenService.deleteScreen(Number(id))
     res.status(204).send()
-  }
-
-  screenStatusUpdate = async (req: Request, res: Response) => {
-    // TODO: toggle screen enabled/disabled
   }
 }
