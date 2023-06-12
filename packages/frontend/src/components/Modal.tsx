@@ -7,9 +7,10 @@ type ModalProps = {
   children: React.ReactNode
   title?: string
   confirmEnabled?: boolean
+  confirmColor?: string
 }
 
-export default function Modal({ isOpen, onClose, onConfirm, title, children, confirmEnabled = true }: ModalProps) {
+export default function Modal({ isOpen, onClose, onConfirm, title, children, confirmEnabled = true, confirmColor = 'btn-primary' }: ModalProps) {
   const modalRef = useRef<HTMLDialogElement>(null)
 
   useEffect(() => {
@@ -22,10 +23,10 @@ export default function Modal({ isOpen, onClose, onConfirm, title, children, con
     }
   }, [isOpen])
 
-  const confirmClasses = `btn ${confirmEnabled ? 'btn-primary' : 'btn-disabled'}`
+  const confirmClasses = `btn ${confirmEnabled ? confirmColor : 'btn-disabled'}`
 
   return (
-    <dialog ref={modalRef} className="modal modal-bottom sm:modal-middle">
+    <dialog ref={modalRef} className="modal modal-bottom sm:modal-middle shadow-lg">
       <form method="dialog" className="modal-box">
         <h3 className="font-bold text-lg">{title}</h3>
         {children}

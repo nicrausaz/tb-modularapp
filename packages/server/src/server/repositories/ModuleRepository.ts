@@ -60,6 +60,10 @@ export default class ModuleRepository {
     return this.manager.registerModule(id)
   }
 
+  unregisterModule(id: string) {
+    return this.manager.unregisterModule(id)
+  }
+
   async uploadModule(file: UploadedFile) {
     const copyFiles = ['config.json', 'index.js', 'app.js'] // TODO: Make this configurable
     const moduleId = randomUUID()

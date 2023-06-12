@@ -1,8 +1,9 @@
 import fetcher from '@/api/fetcher'
 import { UploadIcon } from '@/assets/icons'
-import Modal from '@/components/Modal'
+import LoadingTopBar from '@/components/LoadingTopBar'
 import SearchBar from '@/components/SearchBar'
 import UploadModal from '@/components/UploadModal'
+import ConfirmModuleDeleteModal from '@/components/module/ConfirmModuleDeleteModal'
 import ModuleCard from '@/components/module/ModuleCard'
 import { useToast } from '@/contexts/ToastContext'
 import { useFetchAuth } from '@/hooks/useFetch'
@@ -16,6 +17,7 @@ export default function Modules() {
   const navigate = useNavigate()
 
   const [confirmDelete, setConfirmDelete] = useState<boolean>(false)
+  const [moduleToDelete, setModuleToDelete] = useState<Module | null>(null)
   const [uploadModalOpen, setUploadModalOpen] = useState<boolean>(false)
 
   const [searchQuery, setSearchQuery] = useState<string>('')
@@ -52,7 +54,7 @@ export default function Modules() {
   }
 
   if (loading) {
-    return <div>Loading...</div>
+    return <LoadingTopBar />
   }
 
   if (error) {
@@ -70,44 +72,48 @@ export default function Modules() {
   }
 
   const handleAction = async (type: string, id: string) => {
+    let mod
     switch (type) {
       case 'enable':
-        await fetcher(`/api/modules/${id}/status`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            enabled: true,
-          }),
-        })
-        changeModuleStatus(id, true)
+        handleStatusChange(id, true)
         break
 
       case 'disable':
-        await fetcher(`/api/modules/${id}/status`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            enabled: false,
-          }),
-        })
-        changeModuleStatus(id, false)
+        handleStatusChange(id, false)
         break
 
       case 'delete':
+        mod = modules.find((module) => module.id === id)
+        if (!mod) return
+
+        setModuleToDelete(mod)
         setConfirmDelete(true)
-        // await fetcher(`/api/modules/${id}`, {
-        //   method: 'DELETE',
-        // })
         break
 
       case 'edit':
         navigate(`/modules/${id}`)
         break
     }
+  }
+
+  const handleStatusChange = async (id: string, enabled: boolean) => {
+    await fetcher(`/api/modules/${id}/status`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        enabled,
+      }),
+    })
+    changeModuleStatus(id, enabled)
+  }
+
+  const handleDelete = async (id: string) => {
+    setConfirmDelete(false)
+    await fetcher(`/api/modules/${id}`, {
+      method: 'DELETE',
+    })
   }
 
   const handleUpload = async (file: File) => {
@@ -121,8 +127,8 @@ export default function Modules() {
       .then((res) => {
         console.log(res)
         tSuccess('Success', 'Module uploaded successfully', 'modules/TODO')
-        
-        fetcher<Module[]>(`/api/modules`).then(res => {
+
+        fetcher<Module[]>(`/api/modules`).then((res) => {
           setModules(res!)
         })
       })
@@ -169,11 +175,14 @@ export default function Modules() {
         ))}
       </div>
 
-      <Modal isOpen={confirmDelete} title="Confirm deletion" onClose={() => setConfirmDelete(false)}>
-        <div className="modal-body">
-          <p>Are you sure you want to delete this module ?</p>
-        </div>
-      </Modal>
+      {moduleToDelete && (
+        <ConfirmModuleDeleteModal
+          isOpen={confirmDelete}
+          onClose={() => setUploadModalOpen(false)}
+          onConfirm={handleDelete}
+          module={moduleToDelete}
+        />
+      )}
 
       <UploadModal
         open={uploadModalOpen}

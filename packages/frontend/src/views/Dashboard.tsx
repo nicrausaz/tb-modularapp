@@ -4,6 +4,7 @@ import { useFetchAuth } from '@/hooks/useFetch'
 import { Screen } from '@/models/Screen'
 import ScreenToolbar from '@/components/screens/ScreenToolbar'
 import fetcher from '@/api/fetcher'
+import LoadingTopBar from '@/components/LoadingTopBar'
 
 export default function Dashboard() {
   const { data, error, loading } = useFetchAuth<Screen[]>('/api/screens')
@@ -43,7 +44,7 @@ export default function Dashboard() {
   }
 
   if (loading) {
-    return <div>Loading...</div>
+    return <LoadingTopBar />
   }
 
   if (error) {

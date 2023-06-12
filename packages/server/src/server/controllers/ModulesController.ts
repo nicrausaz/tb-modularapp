@@ -164,4 +164,13 @@ export default class ModulesController {
         res.status(400).send({ message: 'The module could not be registered. Please check its configuration.' }),
       )
   }
+
+  /**
+   * DELETE
+   * Delete a module
+   */
+  delete = (req: Request, res: Response) => {
+    this.moduleService.unregisterModule(req.params.id)
+    res.status(204).send()
+  }
 }

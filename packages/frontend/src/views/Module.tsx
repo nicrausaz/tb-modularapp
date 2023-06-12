@@ -1,4 +1,5 @@
 import fetcher from '@/api/fetcher'
+import LoadingTopBar from '@/components/LoadingTopBar'
 import ConfigurationEditor from '@/components/module/ConfigurationEditor'
 import ModuleRender from '@/components/module/ModuleRender'
 import { useToast } from '@/contexts/ToastContext'
@@ -20,7 +21,7 @@ export default function Module() {
   }, [data])
 
   if (loading) {
-    return <div>Loading...</div>
+    return <LoadingTopBar />
   }
 
   if (error) {

@@ -48,7 +48,6 @@ export default class ModuleDatabaseManager {
   }
 
   async registerModule(moduleId: string) {
-    console.log('Registering module ' + moduleId)
     if (!(await this.manager.loadModule(process.env.MODULES_DIR!, moduleId))) {
       console.log("Couldn't register module, because the load failed. It means the module is not correctly structured.")
       return false

@@ -66,6 +66,10 @@ export default class ModuleService {
     return this.moduleRepository.uploadModule(file)
   }
 
+  unregisterModule = (id: string) => {
+    return this.moduleRepository.unregisterModule(id)
+  }
+
   private getModuleEntry = (id: string) => {
     try {
       return this.moduleRepository.getModuleById(id)
