@@ -4,15 +4,15 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
 export default function Login() {
-  const { login, token, getAuthenticatedUser } = useAuth()
+  const { login, token } = useAuth()
   const navigate = useNavigate()
   const { t } = useTranslation()
 
   useEffect(() => {
     if (token) {
-      navigate('/dashboard')
+      navigate('/')
     }
-  }, [])
+  }, [token])
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -33,9 +33,7 @@ export default function Login() {
     }
 
     login(username, password)
-      .then(() => {
-        getAuthenticatedUser().then(() => navigate('/dashboard'))
-      })
+      .then(() => navigate('/'))
       .catch((err) => {
         console.log('TODO: display error', err)
       })
@@ -72,7 +70,7 @@ export default function Login() {
               />
               <label className="label">
                 <a href="#" className="label-text-alt link link-hover">
-                {t('login.form.forgot')}
+                  {t('login.form.forgot')}
                 </a>
               </label>
             </div>

@@ -11,6 +11,7 @@ import AuthenticatedRoute from './AuthenticatedRoute'
 import Home from '@/views/Home'
 import Visualize from '@/views/Visualize'
 import Profile from '@/views/Profile'
+import NotFound from '@/views/NotFound'
 
 const routes: RouteObject[] = [
   {
@@ -60,7 +61,7 @@ const routes: RouteObject[] = [
   },
   {
     path: '/404',
-    element: <Error />,
+    element: <NotFound />,
   },
   {
     path: '*',

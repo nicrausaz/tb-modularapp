@@ -1,6 +1,8 @@
 export default async function fetcher<T>(url: string, options?: RequestInit, auth = true) {
   let opts = { ...options }
 
+  console.log(localStorage.getItem('auth_token'))
+
   if (auth) {
     opts = {
       ...opts,

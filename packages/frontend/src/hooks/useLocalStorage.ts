@@ -9,6 +9,7 @@ export const useLocalStorage = (key: string, fallback: string) => {
 
   const remove = () => {
     localStorage.removeItem(key)
+    setValue(fallback)
   }
 
   return [value, setValue, remove] as const

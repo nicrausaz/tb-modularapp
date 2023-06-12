@@ -1,6 +1,4 @@
 import { useEffect, useState } from 'react'
-import { useFetchAuth } from '@/hooks/useFetch'
-import { getAuthenticatedUser } from '../api/api'
 import { useAuth } from '@/contexts/AuthContext'
 import { Link } from 'react-router-dom'
 
@@ -9,8 +7,8 @@ export default function Home() {
   const [username, setUsername] = useState<string>('')
 
   useEffect(() => {
-    setUsername(authenticatedUser.username)
-  }, [])
+    setUsername(authenticatedUser?.username)
+  }, [authenticatedUser])
 
   return (
     <div className="flex flex-col h-full pb-20">

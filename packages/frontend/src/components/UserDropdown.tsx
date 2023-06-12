@@ -2,7 +2,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import { Link, useNavigate } from 'react-router-dom'
 
 export default function UserDropdown() {
-  const { logout } = useAuth()
+  const { logout, authenticatedUser } = useAuth()
   const navigate = useNavigate()
 
   const handleLogout = () => {
@@ -19,7 +19,7 @@ export default function UserDropdown() {
       <ul tabIndex={0} className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
         <li>
           <Link to={'/profile'} className="justify-between">
-            Profile
+            Profile <span className="badge">{authenticatedUser?.username}</span>
           </Link>
         </li>
         <li>

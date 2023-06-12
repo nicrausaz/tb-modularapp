@@ -15,13 +15,13 @@ const AuthContext = createContext<AuthContextType>({} as AuthContextType)
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [token, setToken, remove] = useLocalStorage('auth_token', '')
-  const [authenticatedUser, setAuthenticatedUser] = useState(null)
+  const [authenticatedUser, setAuthenticatedUser] = useState<User | null>(null)
 
   const login = async (username: string, password: string) => {
     return new Promise<void>((resolve, reject) => {
       Api.authenticate(username, password)
-        .then((token) => {
-          setToken(token)
+        .then((t) => {
+          setToken(t)
           resolve()
         })
         .catch((err) => {
@@ -31,13 +31,26 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   const logout = async () => {
-    remove()
+    return new Promise<void>((resolve) => {
+      remove()
+      setAuthenticatedUser(null)
+      resolve()
+    })
   }
 
   const getAuthenticatedUser = async () => {
-    await Api.getAuthenticatedUser(token).then((user) => {
-      setAuthenticatedUser(user)
+    const response = await fetch('/api/auth/me', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
+
+    const user = await response.json()
+
+    if (!user) {
+      throw new Error('Not authenticated')
+    }
+    setAuthenticatedUser(user)
   }
 
   return (

@@ -11,5 +11,12 @@
       "forgot": "Forgot your password ?",
       "submit": "Log in"
     }
+  },
+  "errors": {
+    "not_found": {
+      "title": "Page not found",
+      "subtitle": "The page you are looking for does not exist.",
+      "button": "Go home"
+    }
   }
 }

@@ -1,17 +1,17 @@
 import { useAuth } from '@/contexts/AuthContext'
 import { useEffect } from 'react'
-import { Navigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 export default function AuthenticatedRoute({ children }: { children: JSX.Element }) {
-  const { authenticatedUser, getAuthenticatedUser, logout } = useAuth()
+  const { getAuthenticatedUser, logout } = useAuth()
+  const navigate = useNavigate()
 
   useEffect(() => {
-    getAuthenticatedUser()
-      .catch(() => logout())
+    getAuthenticatedUser().catch(() => {
+      logout()
+      navigate('/login')
+    })
   }, [])
 
-  if (!authenticatedUser) {
-    return <Navigate to="/login" />
-  }
   return children
 }

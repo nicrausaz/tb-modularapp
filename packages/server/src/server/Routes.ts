@@ -122,13 +122,13 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
   /**
    * Screens routes
    */
-  app.get('/api/screens', screensController.index)
+  app.get('/api/screens', JwtAuthMiddleware, screensController.index)
 
   app.get('/api/screens/:id', screensController.screen)
 
-  app.put('/api/screens/:id', screensController.createOrUpdate)
+  app.put('/api/screens/:id', JwtAuthMiddleware, screensController.createOrUpdate)
 
-  app.delete('/api/screens/:id', screensController.delete)
+  app.delete('/api/screens/:id', JwtAuthMiddleware, screensController.delete)
 
   /**
    * Box routes
