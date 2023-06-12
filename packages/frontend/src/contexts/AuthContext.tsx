@@ -47,9 +47,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const user = await response.json()
 
-    if (!user) {
+    if (!response.ok || !user) {
       throw new Error('Not authenticated')
     }
+
     setAuthenticatedUser(user)
   }
 

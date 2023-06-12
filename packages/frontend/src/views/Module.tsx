@@ -25,7 +25,7 @@ export default function Module() {
   }
 
   if (error) {
-    return <div>Error: {error.message}</div>
+    throw error
   }
 
   if (!module) {

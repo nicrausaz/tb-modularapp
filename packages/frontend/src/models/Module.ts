@@ -1,11 +1,13 @@
-import { Configuration } from "./Configuration"
+import { Configuration } from './Configuration'
 
 export type Module = {
-  id: string
-  name: string
-  description: string
-  author: string
-  version: string
+  readonly id: string
+  readonly name: string
+  // nickname?: string
+  readonly description: string
+  readonly author: string
+  readonly version: string
   enabled: boolean
   currentConfig: Configuration
+  // readonly importedAt: Date
 }

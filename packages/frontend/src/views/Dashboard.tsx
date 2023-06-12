@@ -5,6 +5,8 @@ import { Screen } from '@/models/Screen'
 import ScreenToolbar from '@/components/screens/ScreenToolbar'
 import fetcher from '@/api/fetcher'
 import LoadingTopBar from '@/components/LoadingTopBar'
+import ErrorPage from './Error'
+import { Navigate } from 'react-router-dom'
 
 export default function Dashboard() {
   const { data, error, loading } = useFetchAuth<Screen[]>('/api/screens')
@@ -30,6 +32,7 @@ export default function Dashboard() {
       body: JSON.stringify({
         id: newId,
         name,
+        enabled: true,
         slots: [],
       }),
     })
@@ -39,6 +42,7 @@ export default function Dashboard() {
     setScreen({
       id: data!.length + 1,
       name,
+      enabled: true,
       slots: [],
     })
   }
@@ -48,7 +52,7 @@ export default function Dashboard() {
   }
 
   if (error) {
-    return <div>Error: {error.message}</div>
+    throw error
   }
 
   if (!data) {

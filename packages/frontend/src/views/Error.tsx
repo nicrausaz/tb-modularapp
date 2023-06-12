@@ -1,16 +1,41 @@
-import { useRouteError } from 'react-router-dom'
+import { useRouteError, Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 export default function ErrorPage() {
   const error = useRouteError()
-  console.error(error)
+  const { t } = useTranslation()
 
   return (
-    <div id="error-page">
-      <h1>Oops!</h1>
-      <p>Sorry, an unexpected error has occurred.</p>
-      <p>
-        {/* <i>{error.statusText || error.message}</i> */}
-      </p>
+    <div
+      className="
+                flex
+                items-center
+                justify-center
+                w-screen
+                h-screen
+                bg-gradient-to-r
+                from-primary
+                to-accent
+              "
+    >
+      <div className="px-40 py-20 bg-white rounded-md shadow-xl">
+        <div className="flex flex-col items-center">
+          <h1 className="font-bold text-primary text-9xl">{error ? 403 : 404}</h1>
+
+          <h6 className="mb-2 text-2xl font-bold text-center text-neutral md:text-3xl">
+            <span className="text-error">Oops !</span>
+          </h6>
+          {error ? (
+            <p className="mb-8 text-center text-neutral md:text-lg">{error.message}</p>
+          ) : (
+            <p className="mb-8 text-center text-neutral md:text-lg">{t('errors.not_found.subtitle')}</p>
+          )}
+
+          <Link className="btn btn-primary" to={'/'}>
+            {t('errors.not_found.button')}
+          </Link>
+        </div>
+      </div>
     </div>
   )
 }

@@ -23,7 +23,9 @@ export default function Home() {
                 <div className="stat-desc">Of 6 imported</div>
               </div>
             </div>
-            <Link className="btn btn-primary" to={'/dashboard'}>Get Started</Link>
+            <Link className="btn btn-primary" to={'/dashboard'}>
+              Get Started
+            </Link>
           </div>
         </div>
       </div>

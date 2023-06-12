@@ -58,7 +58,7 @@ export default function Modules() {
   }
 
   if (error) {
-    return <div>Error: {error.message}</div>
+    throw error
   }
 
   const searchFilters = ['All', 'Enabled', 'Disabled']
