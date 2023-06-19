@@ -1,0 +1,13 @@
+{
+  "name": "@yalk/hash-integrity",
+  "version": "1.0.0",
+  "description": "Hash integrity for files",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "scripts": {
+    "build": "tsc --build"
+  },
+  "author": "nicrausaz",
+  "license": "MIT",
+  "keywords": []
+}

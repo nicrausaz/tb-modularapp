@@ -31,6 +31,9 @@
     },
     {
       "path": "./packages/rfid-module"
+    },
+    {
+      "path": "./packages/hash-integrity"
     }
   ]
 }
