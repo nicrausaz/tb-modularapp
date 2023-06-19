@@ -21,7 +21,7 @@ export default function ScreenEditorCell({ slot }: ScreenEditorCellProps) {
   ]
 
   return (
-    <div className="bg-base-300 w-full h-full relative">
+    <div className="bg-base-300 w-full h-full relative rounded">
       <ModuleRender id={slot.module.id} />
 
       <div className="absolute rounded-full top-0 right-0 translate-x-2 -translate-y-2 cursor-pointer">

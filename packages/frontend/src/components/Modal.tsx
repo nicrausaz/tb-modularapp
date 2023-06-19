@@ -10,7 +10,18 @@ type ModalProps = {
   confirmColor?: string
 }
 
-export default function Modal({ isOpen, onClose, onConfirm, title, children, confirmEnabled = true, confirmColor = 'btn-primary' }: ModalProps) {
+/**
+ * A generic modal component
+ */
+export default function Modal({
+  isOpen,
+  onClose,
+  onConfirm,
+  title,
+  children,
+  confirmEnabled = true,
+  confirmColor = 'btn-primary',
+}: ModalProps) {
   const modalRef = useRef<HTMLDialogElement>(null)
 
   useEffect(() => {
@@ -27,12 +38,16 @@ export default function Modal({ isOpen, onClose, onConfirm, title, children, con
 
   return (
     <dialog ref={modalRef} className="modal modal-bottom sm:modal-middle shadow-lg">
-      <form method="dialog" className="modal-box">
+      <form method="dialog" className="modal-box overflow-scroll">
         <h3 className="font-bold text-lg">{title}</h3>
         {children}
         <div className="modal-action">
-          <button className="btn" onClick={onClose}>Close</button>
-          <button className={confirmClasses} onClick={onConfirm}>Confirm</button>
+          <button className="btn" onClick={onClose}>
+            Close
+          </button>
+          <button className={confirmClasses} onClick={onConfirm}>
+            Confirm
+          </button>
         </div>
       </form>
     </dialog>

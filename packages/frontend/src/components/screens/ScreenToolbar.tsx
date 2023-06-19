@@ -9,6 +9,7 @@ type ScreenToolbarProps = {
   onScreenSelection: (screen: Screen) => void
   onScreenAdd: (screenName: string) => void
   onSave: (screen: Screen) => void
+  onSlotAdd: () => void
 }
 
 export default function ScreenToolbar({
@@ -17,6 +18,7 @@ export default function ScreenToolbar({
   onScreenSelection,
   onScreenAdd,
   onSave,
+  onSlotAdd,
 }: ScreenToolbarProps) {
   const [screenName, setScreenName] = useState('')
 
@@ -65,7 +67,7 @@ export default function ScreenToolbar({
             </li>
           </ul>
         </div>
-        <button className="btn btn-outline mr-2" onClick={handleSaveScreen}>
+        <button className="btn btn-outline mr-2" onClick={onSlotAdd}>
             Add
           <AddSquareIcon  className="w-4 h-4" />
         </button>

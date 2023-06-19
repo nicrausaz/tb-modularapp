@@ -69,7 +69,7 @@ export default function ScreenEditor({ slots, onChange }: ScreenEditorProps) {
   return (
     <GridLayout {...editorProps} layout={layout} onLayoutChange={onLayoutChange} className="border relative">
       {slots.map((slot) => (
-        <div className="border" key={slot.id} onResize={onResize}>
+        <div key={slot.id} onResize={onResize}>
           <ScreenEditorCell slot={slot} />
         </div>
       ))}

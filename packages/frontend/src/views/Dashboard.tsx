@@ -5,11 +5,13 @@ import ScreenToolbar from '@/components/screens/ScreenToolbar'
 import fetcher from '@/api/fetcher'
 import LoadingTopBar from '@/components/LoadingTopBar'
 import ScreenEditor from '@/components/screens/ScreenEditor'
+import ChoseModulesModal from '@/components/module/ChoseModulesModal'
 
 export default function Dashboard() {
   const { data, error, loading } = useFetchAuth<Screen[]>('/api/screens')
 
   const [screen, setScreen] = useState<Screen | null>(null)
+  const [modulesModalOpen, setModulesModalOpen] = useState<boolean>(false)
 
   useEffect(() => {
     if (data) {
@@ -50,7 +52,13 @@ export default function Dashboard() {
   }
 
   const handleLayoutChange = (slots: Screen[]) => {
-    console.log("HANDLE", slots[0])
+    console.log('HANDLE', slots[0])
+  }
+
+  const addModulesToScreen = (modules: string[]) => {
+    setModulesModalOpen(false)
+    console.log('ADD', modules)
+    modules.forEach((m) => screen?.slots.push(m))
   }
 
   if (loading) {
@@ -68,16 +76,18 @@ export default function Dashboard() {
   return (
     <div className="">
       <h1 className="text-2xl font-bold">Dashboard</h1>
-      <div className="">
+      <div>
         <ScreenToolbar
           currentScreen={screen}
           screens={data}
           onScreenSelection={setScreen}
           onScreenAdd={createScreen}
           onSave={saveScreen}
+          onSlotAdd={() => setModulesModalOpen(true)}
         />
         <ScreenEditor slots={screen.slots} onChange={handleLayoutChange} />
       </div>
+      <ChoseModulesModal isOpen={modulesModalOpen} onClose={() => setModulesModalOpen(false)} onConfirm={addModulesToScreen} />
     </div>
   )
 }

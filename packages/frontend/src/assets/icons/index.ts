@@ -12,6 +12,7 @@ import TrashIcon from './TrashIcon'
 import PlayIcon from './PlayIcon'
 import StopIcon from './StopIcon'
 import AddSquareIcon from './AddSquareIcon'
+import SearchIcon from './SearchIcon'
 
 export {
   BoxIcon,
@@ -28,4 +29,5 @@ export {
   PlayIcon,
   StopIcon,
   AddSquareIcon,
+  SearchIcon,
 }
