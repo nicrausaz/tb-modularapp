@@ -242,7 +242,6 @@ export default class ScreenRepository {
           if (err) {
             reject(err)
           }
-          console.log(slot)
           resolve(slot)
         },
       )

@@ -38,9 +38,7 @@ export default function Toast({ toast, onAction }: ToastProps) {
 
   return (
     <div className={alertClass}>
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-info shrink-0 w-6 h-6">
-        {icons[toast.type]}
-      </svg>
+      {icons[toast.type]}
       <div>
         <h3 className="font-bold">{toast.title}</h3>
         <div className="text-xs">{toast.message}</div>
