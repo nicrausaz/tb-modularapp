@@ -4,16 +4,16 @@ import { Link } from 'react-router-dom'
 type ModuleRowProps = {
   module: Module
   selected?: boolean
-  onSelect(moduleId: string, selected: boolean): void
+  onSelect(module: Module, selected: boolean): void
 }
 
 export default function ModuleRow({ module, selected = false, onSelect }: ModuleRowProps) {
   const handleSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    onSelect(module.id, event.target.checked)
+    onSelect(module, event.target.checked)
   }
 
   return (
-    <tr>
+    <tr title={module.description}>
       <th>
         <label>
           <input type="checkbox" className="checkbox" defaultChecked={selected} onChange={handleSelect} />

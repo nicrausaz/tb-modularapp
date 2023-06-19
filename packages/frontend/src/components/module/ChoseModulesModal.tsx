@@ -8,13 +8,13 @@ import SearchBar from '../SearchBar'
 type ConfirmModuleDeleteModalProps = {
   isOpen: boolean
   onClose: () => void
-  onConfirm(modules: string[]): void
+  onConfirm(modules: Module[]): void
 }
 
 export default function ChoseModulesModal({ isOpen, onClose, onConfirm }: ConfirmModuleDeleteModalProps) {
   const { data, error, loading } = useFetchAuth<Module[]>('/api/modules')
   const [modules, setModules] = useState<Module[]>([])
-  const [selectedModules, setSelectedModules] = useState<string[]>([])
+  const [selectedModules, setSelectedModules] = useState<Module[]>([])
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [searchFilter, setSearchFilter] = useState<string>('All')
 
@@ -54,16 +54,16 @@ export default function ChoseModulesModal({ isOpen, onClose, onConfirm }: Confir
     throw error
   }
 
-  const handleSelect = (moduleId: string, selected: boolean) => {
+  const handleSelect = (module: Module, selected: boolean) => {
     if (!selected) {
-      setSelectedModules(selectedModules.filter((id) => id !== moduleId))
+      setSelectedModules(selectedModules.filter((m) => m.id !== module.id))
     } else {
-      setSelectedModules([...selectedModules, moduleId])
+      setSelectedModules([...selectedModules, module])
     }
   }
 
-  const isSelected = (moduleId: string) => {
-    return selectedModules.includes(moduleId)
+  const isSelected = (module: Module) => {
+    return selectedModules.find((m) => m.id === module.id) !== undefined
   }
 
   const isAllChecked = modules.length === selectedModules.length
@@ -89,8 +89,8 @@ export default function ChoseModulesModal({ isOpen, onClose, onConfirm }: Confir
             onFilterChange={(filter) => setSearchFilter(filter)}
           />
         </div>
-        <div className="">
-          <table className="table">
+        <div className="overflow-x-auto">
+          <table className="table table-pin-rows table-pin-cols">
             <thead>
               <tr>
                 <th>
@@ -103,9 +103,9 @@ export default function ChoseModulesModal({ isOpen, onClose, onConfirm }: Confir
                 <th>Status</th>
               </tr>
             </thead>
-            <tbody className="overflow-scroll">
+            <tbody>
               {modules.map((module, i) => (
-                <ModuleRow key={i} module={module} selected={isSelected(module.id)} onSelect={handleSelect} />
+                <ModuleRow key={i} module={module} selected={isSelected(module)} onSelect={handleSelect} />
               ))}
             </tbody>
           </table>

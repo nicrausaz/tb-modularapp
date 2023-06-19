@@ -38,7 +38,7 @@ export default function Modal({
 
   return (
     <dialog ref={modalRef} className="modal modal-bottom sm:modal-middle shadow-lg">
-      <form method="dialog" className="modal-box overflow-scroll">
+      <form method="dialog" className="modal-box">
         <h3 className="font-bold text-lg">{title}</h3>
         {children}
         <div className="modal-action">

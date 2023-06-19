@@ -40,9 +40,18 @@ export default function ModuleRender({ id }: { id: string }) {
     }
   }, [])
 
+  if (loading) {
+    // todo: center
+    return (
+      <div className="w-full h-full">
+        <span className="loading loading-ring loading-lg"></span>
+      </div>
+    )
+  }
+
   return (
     <div className="w-full h-full ">
-      {loading ? <div>Loading...</div> : <div dangerouslySetInnerHTML={{ __html: render }} />}
+      <div dangerouslySetInnerHTML={{ __html: render }} />
     </div>
   )
 }

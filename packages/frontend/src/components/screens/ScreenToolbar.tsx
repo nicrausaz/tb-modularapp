@@ -1,6 +1,6 @@
 import { AddSquareIcon, ArrowDownIcon, NewScreenIcon, OpenNewTabIcon, SaveIcon, TrashIcon } from '@/assets/icons'
 import { Screen } from '@/models/Screen'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 type ScreenToolbarProps = {
@@ -24,7 +24,13 @@ export default function ScreenToolbar({
   onNameChange,
   onDelete,
 }: ScreenToolbarProps) {
-  const [screenName] = useState(currentScreen?.name)
+  const [screenName, setScreenName] = useState('')
+
+  useEffect(() => {
+    if (currentScreen) {
+      setScreenName(currentScreen.name)
+    }
+  }, [currentScreen])
 
   const otherScreens = screens.filter((screen) => screen !== currentScreen)
 
@@ -52,7 +58,7 @@ export default function ScreenToolbar({
           className="w-full px-4 py-2 rounded-lg input-md"
           placeholder="Screen name..."
           onChange={handleNameChange}
-          defaultValue={currentScreen?.name}
+          defaultValue={screenName}
         />
       </div>
       <div>
@@ -64,7 +70,9 @@ export default function ScreenToolbar({
           <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box">
             {otherScreens.map((screen) => (
               <li key={screen.id}>
-                <a onClick={() => onScreenSelection(screen)} className='overflow-hidden'>{screen.name}</a>
+                <a onClick={() => onScreenSelection(screen)} className="overflow-hidden">
+                  {screen.name}
+                </a>
               </li>
             ))}
             <li className="border-t mt-2 pt-2">
