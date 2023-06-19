@@ -57,6 +57,12 @@ export default function ScreenEditor({ slots, onChange }: ScreenEditorProps) {
     console.log('RESIZE', data)
   }
 
+  const removeSlot = (slot: ScreenSlot) => {
+    const newLayout = layout.filter((l) => l.i !== slot.id.toString())
+    setLayout(newLayout)
+    onChange(newLayout.map(layoutToScreenSlot))
+  }
+
   const editorProps: GridLayout.ReactGridLayoutProps = {
     isDraggable: true,
     isResizable: true,
@@ -70,7 +76,7 @@ export default function ScreenEditor({ slots, onChange }: ScreenEditorProps) {
     <GridLayout {...editorProps} layout={layout} onLayoutChange={onLayoutChange} className="border relative">
       {slots.map((slot) => (
         <div key={slot.id} onResize={onResize}>
-          <ScreenEditorCell slot={slot} />
+          <ScreenEditorCell slot={slot} onDelete={removeSlot} />
         </div>
       ))}
     </GridLayout>

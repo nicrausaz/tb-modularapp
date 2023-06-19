@@ -1,20 +1,20 @@
-import { Module } from '@/models/Module'
+import { Screen } from '@/models/Screen'
 import ConfirmModal from '../ConfirmModal'
 
 type ConfirmModuleDeleteModalProps = {
   isOpen: boolean
-  module: Module
+  screen: Screen
   onClose: () => void
-  onConfirm(moduleId: string): void
+  onConfirm(screenId: number): void
 }
 
-export default function ConfirmModuleDeleteModal({
+export default function ConfirmScreenDeleteModal({
   isOpen,
   onClose,
   onConfirm,
-  module,
+  screen,
 }: ConfirmModuleDeleteModalProps) {
-  if (!module) {
+  if (!screen) {
     return null
   }
 
@@ -22,12 +22,12 @@ export default function ConfirmModuleDeleteModal({
     <ConfirmModal
       isOpen={isOpen}
       title="Confirm deletion"
-      onConfirm={() => onConfirm(module.id)}
+      onConfirm={() => onConfirm(screen.id)}
       onClose={onClose}
       confirmColor="btn-error"
     >
       <div className="modal-body">
-        <p>Are you sure you want to delete the module {module.name} ?</p>
+        <p>Are you sure you want to delete the screen {screen.name} ?</p>
       </div>
     </ConfirmModal>
   )

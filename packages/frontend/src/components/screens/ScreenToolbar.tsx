@@ -10,6 +10,8 @@ type ScreenToolbarProps = {
   onScreenAdd: (screenName: string) => void
   onSave: (screen: Screen) => void
   onSlotAdd: () => void
+  onNameChange: (name: string) => void
+  onDelete: (screen: Screen) => void
 }
 
 export default function ScreenToolbar({
@@ -19,13 +21,15 @@ export default function ScreenToolbar({
   onScreenAdd,
   onSave,
   onSlotAdd,
+  onNameChange,
+  onDelete,
 }: ScreenToolbarProps) {
-  const [screenName, setScreenName] = useState('')
+  const [screenName] = useState(currentScreen?.name)
 
   const otherScreens = screens.filter((screen) => screen !== currentScreen)
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setScreenName(e.target.value)
+    onNameChange(e.target.value)
   }
 
   const handleAddScreen = () => {
@@ -34,6 +38,10 @@ export default function ScreenToolbar({
 
   const handleSaveScreen = () => {
     onSave(currentScreen)
+  }
+
+  const handleDeleteScreen = () => {
+    onDelete(currentScreen)
   }
 
   return (
@@ -49,14 +57,14 @@ export default function ScreenToolbar({
       </div>
       <div>
         <div className="dropdown dropdown-hover dropdown-end mr-2 z-50">
-          <label tabIndex={0} className="btn m-1">
-            {currentScreen?.name}
+          <label tabIndex={0} className="btn m-1 truncate">
+            {screenName}
             <ArrowDownIcon className="w-4 h-4" />
           </label>
-          <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+          <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box">
             {otherScreens.map((screen) => (
               <li key={screen.id}>
-                <a onClick={() => onScreenSelection(screen)}>{screen.name}</a>
+                <a onClick={() => onScreenSelection(screen)} className='overflow-hidden'>{screen.name}</a>
               </li>
             ))}
             <li className="border-t mt-2 pt-2">
@@ -68,10 +76,10 @@ export default function ScreenToolbar({
           </ul>
         </div>
         <button className="btn btn-outline mr-2" onClick={onSlotAdd}>
-            Add
-          <AddSquareIcon  className="w-4 h-4" />
+          Add
+          <AddSquareIcon className="w-4 h-4" />
         </button>
-        <button className="btn btn-error mr-2">
+        <button className="btn btn-error mr-2" onClick={handleDeleteScreen}>
           Delete
           <TrashIcon className="w-4 h-4" />
         </button>

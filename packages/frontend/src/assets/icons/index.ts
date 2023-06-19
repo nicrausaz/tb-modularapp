@@ -13,6 +13,7 @@ import PlayIcon from './PlayIcon'
 import StopIcon from './StopIcon'
 import AddSquareIcon from './AddSquareIcon'
 import SearchIcon from './SearchIcon'
+import CrossIcon from './CrossIcon'
 
 export {
   BoxIcon,
@@ -30,4 +31,5 @@ export {
   StopIcon,
   AddSquareIcon,
   SearchIcon,
+  CrossIcon,
 }

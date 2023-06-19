@@ -7,7 +7,7 @@ export default class ScreenRepository {
     const db = getDB()
     return new Promise((resolve, reject) => {
       db.all(
-        'SELECT s.id, s.name, s.enabled, ScreenSlots.* FROM Screens AS s INNER JOIN ScreenSlots ON s.id = ScreenSlots.screenId',
+        'SELECT s.id AS screenId, s.name, s.enabled, sl.id, sl.moduleId, sl.width, sl.height, sl.x, sl.y FROM Screens AS s LEFT JOIN ScreenSlots as sl ON s.id = sl.screenId',
         (err, rows) => {
           if (err) {
             reject(err)
@@ -16,11 +16,11 @@ export default class ScreenRepository {
           const screens = {} as { [key: number]: ScreenEntity }
 
           rows.forEach((row: any) => {
-            const screenId = row.id
+            const screenId = row.screenId
             const slot = {
               id: row.id,
               moduleId: row.moduleId,
-              screenId: row.screenId,
+              screenId: screenId,
               width: row.width,
               height: row.height,
               x: row.x,
@@ -29,14 +29,16 @@ export default class ScreenRepository {
 
             if (!screens[screenId]) {
               screens[screenId] = {
-                id: row.id,
+                id: screenId,
                 name: row.name,
                 enabled: row.enabled,
                 slots: [],
               }
             }
 
-            screens[screenId].slots.push(slot)
+            if (slot.id) {
+              screens[screenId].slots.push(slot)
+            }
           })
 
           resolve(Object.values(screens))
