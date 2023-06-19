@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react'
-// import ModuleRender from '@/components/module/ModuleRender'
 import { useFetchAuth } from '@/hooks/useFetch'
 import { Screen } from '@/models/Screen'
 import ScreenToolbar from '@/components/screens/ScreenToolbar'
 import fetcher from '@/api/fetcher'
 import LoadingTopBar from '@/components/LoadingTopBar'
-import ErrorPage from './Error'
-import { Navigate } from 'react-router-dom'
+import ScreenEditor from '@/components/screens/ScreenEditor'
 
 export default function Dashboard() {
   const { data, error, loading } = useFetchAuth<Screen[]>('/api/screens')
@@ -19,11 +17,7 @@ export default function Dashboard() {
     }
   }, [data])
 
-
   const createScreen = async (name: string) => {
-    // TODO: API call
-    console.log('create screen', name)
-
     const newId = data!.length + 1
 
     const newScreen = await fetcher(`/api/screens/${newId}`, {
@@ -47,6 +41,18 @@ export default function Dashboard() {
     })
   }
 
+  const saveScreen = async (screen: Screen) => {
+    await fetcher(`/api/screens/${screen.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(screen),
+    })
+  }
+
+  const handleLayoutChange = (slots: Screen[]) => {
+    console.log("HANDLE", slots[0])
+  }
+
   if (loading) {
     return <LoadingTopBar />
   }
@@ -55,48 +61,22 @@ export default function Dashboard() {
     throw error
   }
 
-  if (!data) {
-    return <div>No data</div>
+  if (!data || !screen) {
+    return null
   }
 
   return (
-    <div className="flex flex-col h-full pb-20">
+    <div className="">
       <h1 className="text-2xl font-bold">Dashboard</h1>
-      <div className="p-4">
+      <div className="">
         <ScreenToolbar
-          currentScreen={screen!}
+          currentScreen={screen}
           screens={data}
           onScreenSelection={setScreen}
           onScreenAdd={createScreen}
+          onSave={saveScreen}
         />
-
-        <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg">
-          {/* {data &&
-            data.map((module) => (
-              <div className="flex items-center justify-center h-48 mb-4 rounded bg-gray-50" key={module.id}>
-                <div className="w-full h-full">
-                  <ModuleRender key={module.id} id={module.id} />
-                </div>
-              </div>
-            ))} */}
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <div className="flex items-center justify-center rounded bg-gray-50 h-28">
-              <p className="text-2xl text-gray-400">+</p>
-            </div>
-            <div className="flex items-center justify-center rounded bg-gray-50 h-28">
-              <p className="text-2xl text-gray-400">+</p>
-            </div>
-            <div className="flex items-center justify-center rounded bg-gray-50 h-28">
-              <p className="text-2xl text-gray-400">+</p>
-            </div>
-            <div className="flex items-center justify-center rounded bg-gray-50 h-28">
-              <p className="text-2xl text-gray-400">+</p>
-            </div>
-          </div>
-          <div className="flex items-center justify-center h-48 mb-4 rounded bg-gray-50">
-            <p className="text-2xl text-gray-400 ">+</p>
-          </div>
-        </div>
+        <ScreenEditor slots={screen.slots} onChange={handleLayoutChange} />
       </div>
     </div>
   )

@@ -11,6 +11,7 @@ import SaveIcon from './SaveIcon'
 import TrashIcon from './TrashIcon'
 import PlayIcon from './PlayIcon'
 import StopIcon from './StopIcon'
+import AddSquareIcon from './AddSquareIcon'
 
 export {
   BoxIcon,
@@ -26,4 +27,5 @@ export {
   TrashIcon,
   PlayIcon,
   StopIcon,
+  AddSquareIcon,
 }

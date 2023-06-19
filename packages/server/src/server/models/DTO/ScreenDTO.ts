@@ -10,6 +10,10 @@ export type ScreenDTO = {
 export type ScreenSlotDTO = {
   readonly id: number
   module: ModuleDTO
+  readonly width: number
+  readonly height: number
+  readonly x: number
+  readonly y: number
 }
 
 export type UpdateScreenDTO = {
@@ -22,4 +26,8 @@ export type UpdateScreenDTO = {
 export type UpdateScreenSlotDTO = {
   readonly id: number
   readonly moduleId: string
+  readonly width: number
+  readonly height: number
+  readonly x: number
+  readonly y: number
 }

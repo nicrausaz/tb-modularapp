@@ -37,15 +37,14 @@ export default class ScreenMapper {
 
   static async slotToDTO(slot: ScreenSlotEntity): Promise<ScreenSlotDTO> {
     return {
-      id: slot.id,
+      ...slot,
       module: await this.getSlotModuleFromId(slot.moduleId),
     }
   }
 
   static slotUpdateToEntity(screenId: number, slot: UpdateScreenSlotDTO): ScreenSlotEntity {
     return {
-      id: slot.id,
-      moduleId: slot.moduleId,
+      ...slot,
       screenId: screenId,
     }
   }

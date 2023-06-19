@@ -6,17 +6,48 @@ export default class ScreenRepository {
   getAll(): Promise<ScreenEntity[]> {
     const db = getDB()
     return new Promise((resolve, reject) => {
-      db.all('SELECT * FROM Screens', (err, rows) => {
-        if (err) {
-          reject(err)
-        }
-        resolve(rows as ScreenEntity[])
-      })
+      db.all(
+        'SELECT s.id, s.name, s.enabled, ScreenSlots.* FROM Screens AS s INNER JOIN ScreenSlots ON s.id = ScreenSlots.screenId',
+        (err, rows) => {
+          if (err) {
+            reject(err)
+          }
+
+          const screens = {} as { [key: number]: ScreenEntity }
+
+          rows.forEach((row: any) => {
+            const screenId = row.id
+            const slot = {
+              id: row.id,
+              moduleId: row.moduleId,
+              screenId: row.screenId,
+              width: row.width,
+              height: row.height,
+              x: row.x,
+              y: row.y,
+            }
+
+            if (!screens[screenId]) {
+              screens[screenId] = {
+                id: row.id,
+                name: row.name,
+                enabled: row.enabled,
+                slots: [],
+              }
+            }
+
+            screens[screenId].slots.push(slot)
+          })
+
+          resolve(Object.values(screens))
+        },
+      )
       db.close()
     })
   }
 
   async getById(id: number): Promise<ScreenEntity> {
+    // TODO: use a single query instead of two (join)
     return {
       ...(await this.getScreen(id)),
       slots: await this.getScreenSlots(id),
@@ -51,6 +82,10 @@ export default class ScreenRepository {
     await this.deleteScreenSlots(id)
   }
 
+  /**
+   * Delete the specified screen
+   * @param id id of the screen to delete
+   */
   async deleteScreen(id: number): Promise<void> {
     const db = getDB()
     return new Promise<void>((resolve, reject) => {
@@ -64,6 +99,10 @@ export default class ScreenRepository {
     })
   }
 
+  /**
+   * Delete all screen slots for the specified screen
+   * @param id id of the screen to delete the slots for
+   */
   async deleteScreenSlots(id: number): Promise<void> {
     const db = getDB()
     return new Promise<void>((resolve, reject) => {
@@ -77,6 +116,11 @@ export default class ScreenRepository {
     })
   }
 
+  /**
+   * Get the screen with the specified id
+   * @param id id of the screen to get
+   * @returns the screen with the specified id
+   */
   private getScreen(id: number): Promise<ScreenEntity> {
     const db = getDB()
     return new Promise((resolve, reject) => {
@@ -90,6 +134,11 @@ export default class ScreenRepository {
     })
   }
 
+  /**
+   * Get the slots of the specified screen
+   * @param screenId id of the screen to get the slots for
+   * @returns the slots of the specified screen
+   */
   private getScreenSlots(screenId: number): Promise<ScreenSlotEntity[]> {
     const db = getDB()
     return new Promise((resolve, reject) => {
@@ -103,32 +152,21 @@ export default class ScreenRepository {
     })
   }
 
+  /**
+   * Insert the specified screen or update it if it already exists
+   * @param screenId id of the screen to insert or update
+   * @param slot slot to insert or update
+   * @returns
+   */
   private insertOrUpdateScreenSlot(screenId: number, slot: ScreenSlotEntity) {
     return new Promise((resolve) => {
       this.screenSlotExists(screenId, slot.id).then((exists) => {
         if (exists) {
           resolve(this.updateScreenSlot(screenId, slot))
         } else {
-          resolve(this.insertScreenSlot(screenId, slot))
+          resolve(this.createScreenSlot(screenId, slot))
         }
       })
-    })
-  }
-
-  private insertScreenSlot(screenId: number, slot: ScreenSlotEntity) {
-    const db = getDB()
-    return new Promise((resolve, reject) => {
-      db.run(
-        'INSERT INTO ScreenSlots (id, moduleId, screenId) VALUES (?, ?, ?)',
-        [slot.id, slot.moduleId, screenId],
-        (err) => {
-          if (err) {
-            reject(err)
-          }
-          resolve(slot)
-        },
-      )
-      db.close()
     })
   }
 
@@ -145,6 +183,34 @@ export default class ScreenRepository {
     })
   }
 
+  /**
+   * Create the specified screen slot
+   * @param screenId the id of the screen to create the slot for
+   * @param slot the slot to create
+   * @returns
+   */
+  private createScreenSlot(screenId: number, slot: ScreenSlotEntity) {
+    const db = getDB()
+    return new Promise((resolve, reject) => {
+      db.run(
+        'INSERT INTO ScreenSlots (id, moduleId, screenId, width, height, x, y) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [slot.id, slot.moduleId, screenId, slot.width, slot.height, slot.x, slot.y],
+        (err) => {
+          if (err) {
+            reject(err)
+          }
+          resolve(slot)
+        },
+      )
+      db.close()
+    })
+  }
+
+  /**
+   * Update the specified screen
+   * @param screen the screen to update
+   * @returns
+   */
   private updateScreen(screen: ScreenEntity) {
     const db = getDB()
     return new Promise((resolve, reject) => {
@@ -158,17 +224,23 @@ export default class ScreenRepository {
     })
   }
 
+  /**
+   * Update the specified screen slot
+   * @param screenId the id of the screen to update the slot for
+   * @param slot the slot to update
+   * @returns
+   */
   private updateScreenSlot(screenId: number, slot: ScreenSlotEntity) {
     const db = getDB()
     return new Promise((resolve, reject) => {
       db.run(
-        'UPDATE ScreenSlots SET moduleId = ? WHERE id = ? AND screenId = ?',
-        [slot.moduleId, slot.id, screenId],
+        'UPDATE ScreenSlots SET moduleId = ?, width = ?, height = ?, x = ?, y = ? WHERE id = ? AND screenId = ?',
+        [slot.moduleId, slot.width, slot.height, slot.x, slot.y, slot.id, screenId],
         (err) => {
           if (err) {
-            console.log(err)
             reject(err)
           }
+          console.log(slot)
           resolve(slot)
         },
       )
@@ -176,6 +248,12 @@ export default class ScreenRepository {
     })
   }
 
+  /**
+   * Check if the specified screen slot exists
+   * @param screenId the id of the screen to check the slot for
+   * @param slotId the id of the slot to check
+   * @returns true if the slot exists, false otherwise
+   */
   private screenSlotExists(screenId: number, slotId: number): Promise<boolean> {
     const db = getDB()
     return new Promise((resolve, reject) => {

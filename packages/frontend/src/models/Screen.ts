@@ -1,9 +1,13 @@
+import { Module } from './Module'
+
 export type ScreenSlot = {
   id: number
-  moduleId: string
+  module: Module
   screenId: number
-
-  // TODO: add fields to handle the position of the module on the screen grid
+  width: number
+  height: number
+  x: number
+  y: number
 }
 
 export type Screen = {

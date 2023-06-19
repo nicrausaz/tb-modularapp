@@ -1,6 +1,9 @@
 {
   "menu": {
-
+    "home": "Home",
+    "dashboard": "Dashboard editor",
+    "modules": "Modules",
+    "settings": "Settings"
   },
   "login": {
     "title": "Log in",

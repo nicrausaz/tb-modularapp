@@ -1,26 +1,28 @@
 import FooterNav from '@/components/FooterNav'
 import Navbar from '@/components/Navbar'
 import ToastContainer from '@/components/ToastContainer'
+import { useTranslation } from 'react-i18next'
 import { Outlet, useLocation } from 'react-router-dom'
 
 function MainLayout() {
   const active = useLocation().pathname
+  const { t } = useTranslation()
 
   const links = [
     {
       to: '/dashboard',
       icon: 'DashboardIcon',
-      label: 'Dashboard edition',
+      label: t('menu.dashboard'),
     },
     {
       to: '/modules',
       icon: 'BoxIcon',
-      label: 'Modules',
+      label: t('menu.modules'),
     },
     {
       to: '/settings',
       icon: 'SettingsIcon',
-      label: 'Settings',
+      label: t('menu.settings'),
     },
   ]
 

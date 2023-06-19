@@ -34,6 +34,10 @@ CREATE TABLE IF NOT EXISTS ScreenSlots (
   id INTEGER NOT NULL,
   screenId INTEGER NOT NULL,
   moduleId VARCHAR(255) NOT NULL,
+  width INTEGER NOT NULL,
+  height INTEGER NOT NULL,
+  x INTEGER NOT NULL,
+  y INTEGER NOT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY (screenId) REFERENCES ScreenConfiguration(id)
   FOREIGN KEY (moduleId) REFERENCES Module(id)

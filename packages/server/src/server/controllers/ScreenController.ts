@@ -1,4 +1,4 @@
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import { ScreenService } from '../services'
 import { NotFoundError } from '../middlewares/HTTPError'
 
@@ -17,12 +17,13 @@ export default class ScreenController {
    * GET
    * Get a screen by its id
    */
-  screen = async (req: Request, res: Response) => {
+  screen = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     const screen = await this.screenService.getScreen(Number(id))
 
     if (!screen || !screen.enabled) {
-      throw new NotFoundError('Screen not found')
+      next(new NotFoundError('Screen not found'))
+      return
     }
     res.send(screen)
   }

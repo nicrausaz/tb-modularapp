@@ -1,25 +1,27 @@
+import ScreenEditor from '@/components/screens/ScreenEditor'
+import { useFetchAuth } from '@/hooks/useFetch'
+import { Screen } from '@/models/Screen'
+import { useParams } from 'react-router-dom'
+
 export default function Visualize() {
+  const { screenId } = useParams()
+  const { data: screen, error, loading } = useFetchAuth<Screen>(`/api/screens/${screenId}`)
+
+  if (loading) {
+    return <div>Loading...</div>
+  }
+
+  if (error) {
+    throw error
+  }
+
+  if (!screen) {
+    return null
+  }
+
   return (
-    <div className="flex flex-col h-screen pb-20 bg-base-200">
-      <div className="p-4">
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <div className="flex items-center justify-center rounded bg-gray-50 h-28">
-            <p className="text-2xl text-gray-400">+</p>
-          </div>
-          <div className="flex items-center justify-center rounded bg-gray-50 h-28">
-            <p className="text-2xl text-gray-400">+</p>
-          </div>
-          <div className="flex items-center justify-center rounded bg-gray-50 h-28">
-            <p className="text-2xl text-gray-400">+</p>
-          </div>
-          <div className="flex items-center justify-center rounded bg-gray-50 h-28">
-            <p className="text-2xl text-gray-400">+</p>
-          </div>
-        </div>
-        <div className="flex items-center justify-center h-48 mb-4 rounded bg-gray-50">
-          <p className="text-2xl text-gray-400 ">+</p>
-        </div>
-      </div>
+    <div className="h-screen w-screen bg-green-200">
+      <ScreenEditor slots={screen.slots} />
     </div>
   )
 }

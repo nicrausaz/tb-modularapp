@@ -1,4 +1,4 @@
-import { ArrowDownIcon, NewScreenIcon, OpenNewTabIcon, SaveIcon, TrashIcon } from '@/assets/icons'
+import { AddSquareIcon, ArrowDownIcon, NewScreenIcon, OpenNewTabIcon, SaveIcon, TrashIcon } from '@/assets/icons'
 import { Screen } from '@/models/Screen'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -8,9 +8,16 @@ type ScreenToolbarProps = {
   screens: Screen[]
   onScreenSelection: (screen: Screen) => void
   onScreenAdd: (screenName: string) => void
+  onSave: (screen: Screen) => void
 }
 
-export default function ScreenToolbar({ currentScreen, screens, onScreenSelection, onScreenAdd }: ScreenToolbarProps) {
+export default function ScreenToolbar({
+  currentScreen,
+  screens,
+  onScreenSelection,
+  onScreenAdd,
+  onSave,
+}: ScreenToolbarProps) {
   const [screenName, setScreenName] = useState('')
 
   const otherScreens = screens.filter((screen) => screen !== currentScreen)
@@ -23,8 +30,12 @@ export default function ScreenToolbar({ currentScreen, screens, onScreenSelectio
     onScreenAdd(`Screen ${screens.length + 1}`)
   }
 
+  const handleSaveScreen = () => {
+    onSave(currentScreen)
+  }
+
   return (
-    <div className="border w-full rounded-lg shadow flex justify-between items-center bg-base-200 p-2 mb-4">
+    <div className="flex justify-between items-center border w-full rounded-lg shadow bg-base-200 p-2 mb-4">
       <div>
         <input
           type="text"
@@ -35,7 +46,7 @@ export default function ScreenToolbar({ currentScreen, screens, onScreenSelectio
         />
       </div>
       <div>
-        <div className="dropdown dropdown-hover dropdown-end mr-2">
+        <div className="dropdown dropdown-hover dropdown-end mr-2 z-50">
           <label tabIndex={0} className="btn m-1">
             {currentScreen?.name}
             <ArrowDownIcon className="w-4 h-4" />
@@ -54,17 +65,21 @@ export default function ScreenToolbar({ currentScreen, screens, onScreenSelectio
             </li>
           </ul>
         </div>
+        <button className="btn btn-outline mr-2" onClick={handleSaveScreen}>
+            Add
+          <AddSquareIcon  className="w-4 h-4" />
+        </button>
         <button className="btn btn-error mr-2">
           Delete
           <TrashIcon className="w-4 h-4" />
         </button>
-        <button className="btn btn-success mr-2">
+        <button className="btn btn-success mr-2" onClick={handleSaveScreen}>
           save
           <SaveIcon />
         </button>
         <Link className="btn btn-info" to={`/visualize/${currentScreen?.id}`} target="_blank">
           Preview
-          <OpenNewTabIcon className="w-4 h-4" />
+          <OpenNewTabIcon className="w-5 h-5" />
         </Link>
       </div>
     </div>

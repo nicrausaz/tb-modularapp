@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
-import ModuleContextDropdown from './ModuleContextDropdown'
+import ContextDropdown from '../ContextDropdown'
+import { MoreDotsVertIcon } from '@/assets/icons'
 
 type ModuleCardProps = {
   id: string
@@ -47,7 +48,7 @@ export default function ModuleCard({ id, title, description, active, onAction }:
       </Link>
       <div>
         <div className="justify-end translate-x-2 -translate-y-2">
-          <ModuleContextDropdown actions={actions} />
+          <ContextDropdown icon={<MoreDotsVertIcon className="w-5 h-5" />} actions={actions} />
         </div>
       </div>
     </div>

@@ -35,7 +35,7 @@ export default class ModulesController {
    * GET
    * Register to a module's events & render trough SSE
    */
-  moduleEvents = async (req: Request, res: Response) => {
+  moduleEvents = (req: Request, res: Response) => {
     // Get the module
     const moduleId = req.params.id
     const entry = this.moduleService.getModuleWithEvents(moduleId)
