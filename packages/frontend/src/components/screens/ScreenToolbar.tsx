@@ -32,7 +32,7 @@ export default function ScreenToolbar({
     }
   }, [currentScreen])
 
-  const otherScreens = screens.filter((screen) => screen !== currentScreen)
+  const otherScreens = screens.filter((screen) => screen.name !== currentScreen.name)
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onNameChange(e.target.value)
@@ -61,13 +61,14 @@ export default function ScreenToolbar({
           defaultValue={screenName}
         />
       </div>
-      <div>
-        <div className="dropdown dropdown-hover dropdown-end mr-2 z-50">
+      <div className='flex items-center'>
+        <input type="checkbox" className="toggle toggle-success" />
+        <div className="dropdown dropdown-hover dropdown-end mr-2">
           <label tabIndex={0} className="btn m-1 truncate">
             {screenName}
             <ArrowDownIcon className="w-4 h-4" />
           </label>
-          <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box">
+          <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box z-50">
             {otherScreens.map((screen) => (
               <li key={screen.id}>
                 <a onClick={() => onScreenSelection(screen)} className="overflow-hidden">

@@ -45,7 +45,7 @@ export default function ModuleRender({ id }: { id: string }) {
   if (loading) {
     // todo: center
     return (
-      <div className="w-full h-full">
+      <div className="w-full h-full text-center">
         <span className="loading loading-ring loading-lg"></span>
       </div>
     )

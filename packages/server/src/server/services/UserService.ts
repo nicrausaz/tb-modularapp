@@ -24,4 +24,16 @@ export default class UserService {
         return null
       })
   }
+
+  getUsers = async () => {
+    return this.userRepository.getUsers()
+  }
+
+  getUser = async (id: number) => {
+    return this.userRepository.getUser(id)
+  }
+
+  createUser = async (user: LoginUserDTO) => {
+    return this.userRepository.createUser(user)
+  }
 }

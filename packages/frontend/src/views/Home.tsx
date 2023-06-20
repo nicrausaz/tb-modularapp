@@ -7,7 +7,7 @@ export default function Home() {
   const [username, setUsername] = useState<string>('')
 
   useEffect(() => {
-    setUsername(authenticatedUser?.username)
+    setUsername(authenticatedUser?.username || '')
   }, [authenticatedUser])
 
   return (

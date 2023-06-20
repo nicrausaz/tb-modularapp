@@ -1,7 +1,7 @@
 import { LoginUserDTO } from '../models/DTO/UserDTO'
 import { getDB } from '../../database/database'
 import { UserEntity } from '../models/entities/User'
-import { verifyString } from '../libs/security'
+import { hashString, verifyString } from '../libs/security'
 
 export default class UserRepository {
   public getById(id: string) {
@@ -43,6 +43,50 @@ export default class UserRepository {
           reject(err)
         }
         resolve(row[0] as UserEntity)
+      })
+      db.close()
+    })
+  }
+
+  public getUsers(): Promise<UserEntity[]> {
+    const db = getDB()
+
+    return new Promise((resolve, reject) => {
+      db.all('SELECT id, username FROM users', (err, rows) => {
+        if (err) {
+          reject(err)
+        }
+        resolve(rows as UserEntity[])
+      })
+      db.close()
+    })
+  }
+
+  public getUser(id: number): Promise<UserEntity> {
+    const db = getDB()
+
+    return new Promise((resolve, reject) => {
+      db.all('SELECT id, username FROM users WHERE id = ?', [id], (err, row) => {
+        if (err || row.length === 0) {
+          reject(err)
+        }
+        resolve(row[0] as UserEntity)
+      })
+      db.close()
+    })
+  }
+
+  public async createUser(user: LoginUserDTO): Promise<void> {
+    const db = getDB()
+
+    const hashedPassword = await hashString(user.password)
+
+    return new Promise<void>((resolve, reject) => {
+      db.run('INSERT INTO users (username, password) VALUES (?, ?)', [user.username, hashedPassword], (err) => {
+        if (err) {
+          reject(err)
+        }
+        resolve()
       })
       db.close()
     })

@@ -1,8 +1,26 @@
+import LoadingTopBar from '@/components/LoadingTopBar'
 import ThemePicker from '@/components/ThemePicker'
+import UsersList from '@/components/users/UsersList'
+import { useFetchAuth } from '@/hooks/useFetch'
+import { User } from '@/models/User'
 
 export default function Settings() {
+  const { data: users, loading, error } = useFetchAuth<User[]>('/api/users')
+
+  if (loading) {
+    return <LoadingTopBar />
+  }
+
+  if (error) {
+    throw error
+  }
+
+  if (!users) {
+    return <div>No users</div>
+  }
+
   return (
-    <div className="flex flex-col w-full items-center">
+    <div className="flex flex-col w-full items-center pb-20">
       <div className="bg-base-100 shadow rounded-box w-full md:w-3/4 p-4">
         <div className="hero">
           <div className="hero-content flex-col lg:flex-row-reverse justify-between">
@@ -25,6 +43,8 @@ export default function Settings() {
           <ThemePicker />
         </div>
         <div className="divider text-2xl text-neutral font-bold my-6">Box configuration</div>
+
+        <UsersList users={users} />
       </div>
     </div>
   )

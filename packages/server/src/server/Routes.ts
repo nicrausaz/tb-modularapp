@@ -5,6 +5,7 @@ import { UserRepository, ModuleRepository, ScreenRepository, BoxRepository } fro
 import { JwtAuthMiddleware } from './middlewares/AuthMiddleware'
 import ModuleDatabaseManager from './helpers/ModuleDatabaseManager'
 import { join } from 'path'
+import UserController from './controllers/UserController'
 
 /**
  * Define all the routes for the application
@@ -29,6 +30,7 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
   const modulesController = new ModulesController(moduleService)
   const screensController = new ScreenController(screenService)
   const boxController = new BoxController(boxService)
+  const userController = new UserController(userService)
 
   // Defines the routes used by the application
   app.get('/', (req: Request, res: Response) => {
@@ -138,6 +140,15 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
   app.get('/api/box/static/:filename', boxController.staticFile)
 
   app.post('api/box', JwtAuthMiddleware, boxController.update)
+
+  /**
+   * User routes
+   */
+
+  app.get('/api/users', JwtAuthMiddleware, userController.index)
+
+  app.post('/api/users', JwtAuthMiddleware, userController.create)
+
 }
 
 export default configureRoutes

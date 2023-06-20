@@ -14,6 +14,7 @@ import StopIcon from './StopIcon'
 import AddSquareIcon from './AddSquareIcon'
 import SearchIcon from './SearchIcon'
 import CrossIcon from './CrossIcon'
+import AddUserIcon from './AddUserIcon'
 
 export {
   BoxIcon,
@@ -32,4 +33,5 @@ export {
   AddSquareIcon,
   SearchIcon,
   CrossIcon,
+  AddUserIcon,
 }

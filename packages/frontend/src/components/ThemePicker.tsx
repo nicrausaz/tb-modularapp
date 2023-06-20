@@ -48,11 +48,9 @@ const ThemePicker = () => {
 
   return (
     <div className="theme-picker">
-      <select onChange={handleThemeSelection} className="select select-bordered w-full max-w-xs">
+      <select onChange={handleThemeSelection} className="select select-bordered w-full max-w-xs" defaultValue={theme}>
         {themes.map((t) => (
-          <option value={t} selected={t === theme}>
-            {t}
-          </option>
+          <option key={t}>{t}</option>
         ))}
       </select>
     </div>
