@@ -29,8 +29,14 @@ export default function UserEditionModal({ isOpen, user, onClose, onConfirm }: U
     onConfirm(mode, newUser)
   }
 
+  const cleanAndClose = () => {
+    setUsername('')
+    setPassword('')
+    onClose()
+  }
+
   return (
-    <ConfirmModal isOpen={isOpen} title={title} onConfirm={handleConfirm} onClose={onClose}>
+    <ConfirmModal isOpen={isOpen} title={title} onConfirm={handleConfirm} onClose={cleanAndClose}>
       <div className="modal-body">
         <div className="form-control">
           <label className="label">
@@ -41,12 +47,18 @@ export default function UserEditionModal({ isOpen, user, onClose, onConfirm }: U
             placeholder="Type a username..."
             className="input input-bordered"
             defaultValue={user?.username}
+            onChange={(e) => setUsername(e.target.value)}
           />
 
           <label className="label">
             <span className="label-text">Password</span>
           </label>
-          <input type="password" placeholder="Type a password..." className="input input-bordered" />
+          <input
+            type="password"
+            placeholder="Type a password..."
+            className="input input-bordered"
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </div>
       </div>
     </ConfirmModal>

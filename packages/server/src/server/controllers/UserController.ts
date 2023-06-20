@@ -22,8 +22,46 @@ export default class UserController {
     res.send(user)
   }
 
+  /**
+   * POST
+   * Create a new user
+   */
   create = async (req: Request, res: Response) => {
     await this.userService.createUser(req.body)
     res.status(201).send()
+  }
+
+  /**
+   * PATCH
+   * Update an existing user
+   */
+  update = async (req: Request, res: Response, next: NextFunction) => {
+    const id = parseInt(req.params.id)
+    const user = await this.userService.getUser(id)
+
+    if (!user) {
+      logger.warn(`User with id ${id} not found`)
+      return next(new NotFoundError('User not found'))
+    }
+
+    await this.userService.updateUser(id, req.body)
+    res.status(201).send()
+  }
+
+  /**
+   * DELETE
+   * Delete an existing user
+   */
+  delete = async (req: Request, res: Response, next: NextFunction) => {
+    const id = parseInt(req.params.id)
+    const user = await this.userService.getUser(id)
+
+    if (!user) {
+      logger.warn(`User with id ${id} not found`)
+      return next(new NotFoundError('User not found'))
+    }
+
+    await this.userService.deleteUser(id)
+    res.status(204).send()
   }
 }

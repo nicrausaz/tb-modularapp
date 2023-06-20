@@ -1,5 +1,5 @@
 import { UserRepository } from '../repositories'
-import { LoginUserDTO } from '../models/DTO/UserDTO'
+import { CreateUserDTO, LoginUserDTO, UpdateUserDTO } from '../models/DTO/UserDTO'
 import { generateToken } from '../libs/jwt'
 
 
@@ -33,7 +33,15 @@ export default class UserService {
     return this.userRepository.getUser(id)
   }
 
-  createUser = async (user: LoginUserDTO) => {
+  createUser = async (user: CreateUserDTO) => {
     return this.userRepository.createUser(user)
+  }
+
+  updateUser = async (id: number, user: UpdateUserDTO) => {
+    return this.userRepository.updateUser(id, user)
+  }
+
+  deleteUser = async (id: number) => {
+    return this.userRepository.deleteUser(id)
   }
 }

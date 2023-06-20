@@ -149,6 +149,10 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
 
   app.post('/api/users', JwtAuthMiddleware, userController.create)
 
+  app.patch('/api/users/:id', JwtAuthMiddleware, userController.update)
+
+  app.delete('/api/users/:id', JwtAuthMiddleware, userController.delete)
+
 }
 
 export default configureRoutes

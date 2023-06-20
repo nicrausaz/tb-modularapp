@@ -2,6 +2,7 @@ import { AddUserIcon, SettingsIcon, TrashIcon } from '@/assets/icons'
 import { User } from '@/models/User'
 import UserEditionModal from './UserEditionModal'
 import { useState } from 'react'
+import fetcher from '@/api/fetcher'
 
 type UsersListProps = {
   users: User[]
@@ -57,9 +58,26 @@ export default function UsersList({ users }: UsersListProps) {
     setDeletingUser(user)
   }
 
-  const handleConfirm = (action: string, user: User) => {
+  const handleConfirm = async (action: string, user: User) => {
     setUserEditionModalOpen(false)
-    console.log(action, user)
+
+    if (action === 'create') {
+      await fetcher('/api/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(user),
+      })
+    } else {
+      await fetcher(`/api/users/${user.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(user),
+      })
+    }
   }
 
   return (

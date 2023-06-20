@@ -1,4 +1,4 @@
-import { LoginUserDTO } from '../models/DTO/UserDTO'
+import { CreateUserDTO, LoginUserDTO, UpdateUserDTO } from '../models/DTO/UserDTO'
 import { getDB } from '../../database/database'
 import { UserEntity } from '../models/entities/User'
 import { hashString, verifyString } from '../libs/security'
@@ -8,7 +8,7 @@ export default class UserRepository {
     const db = getDB()
 
     return new Promise((resolve, reject) => {
-      db.all('SELECT * FROM users WHERE id = ?', [id], (err, row) => {
+      db.all('SELECT * FROM Users WHERE id = ?', [id], (err, row) => {
         if (err || row.length === 0) {
           reject(err)
         }
@@ -38,7 +38,7 @@ export default class UserRepository {
     const db = getDB()
 
     return new Promise((resolve, reject) => {
-      db.all('SELECT * FROM users WHERE username = ?', [username], (err, row) => {
+      db.all('SELECT * FROM Users WHERE username = ?', [username], (err, row) => {
         if (err || row.length === 0) {
           reject(err)
         }
@@ -52,7 +52,7 @@ export default class UserRepository {
     const db = getDB()
 
     return new Promise((resolve, reject) => {
-      db.all('SELECT id, username FROM users', (err, rows) => {
+      db.all('SELECT id, username FROM Users', (err, rows) => {
         if (err) {
           reject(err)
         }
@@ -66,7 +66,7 @@ export default class UserRepository {
     const db = getDB()
 
     return new Promise((resolve, reject) => {
-      db.all('SELECT id, username FROM users WHERE id = ?', [id], (err, row) => {
+      db.all('SELECT id, username FROM Users WHERE id = ?', [id], (err, row) => {
         if (err || row.length === 0) {
           reject(err)
         }
@@ -76,13 +76,54 @@ export default class UserRepository {
     })
   }
 
-  public async createUser(user: LoginUserDTO): Promise<void> {
+  public async createUser(user: CreateUserDTO): Promise<void> {
     const db = getDB()
 
     const hashedPassword = await hashString(user.password)
 
     return new Promise<void>((resolve, reject) => {
-      db.run('INSERT INTO users (username, password) VALUES (?, ?)', [user.username, hashedPassword], (err) => {
+      db.run('INSERT INTO Users (username, password) VALUES (?, ?)', [user.username, hashedPassword], (err) => {
+        if (err) {
+          reject(err)
+        }
+        resolve()
+      })
+      db.close()
+    })
+  }
+
+  public async updateUser(id: number, user: UpdateUserDTO): Promise<void> {
+    const db = getDB()
+
+    console.log(user)
+
+    let query = 'UPDATE Users SET username = ?'
+    const params = [user.username]
+
+    if (user.password) {
+      query += ', password = ?'
+      params.push(await hashString(user.password))
+    }
+
+    query += ' WHERE id = ?'
+    params.push(id.toString())
+
+    return new Promise<void>((resolve, reject) => {
+      db.run(query, params, (err) => {
+        if (err) {
+          reject(err)
+        }
+        resolve()
+      })
+      db.close()
+    })
+  }
+
+  public async deleteUser(id: number): Promise<void> {
+    const db = getDB()
+
+    return new Promise<void>((resolve, reject) => {
+      db.run('DELETE FROM Users WHERE id = ?', [id], (err) => {
         if (err) {
           reject(err)
         }
