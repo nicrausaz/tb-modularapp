@@ -63,6 +63,13 @@ export default class ScreenRepository {
 
   async update(screen: ScreenEntity) {
     await this.updateScreen(screen)
+
+    // Remove slots that are not in the new screen
+    const oldSlots = await this.getScreenSlots(screen.id)
+    const slotsToDelete = oldSlots.filter((oldSlot) => !screen.slots.find((newSlot) => newSlot.id === oldSlot.id))
+    await Promise.all(slotsToDelete.map((slot) => this.deleteScreenSlot(slot.id)))
+
+    // Update or create slots that are in the new screen
     await Promise.all(screen.slots.map((slot) => this.insertOrUpdateScreenSlot(screen.id, slot)))
   }
 
@@ -105,10 +112,27 @@ export default class ScreenRepository {
    * Delete all screen slots for the specified screen
    * @param id id of the screen to delete the slots for
    */
-  async deleteScreenSlots(id: number): Promise<void> {
+  private async deleteScreenSlots(id: number): Promise<void> {
     const db = getDB()
     return new Promise<void>((resolve, reject) => {
       db.run('DELETE FROM ScreenSlots WHERE screenId = ?', [id], (err) => {
+        if (err) {
+          reject(err)
+        }
+        resolve()
+      })
+      db.close()
+    })
+  }
+
+  /**
+   * Delete the specified screen slot
+   * @param id id of the screen slot to delete
+   */
+  private async deleteScreenSlot(id: number): Promise<void> {
+    const db = getDB()
+    return new Promise<void>((resolve, reject) => {
+      db.run('DELETE FROM ScreenSlots WHERE id = ?', [id], (err) => {
         if (err) {
           reject(err)
         }
@@ -235,7 +259,7 @@ export default class ScreenRepository {
   private updateScreenSlot(screenId: number, slot: ScreenSlotEntity) {
     const db = getDB()
     return new Promise((resolve, reject) => {
-      db.run( 
+      db.run(
         'UPDATE ScreenSlots SET moduleId = ?, width = ?, height = ?, x = ?, y = ? WHERE id = ? AND screenId = ?',
         [slot.moduleId, slot.width, slot.height, slot.x, slot.y, slot.id, screenId],
         (err) => {
