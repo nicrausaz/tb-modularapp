@@ -140,7 +140,13 @@ export default function Dashboard() {
           onSlotAdd={() => setModulesModalOpen(true)}
           onDelete={() => setDeleteScreenModalOpen(true)}
         />
-        <ScreenEditor slots={screen.slots} onChange={handleLayoutChange} />
+        {screen.slots.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-32">
+            <p className="text-gray-500">No module added to this screen yet</p>
+          </div>
+        ) : (
+          <ScreenEditor slots={screen.slots} onChange={handleLayoutChange} />
+        )}
       </div>
       <ChoseModulesModal
         isOpen={modulesModalOpen}

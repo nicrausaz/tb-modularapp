@@ -20,8 +20,8 @@ export default function Visualize() {
   }
 
   return (
-    <div className="h-screen w-screen bg-green-200">
-      <ScreenEditor slots={screen.slots} />
+    <div className="h-screen w-screen">
+      <ScreenEditor slots={screen.slots} readonly={true} />
     </div>
   )
 }
