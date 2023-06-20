@@ -1,5 +1,5 @@
 import { ScreenSlot } from '@/models/Screen'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import GridLayout from 'react-grid-layout'
 import ScreenEditorCell from './ScreenEditorCell'
 import { Module } from '@/models/Module'
@@ -48,13 +48,28 @@ const layoutToScreenSlot = (layout: AugmentedLayout): ScreenSlot => {
 export default function ScreenEditor({ slots, onChange }: ScreenEditorProps) {
   const [layout, setLayout] = useState<AugmentedLayout[]>(slots.map(screenSlotToLayout))
 
-  const onLayoutChange = (newLayout: AugmentedLayout[]) => {
-    setLayout(newLayout)
-    onChange(newLayout.map(layoutToScreenSlot))
-  }
+  useEffect(() => {
+    setLayout(slots.map(screenSlotToLayout))
+  }, [slots])
 
-  const onResize = (data) => {
-    console.log('RESIZE', data)
+  const onLayoutChange = (newLayout: AugmentedLayout[]) => {
+    const mergedLayout = layout.map((l) => {
+      const newSlot = newLayout.find((s) => s.i === l.i)
+      if (newSlot) {
+        return {
+          ...newSlot,
+          module: l.module,
+          screenId: l.screenId,
+        }
+      }
+      // setLayout(newLayout)
+      // console.log('LAYOUT', newLayout.map(layoutToScreenSlot))
+      // onChange(newLayout.map(layoutToScreenSlot))
+    })
+    // console.log(lay)
+    setLayout(mergedLayout)
+    onChange(mergedLayout.map(layoutToScreenSlot))
+
   }
 
   const removeSlot = (slot: ScreenSlot) => {
@@ -66,8 +81,8 @@ export default function ScreenEditor({ slots, onChange }: ScreenEditorProps) {
   const editorProps: GridLayout.ReactGridLayoutProps = {
     isDraggable: true,
     isResizable: true,
-    cols: 6,
-    rowHeight: 80,
+    cols: 4,
+    rowHeight: 120,
     width: 1200,
     resizeHandles: ['se'],
   }
@@ -75,7 +90,7 @@ export default function ScreenEditor({ slots, onChange }: ScreenEditorProps) {
   return (
     <GridLayout {...editorProps} layout={layout} onLayoutChange={onLayoutChange} className="border relative">
       {slots.map((slot) => (
-        <div key={slot.id} onResize={onResize}>
+        <div key={slot.id}>
           <ScreenEditorCell slot={slot} onDelete={removeSlot} />
         </div>
       ))}

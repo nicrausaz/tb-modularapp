@@ -235,7 +235,7 @@ export default class ScreenRepository {
   private updateScreenSlot(screenId: number, slot: ScreenSlotEntity) {
     const db = getDB()
     return new Promise((resolve, reject) => {
-      db.run(
+      db.run( 
         'UPDATE ScreenSlots SET moduleId = ?, width = ?, height = ?, x = ?, y = ? WHERE id = ? AND screenId = ?',
         [slot.moduleId, slot.width, slot.height, slot.x, slot.y, slot.id, screenId],
         (err) => {

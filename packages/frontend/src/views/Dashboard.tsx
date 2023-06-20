@@ -8,6 +8,7 @@ import ScreenEditor from '@/components/screens/ScreenEditor'
 import ChoseModulesModal from '@/components/module/ChoseModulesModal'
 import ConfirmScreenDeleteModal from '@/components/screens/ConfirmScreenDeleteModal'
 import { Module } from '@/models/Module'
+import { useToast } from '@/contexts/ToastContext'
 
 export default function Dashboard() {
   const { data: screens, error, loading } = useFetchAuth<Screen[]>('/api/screens')
@@ -15,6 +16,8 @@ export default function Dashboard() {
   const [screen, setScreen] = useState<Screen | null>(null)
   const [modulesModalOpen, setModulesModalOpen] = useState<boolean>(false)
   const [deleteScreenModalOpen, setDeleteScreenModalOpen] = useState<boolean>(false)
+
+  const { tSuccess } = useToast()
 
   useEffect(() => {
     if (screens) {
@@ -41,7 +44,7 @@ export default function Dashboard() {
   const createScreen = async (name: string) => {
     const newId = screens!.reduce((biggest, screen) => (screen.id > biggest ? screen.id + 1 : biggest), 1)
 
-    const newScreen = await fetcher(`/api/screens/${newId}`, {
+    await fetcher(`/api/screens/${newId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -58,22 +61,39 @@ export default function Dashboard() {
       enabled: true,
       slots: [],
     })
+
+    tSuccess('Success', 'Screen created')
   }
 
   const saveScreen = async (screen: Screen) => {
-    console.log('SAVE', screen)
     setScreen({
       ...screen,
     })
+
+    // Transform screen slots
+    screen.slots = screen.slots.map((slot) => ({
+      id: slot.id,
+      moduleId: slot.module.id,
+      width: slot.width,
+      height: slot.height,
+      x: slot.x,
+      y: slot.y,
+    }))
+
     await fetcher(`/api/screens/${screen.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(screen),
     })
+
+    tSuccess('Success', 'Screen saved')
   }
 
-  const handleLayoutChange = (slots: Screen[]) => {
-    console.log('HANDLE', slots[0])
+  const handleLayoutChange = (slots: ScreenSlot[]) => {
+    setScreen({
+      ...screen,
+      slots,
+    })
   }
 
   const addModulesToScreen = (modules: Module[]) => {
@@ -100,7 +120,7 @@ export default function Dashboard() {
 
   const deleteScreen = async (screenId: number) => {
     setDeleteScreenModalOpen(false)
-    await fetcher(`/api/screens/${screen?.id}`, {
+    await fetcher(`/api/screens/${screenId}`, {
       method: 'DELETE',
     })
     setScreen(null)
