@@ -1,10 +1,11 @@
-import { User } from '@/models/User'
+import { User, UserCreate } from '@/models/User'
 import ConfirmModal from '../ConfirmModal'
+import { useState } from 'react'
 
 type UserEditionModalProps = {
   isOpen: boolean
   onClose: () => void
-  onConfirm(action: 'create' | 'update', user: User): void
+  onConfirm(action: 'create' | 'update', user: UserCreate): void
   user: User | null
 }
 
@@ -12,8 +13,20 @@ export default function UserEditionModal({ isOpen, user, onClose, onConfirm }: U
   const mode = user ? 'update' : 'create'
   const title = user ? 'Edit user' : 'Create user'
 
+  const [username, setUsername] = useState<string>(user?.username ?? '')
+  const [password, setPassword] = useState<string>('')
+
   const handleConfirm = () => {
-    onConfirm(mode, user)
+    const newUser: UserCreate = {
+      username,
+      password,
+    }
+
+    if (mode === 'update' && user) {
+      newUser.id = user.id
+    }
+
+    onConfirm(mode, newUser)
   }
 
   return (

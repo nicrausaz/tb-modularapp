@@ -22,7 +22,7 @@ type AugmentedLayout = GridLayout.Layout & {
 
 const screenSlotToLayout = (slot: ScreenSlot): AugmentedLayout => {
   return {
-    i: slot.id.toString(),
+    i: slot.id,
     x: slot.x,
     y: slot.y,
     w: slot.width,
@@ -34,7 +34,7 @@ const screenSlotToLayout = (slot: ScreenSlot): AugmentedLayout => {
 
 const layoutToScreenSlot = (layout: AugmentedLayout): ScreenSlot => {
   return {
-    id: parseInt(layout.i),
+    id: layout.i,
     x: layout.x,
     y: layout.y,
     width: layout.w,

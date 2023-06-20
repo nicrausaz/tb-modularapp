@@ -9,6 +9,7 @@ import ChoseModulesModal from '@/components/module/ChoseModulesModal'
 import ConfirmScreenDeleteModal from '@/components/screens/ConfirmScreenDeleteModal'
 import { Module } from '@/models/Module'
 import { useToast } from '@/contexts/ToastContext'
+import { uuid } from '@/helpers'
 
 export default function Dashboard() {
   const { data: screens, error, loading } = useFetchAuth<Screen[]>('/api/screens')
@@ -99,10 +100,8 @@ export default function Dashboard() {
   const addModulesToScreen = (modules: Module[]) => {
     setModulesModalOpen(false)
 
-    let newId = screen?.slots.length || 1
-
     const newSlots: ScreenSlot[] = modules.map((module) => ({
-      id: ++newId,
+      id: uuid(),
       moduleId: module.id,
       screenId: screen?.id,
       module,
@@ -123,7 +122,7 @@ export default function Dashboard() {
     await fetcher(`/api/screens/${screenId}`, {
       method: 'DELETE',
     })
-    setScreen(null)
+    setScreen(screens[0])
   }
 
   return (

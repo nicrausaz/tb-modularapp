@@ -129,7 +129,7 @@ export default class ScreenRepository {
    * Delete the specified screen slot
    * @param id id of the screen slot to delete
    */
-  private async deleteScreenSlot(id: number): Promise<void> {
+  private async deleteScreenSlot(id: string): Promise<void> {
     const db = getDB()
     return new Promise<void>((resolve, reject) => {
       db.run('DELETE FROM ScreenSlots WHERE id = ?', [id], (err) => {
@@ -279,7 +279,7 @@ export default class ScreenRepository {
    * @param slotId the id of the slot to check
    * @returns true if the slot exists, false otherwise
    */
-  private screenSlotExists(screenId: number, slotId: number): Promise<boolean> {
+  private screenSlotExists(screenId: number, slotId: string): Promise<boolean> {
     const db = getDB()
     return new Promise((resolve, reject) => {
       db.all('SELECT * FROM ScreenSlots WHERE screenId = ? AND id = ?', [screenId, slotId], (err, rows) => {

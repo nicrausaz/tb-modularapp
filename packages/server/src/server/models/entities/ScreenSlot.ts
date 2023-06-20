@@ -1,5 +1,5 @@
 export type ScreenSlotEntity = {
-  id: number
+  id: string
   moduleId: string
   screenId: number
   width: number

@@ -40,6 +40,7 @@ export default function UsersList({ users }: UsersListProps) {
   const [userEditionModalOpen, setUserEditionModalOpen] = useState(false)
   const [userDeletionModalOpen, setUserDeletionModalOpen] = useState(false)
   const [editingUser, setEditingUser] = useState<User | null>(null)
+  const [deletingUser, setDeletingUser] = useState<User | null>(null)
 
   const openAddUserModal = () => {
     setUserEditionModalOpen(true)
@@ -53,7 +54,7 @@ export default function UsersList({ users }: UsersListProps) {
 
   const openDeleteUserModal = (user: User) => {
     setUserDeletionModalOpen(true)
-    // setEditingUser(user)
+    setDeletingUser(user)
   }
 
   const handleConfirm = (action: string, user: User) => {
@@ -82,7 +83,7 @@ export default function UsersList({ users }: UsersListProps) {
         onConfirm={handleConfirm}
         onClose={() => setUserEditionModalOpen(false)}
       />
-      {/* <ConfirmUserDeleteModal /> */}
+      {/* <ConfirmUserDeleteModal isOpen={userDeletionModalOpen} /> */}
     </div>
   )
 }

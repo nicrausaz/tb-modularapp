@@ -1,7 +1,7 @@
 import { Module } from './Module'
 
 export type ScreenSlot = {
-  id: number
+  id: string
   module: Module
   screenId: number
   width: number
