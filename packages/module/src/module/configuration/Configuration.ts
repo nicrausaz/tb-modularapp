@@ -13,26 +13,46 @@ export class Configuration {
     private readonly _description: string,
     private readonly _version: string,
     private readonly _author: string,
+    private readonly _icon: string,
     private readonly _specificEntries: SpecificConfiguration,
   ) {
     // Creates a deep copy of then entries, so the default configuration can be recovered
     this._defaultEntries = structuredClone(this._specificEntries)
   }
 
+  /**
+   * Get the module name
+   */
   get name(): string {
     return this._name
   }
 
+  /**
+   * Get the module description
+   */
   get description(): string {
     return this._description
   }
 
+  /**
+   * Get the module version
+   */
   get version(): string {
     return this._version
   }
 
+  /**
+   * Get the module author
+   */
   get author(): string {
     return this._author
+  }
+
+  /**
+   * Get the module icon path
+   */
+  get icon(): string {
+    return this._icon
   }
 
   /**

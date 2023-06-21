@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS Modules (
   description VARCHAR(255) NOT NULL,
   author VARCHAR(255) NOT NULL,
   version VARCHAR(255) NOT NULL,
+  icon VARCHAR(255),
   enabled BOOLEAN NOT NULL DEFAULT 0,
   imported_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   configuration json,

@@ -80,6 +80,10 @@ export default abstract class Module extends EventEmitter {
     return this._configuration.specificConfig
   }
 
+  get icon(): string {
+    return this._configuration.icon
+  }
+
   /**
    * Get the default configuration for this module
    * @returns The default configuration for this module

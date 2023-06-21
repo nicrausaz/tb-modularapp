@@ -37,7 +37,7 @@ const specificConfig = SpecificConfiguration.fromObject({
   },
 })
 
-const config = new Configuration('test', 'test description', '0.0.0', 'test author', specificConfig)
+const config = new Configuration('test', 'test description', '0.0.0', 'test author', '', specificConfig)
 
 test('Module class should exists', () => {
   expect(Module).toBeDefined()

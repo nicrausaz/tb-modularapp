@@ -3,6 +3,7 @@
   "description": "A Module that displays the current time",
   "version": "1.0.0",
   "author": "Nicolas Crausaz",
+  "icon": null,
   "specificConfig": {
     "refreshRate": {
       "type": "number",

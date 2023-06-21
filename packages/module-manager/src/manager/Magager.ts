@@ -205,12 +205,6 @@ export default class Manager {
    */
   async loadModule(filename: string): Promise<boolean> {
     const id = filename
-
-    // if (this.modules.has(id)) {
-    //   console.log(`Module '${filename}', already loaded. Ignoring`)
-    //   return false
-    // }
-
     const modulePath = join(this.modulesPath, filename)
 
     try {
@@ -224,7 +218,7 @@ export default class Manager {
       const specific = SpecificConfiguration.fromObject(config.specificConfig)
 
       // Build the module configuration
-      const configuration = new Configuration(config.name, config.description, config.version, config.author, specific)
+      const configuration = new Configuration(config.name, config.description, config.version, config.author, config.icon, specific)
 
       // Load the renderer
       const renderer = new (await import(join(modulePath, Manager.MODULE_RENDERED_FILENAME))).default()

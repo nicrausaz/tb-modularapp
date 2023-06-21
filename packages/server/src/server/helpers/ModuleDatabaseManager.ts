@@ -53,20 +53,19 @@ export default class ModuleDatabaseManager {
       return false
     }
 
-    // TODO: check this, no need to give the path ?
-
     const entry = this.manager.getModule(moduleId)
     const moduleEntity = ModuleMapper.toModuleEntity(moduleId, entry.module, entry.enabled)
 
     const db = getDB()
     db.run(
-      'INSERT INTO Modules (id, name, description, version, author, configuration) VALUES (?, ?, ?, ?, ?, ?)',
+      'INSERT INTO Modules (id, name, description, version, author, icon, configuration) VALUES (?, ?, ?, ?, ?, ?, ?)',
       [
         moduleId,
         moduleEntity.name,
         moduleEntity.description,
         moduleEntity.version,
         moduleEntity.author,
+        moduleEntity.icon,
         JSON.stringify(moduleEntity.configuration),
       ],
       (err) => {

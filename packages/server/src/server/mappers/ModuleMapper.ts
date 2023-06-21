@@ -10,6 +10,8 @@ export default class ModuleMapper {
       description: module.description,
       author: module.author,
       version: module.version,
+      icon: module.icon,
+      // nickname: module.nickname,
       enabled: enabled,
     }
   }

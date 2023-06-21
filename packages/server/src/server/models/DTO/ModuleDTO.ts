@@ -8,6 +8,7 @@ export type ModuleDTO = {
   readonly author: string
   readonly version: string
   readonly enabled: boolean
+  readonly icon?: string
   // readonly importedAt: Date
 }
 
