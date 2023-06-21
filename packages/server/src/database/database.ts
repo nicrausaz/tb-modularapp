@@ -1,6 +1,7 @@
 import fs from 'fs'
 import { join } from 'path'
 import { Database } from 'sqlite3'
+import logger from '../server/libs/logger'
 
 /**
  * Get a database connection
@@ -56,10 +57,14 @@ const buildDB = async () => {
   return new Promise<void>((resolve, reject) => {
     create()
       .then(() => {
+        logger.info('Database created')
         if (shouldSeed) seed()
       })
       .then(() => resolve())
-      .catch((err) => reject(err))
+      .catch((err) => {
+        logger.emerg('Fatal error during database initialization: %s', err)
+        reject(err)
+      })
   })
 }
 

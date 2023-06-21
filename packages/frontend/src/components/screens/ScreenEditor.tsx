@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import GridLayout from 'react-grid-layout'
+import GridLayout, { Layout } from 'react-grid-layout'
 import ScreenEditorCell from './ScreenEditorCell'
 import { Module } from '@/models/Module'
 import { ScreenSlot } from '@/models/Screen'
@@ -12,8 +12,6 @@ type ScreenEditorProps = {
   onChange?: (slots: ScreenSlot[]) => void
   readonly?: boolean
 }
-
-// TODO: use memo to avoid unnecessary re-renders (https://github.com/react-grid-layout/react-grid-layout#react-hooks-performance)
 
 type AugmentedLayout = GridLayout.Layout & {
   module: Module
@@ -45,37 +43,11 @@ const layoutToScreenSlot = (layout: AugmentedLayout): ScreenSlot => {
 }
 
 export default function ScreenEditor({ slots, onChange, readonly = false }: ScreenEditorProps) {
-  const [layout, setLayout] = useState<AugmentedLayout[]>(slots.map(screenSlotToLayout))
+  const [layout, setLayout] = useState<AugmentedLayout[]>([])
 
   useEffect(() => {
     setLayout(slots.map(screenSlotToLayout))
   }, [slots])
-
-  const onLayoutChange = (newLayout: AugmentedLayout[]) => {
-    const mergedLayout = layout.map((l) => {
-      const newSlot = newLayout.find((s) => s.i === l.i)
-      console.log(newSlot)
-      if (newSlot) {
-        return {
-          ...newSlot,
-          module: l.module,
-          screenId: l.screenId,
-        }
-      }
-    })
-
-    // TODO: fix this
-
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    setLayout(mergedLayout)
-
-    if (onChange) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-      onChange(mergedLayout.map(layoutToScreenSlot))
-    }
-  }
 
   const removeSlot = (slot: ScreenSlot) => {
     const newLayout = layout.filter((l) => l.i !== slot.id.toString())
@@ -86,17 +58,47 @@ export default function ScreenEditor({ slots, onChange, readonly = false }: Scre
     }
   }
 
+  const onLayoutChange = (
+    updated: AugmentedLayout[],
+    _oldItem: Layout,
+    _newItem: Layout,
+    _placeholder: Layout,
+    _event: MouseEvent,
+    _element: HTMLElement,
+  ) => {
+    // Merge the new layout with the old one
+    const newLayout: AugmentedLayout[] = layout.map((l) => {
+      const newSlot = updated.find((s) => s.i === l.i)
+      return {
+        ...newSlot,
+        module: l.module,
+        screenId: l.screenId,
+      }
+    })
+
+    setLayout(newLayout)
+
+    if (onChange) {
+      onChange(newLayout.map(layoutToScreenSlot))
+    }
+  }
+
   const editorProps: GridLayout.ReactGridLayoutProps = {
     isDraggable: !readonly,
     isResizable: !readonly,
-    cols: 4,
-    rowHeight: 120,
+    cols: 12,
+    rowHeight: 150,
     width: 1200,
-    resizeHandles: readonly ? [] : ['se'],
+    resizeHandles: ['se'],
+    compactType: null,
+  }
+
+  if (!layout.length) {
+    return null
   }
 
   return (
-    <GridLayout {...editorProps} layout={layout} onLayoutChange={onLayoutChange} className="border relative">
+    <GridLayout {...editorProps} layout={layout} onDragStop={onLayoutChange} className="border relative">
       {slots.map((slot) => (
         <div key={slot.id}>
           <ScreenEditorCell slot={slot} onDelete={removeSlot} readonly={readonly} />

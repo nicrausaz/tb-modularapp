@@ -30,6 +30,11 @@ export default function ChoseModulesModal({ isOpen, onClose, onConfirm }: Confir
     }
   }, [searchQuery, searchFilter])
 
+
+  if (!isOpen) {
+    return null
+  }
+
   const applySearchAndFilter = (modules: Module[]) => {
     let filteredModules = modules
 
@@ -54,6 +59,8 @@ export default function ChoseModulesModal({ isOpen, onClose, onConfirm }: Confir
     throw error
   }
 
+  const isAllChecked = modules.length === selectedModules.length
+
   const handleSelect = (module: Module, selected: boolean) => {
     if (!selected) {
       setSelectedModules(selectedModules.filter((m) => m.id !== module.id))
@@ -63,10 +70,18 @@ export default function ChoseModulesModal({ isOpen, onClose, onConfirm }: Confir
   }
 
   const isSelected = (module: Module) => {
+    console.log("checking if module is selected", module.name)
     return selectedModules.find((m) => m.id === module.id) !== undefined
   }
 
-  const isAllChecked = modules.length === selectedModules.length
+  const toggleSelectAll = () => {
+    if (isAllChecked) {
+      setSelectedModules([])
+    } else {
+      setSelectedModules(modules)
+    }
+  }
+
 
   const searchFilters = ['All', 'Enabled', 'Disabled']
 
@@ -95,7 +110,7 @@ export default function ChoseModulesModal({ isOpen, onClose, onConfirm }: Confir
               <tr>
                 <th>
                   <label>
-                    <input type="checkbox" className="checkbox" defaultChecked={isAllChecked} />
+                    <input type="checkbox" className="checkbox" checked={isAllChecked} onChange={toggleSelectAll} />
                   </label>
                 </th>
                 <th>Name</th>

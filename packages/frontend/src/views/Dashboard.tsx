@@ -42,14 +42,12 @@ export default function Dashboard() {
     return null
   }
 
-  const createScreen = async (name: string) => {
-    const newId = screens!.reduce((biggest, screen) => (screen.id > biggest ? screen.id + 1 : biggest), 1)
-
-    await fetcher(`/api/screens/${newId}`, {
+  const createScreen = async ({ id, name }: { id: number; name: string }) => {
+    await fetcher(`/api/screens/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        id: newId,
+        id: id,
         name,
         enabled: true,
         slots: [],
@@ -57,7 +55,7 @@ export default function Dashboard() {
     })
 
     setScreen({
-      id: screens.length + 1,
+      id: id,
       name,
       enabled: true,
       slots: [],
@@ -67,6 +65,7 @@ export default function Dashboard() {
   }
 
   const saveScreen = async (screen: Screen) => {
+    console.log('saveScreen', screen)
     setScreen({
       ...screen,
     })
@@ -80,6 +79,7 @@ export default function Dashboard() {
       x: slot.x,
       y: slot.y,
       screenId: screen.id,
+      module: slot.module,
     }))
 
     await fetcher(`/api/screens/${screen.id}`, {
@@ -92,6 +92,7 @@ export default function Dashboard() {
   }
 
   const handleLayoutChange = (slots: ScreenSlot[]) => {
+    console.log('handleLayoutChange on parent', slots)
     setScreen({
       ...screen,
       slots,
@@ -106,7 +107,7 @@ export default function Dashboard() {
       moduleId: module.id,
       screenId: screen?.id,
       module,
-      width: 1,
+      width: 3,
       height: 1,
       x: 2,
       y: 2,

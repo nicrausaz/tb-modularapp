@@ -199,7 +199,7 @@ export default function Modules() {
           </table>
         </div>
       ) : (
-        <div className="grid grid-cols-2 xl:grid-cols-3 gap-8 items-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-center">
           {modules.map((module) => (
             <ModuleCard key={module.id} module={module} onAction={handleAction} />
           ))}

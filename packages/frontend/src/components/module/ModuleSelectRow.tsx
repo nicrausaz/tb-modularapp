@@ -16,7 +16,7 @@ export default function ModuleSelectRow({ module, selected = false, onSelect }: 
     <tr title={module.description}>
       <th>
         <label>
-          <input type="checkbox" className="checkbox" defaultChecked={selected} onChange={handleSelect} />
+          <input type="checkbox" className="checkbox" checked={selected} onChange={handleSelect} />
         </label>
       </th>
       <td>

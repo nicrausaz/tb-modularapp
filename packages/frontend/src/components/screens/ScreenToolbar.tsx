@@ -7,7 +7,7 @@ type ScreenToolbarProps = {
   currentScreen: Screen
   screens: Screen[]
   onScreenSelection: (screen: Screen) => void
-  onScreenAdd: (screenName: string) => void
+  onScreenAdd: ({ id, name }: { id: number; name: string }) => void
   onSave: (screen: Screen) => void
   onSlotAdd: () => void
   onNameChange: (name: string) => void
@@ -39,7 +39,11 @@ export default function ScreenToolbar({
   }
 
   const handleAddScreen = () => {
-    onScreenAdd(`Screen ${screens.length + 1}`)
+    const id = screens.reduce((biggest, screen) => (screen.id >= biggest ? screen.id + 1 : biggest), 1)
+    onScreenAdd({
+      id,
+      name: `Screen ${id}`,
+    })
   }
 
   const handleSaveScreen = () => {
@@ -61,7 +65,7 @@ export default function ScreenToolbar({
           defaultValue={screenName}
         />
       </div>
-      <div className='flex items-center'>
+      <div className="flex items-center">
         <input type="checkbox" className="toggle toggle-success" />
         <div className="dropdown dropdown-hover dropdown-end mr-2">
           <label tabIndex={0} className="btn m-1 truncate">

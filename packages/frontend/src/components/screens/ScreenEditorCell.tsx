@@ -10,6 +10,11 @@ type ScreenEditorCellProps = {
 }
 
 export default function ScreenEditorCell({ slot, onDelete, readonly = false }: ScreenEditorCellProps) {
+
+  if (!slot.module) {
+    return null
+  }
+
   return (
     <div className="bg-base-300 w-full h-full relative rounded">
       <ModuleRender id={slot.module.id} />
