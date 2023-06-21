@@ -90,7 +90,7 @@ export default class ModuleRepository {
         // Add the module to the database
         const registered = await this.manager.registerModule(moduleId)
         if (registered) {
-          resolve('The module has been successfully registered.')
+          resolve(moduleId)
         } else {
           rmSync(`${process.env.MODULES_DIR}/${moduleId}`, { recursive: true })
           reject('The module could not be registered. Please check its configuration.')

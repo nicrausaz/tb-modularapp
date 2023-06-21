@@ -116,37 +116,33 @@ export default function Modules() {
     await fetcher(`/api/modules/${id}`, {
       method: 'DELETE',
     })
+
+    setModules(modules.filter((module) => module.id !== id))
   }
 
   const handleUpload = async (file: File) => {
     const formData = new FormData()
     formData.append('file', file)
 
-    fetcher('/api/modules', {
+    fetcher<{ moduleId: string }>('/api/modules', {
       method: 'POST',
       body: formData,
     })
       .then((res) => {
-        console.log(res)
-        tSuccess('Success', 'Module uploaded successfully', 'modules/TODO')
-
-        fetcher<Module[]>(`/api/modules`).then((res) => {
-          setModules(res!)
-        })
+        tSuccess('Success', 'Module uploaded successfully', `/modules/${res.moduleId}`)
+        fetcher<Module[]>(`/api/modules`).then((res) => setModules(res || []))
       })
       .catch((err) => {
-        console.log(err)
         tError('Error', err.message)
       })
       .finally(() => {
         setUploadModalOpen(false)
       })
-    // TODO: reload modules
   }
 
   return (
     <div className="flex flex-col h-full pb-20">
-      <h1 className="text-2xl font-bold">Modules</h1>
+      <h1 className="text-2xl font-bold">{t('modules.title')}</h1>
 
       <div className="my-4 flex gap-2">
         <SearchBar
@@ -164,7 +160,8 @@ export default function Modules() {
         </button>
       </div>
 
-      {modules.length === 0 && <p className="text-center text-neutral mt-10">No modules found</p>}
+      {modules.length === 0 && <p className="text-center text-neutral mt-10">{t('modules.search_no_results')}</p>}
+
       <div className="grid grid-cols-2 xl:grid-cols-3 gap-8 items-center">
         {modules.map((module, i) => (
           <ModuleCard

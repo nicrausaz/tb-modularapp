@@ -11,22 +11,18 @@ export default async function fetcher<T>(url: string, options?: RequestInit, aut
     }
   }
 
-  try {
-    const response = await fetch(url, opts)
+  const response = await fetch(url, opts)
 
-    if (!response.ok) {
-      const jsonData = await response.json()
-      throw new Error(jsonData.message)
-    }
-
-    if (response.status === 204) {
-      return null
-    }
-
-    return (await getJsonOrText(response)) as T
-  } catch (error) {
-    throw new Error(error)
+  if (!response.ok) {
+    const jsonData = await response.json()
+    throw new Error(jsonData.message)
   }
+
+  if (response.status === 204) {
+    return null as T
+  }
+
+  return (await getJsonOrText(response)) as T
 }
 
 const getJsonOrText = async (response: Response) => {

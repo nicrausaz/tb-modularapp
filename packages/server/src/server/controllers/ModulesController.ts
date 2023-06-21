@@ -143,7 +143,7 @@ export default class ModulesController {
 
     this.moduleService
       .uploadModule(req.files.file as UploadedFile)
-      .then(() => res.status(201).send({ message: 'Module uploaded and registered successfully' }))
+      .then((id) => res.status(201).send({ message: 'Module uploaded and registered successfully', moduleId: id }))
       .catch(() => next(new BadRequestError('The module could not be uploaded. Please check its configuration.')))
   }
 

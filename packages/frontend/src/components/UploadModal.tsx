@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import Modal from './Modal'
 
 type UploadModalProps = {
@@ -11,6 +11,7 @@ type UploadModalProps = {
 export default function UploadModal({ open, onClose, onUpload, allowedFormats }: UploadModalProps) {
   const [error, setError] = useState<string>('')
   const [file, setFile] = useState<File | null>(null)
+  const input = useRef<HTMLInputElement>(null)
 
   const allowed = allowedFormats?.join(', ') ?? ''
 
@@ -26,7 +27,7 @@ export default function UploadModal({ open, onClose, onUpload, allowedFormats }:
       return
     }
 
-    clear()
+    setError('')
     setFile(file)
   }
 
@@ -36,14 +37,26 @@ export default function UploadModal({ open, onClose, onUpload, allowedFormats }:
       return
     }
     onUpload(file)
+    close()
   }
 
-  const clear = () => {
+  const close = () => {
     setError('')
+    setFile(null)
+    if (input.current) {
+      input.current.value = ''
+    }
+    onClose()
   }
 
   return (
-    <Modal isOpen={open} title="Add a new module from archive" onClose={onClose} confirmEnabled={file != null} onConfirm={submit}>
+    <Modal
+      isOpen={open}
+      title="Add a new module from archive"
+      onClose={close}
+      confirmEnabled={file != null}
+      onConfirm={submit}
+    >
       <div className="modal-body">
         <div className="form-control w-full">
           <label className="label">
@@ -55,6 +68,7 @@ export default function UploadModal({ open, onClose, onUpload, allowedFormats }:
             className="file-input file-input-bordered w-full"
             accept={allowed}
             onChange={handleUpload}
+            ref={input}
           />
           <label className="label">
             <span className="label-text-alt text-error">{error}</span>

@@ -95,8 +95,6 @@ export default class UserRepository {
   public async updateUser(id: number, user: UpdateUserDTO): Promise<void> {
     const db = getDB()
 
-    console.log(user)
-
     let query = 'UPDATE Users SET username = ?'
     const params = [user.username]
 

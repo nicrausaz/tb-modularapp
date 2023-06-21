@@ -74,11 +74,12 @@ export default function Dashboard() {
     // Transform screen slots
     screen.slots = screen.slots.map((slot) => ({
       id: slot.id,
-      moduleId: slot.module.id,
+      moduleId: slot.module?.id,
       width: slot.width,
       height: slot.height,
       x: slot.x,
       y: slot.y,
+      screenId: screen.id,
     }))
 
     await fetcher(`/api/screens/${screen.id}`, {
