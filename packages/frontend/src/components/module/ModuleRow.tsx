@@ -1,24 +1,45 @@
+import { useNavigate } from 'react-router-dom'
+import ContextDropdown from '../ContextDropdown'
+import { MoreDotsVertIcon } from '@/assets/icons'
 import { Module } from '@/models/Module'
-import { Link } from 'react-router-dom'
 
-type ModuleRowProps = {
+type ModuleCardProps = {
   module: Module
-  selected?: boolean
-  onSelect(module: Module, selected: boolean): void
+  onAction?: (type: string, id: string) => void
 }
 
-export default function ModuleRow({ module, selected = false, onSelect }: ModuleRowProps) {
-  const handleSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    onSelect(module, event.target.checked)
+export default function ModuleRow({ module, onAction }: ModuleCardProps) {
+  const navigate = useNavigate()
+
+  const actions = [
+    {
+      label: 'Edit',
+      onClick: () => onAction && onAction('edit', module.id),
+    },
+    {
+      label: 'Delete',
+      onClick: () => onAction && onAction('delete', module.id),
+    },
+  ]
+
+  if (module.enabled) {
+    actions.push({
+      label: 'Disable',
+      onClick: () => onAction && onAction('disable', module.id),
+    })
+  } else {
+    actions.push({
+      label: 'Enable',
+      onClick: () => onAction && onAction('enable', module.id),
+    })
+  }
+
+  const handleClick = () => {
+    navigate(`/modules/${module.id}`)
   }
 
   return (
-    <tr title={module.description}>
-      <th>
-        <label>
-          <input type="checkbox" className="checkbox" defaultChecked={selected} onChange={handleSelect} />
-        </label>
-      </th>
+    <tr className="cursor-pointer" onClick={handleClick}>
       <td>
         <div className="flex items-center space-x-3">
           <div className="avatar">
@@ -28,22 +49,24 @@ export default function ModuleRow({ module, selected = false, onSelect }: Module
           </div>
           <div>
             <div className="font-bold">{module.name}</div>
-            <div className="text-sm opacity-50">{module.author}</div>
           </div>
         </div>
       </td>
-      <td>{module.version}</td>
-      <th>
-        <div className="flex flex-row items-center">
-          {module.enabled ? (
-            <div className="badge badge-success badge-xs animate-pulse"></div>
-          ) : (
-            <div className="badge badge-error badge-xs"></div>
-          )}
-          <Link to={`/modules/${module.id}`} className="btn btn-ghost btn-xs ml-2">
-            details
-          </Link>
-        </div>
+      <td>{module.description}</td>
+      <td>
+        {module.author}
+        <br />
+        <span className="badge badge-ghost badge-sm">{module.version}</span>
+      </td>
+      <td>
+        {module.enabled ? (
+          <div className="badge badge-success badge-xs animate-pulse"></div>
+        ) : (
+          <div className="badge badge-error badge-xs"></div>
+        )}
+      </td>
+      <th onClick={(e) => e.stopPropagation()}>
+        <ContextDropdown icon={<MoreDotsVertIcon className="w-5 h-5" />} actions={actions} />
       </th>
     </tr>
   )

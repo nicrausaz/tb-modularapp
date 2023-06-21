@@ -1,6 +1,6 @@
 import { Module } from '@/models/Module'
 import ConfirmModal from '../ConfirmModal'
-import ModuleRow from './ModuleRow'
+import ModuleSelectRow from './ModuleSelectRow'
 import { useFetchAuth } from '@/hooks/useFetch'
 import { useEffect, useState } from 'react'
 import SearchBar from '../SearchBar'
@@ -105,7 +105,7 @@ export default function ChoseModulesModal({ isOpen, onClose, onConfirm }: Confir
             </thead>
             <tbody>
               {modules.map((module, i) => (
-                <ModuleRow key={i} module={module} selected={isSelected(module)} onSelect={handleSelect} />
+                <ModuleSelectRow key={i} module={module} selected={isSelected(module)} onSelect={handleSelect} />
               ))}
             </tbody>
           </table>

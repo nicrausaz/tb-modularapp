@@ -1,12 +1,14 @@
 import fetcher from '@/api/fetcher'
-import { UploadIcon } from '@/assets/icons'
+import { GridIcon, ListIcon, UploadIcon } from '@/assets/icons'
 import LoadingTopBar from '@/components/LoadingTopBar'
 import SearchBar from '@/components/SearchBar'
 import UploadModal from '@/components/UploadModal'
 import ConfirmModuleDeleteModal from '@/components/module/ConfirmModuleDeleteModal'
 import ModuleCard from '@/components/module/ModuleCard'
+import ModuleRow from '@/components/module/ModuleRow'
 import { useToast } from '@/contexts/ToastContext'
 import { useFetchAuth } from '@/hooks/useFetch'
+import { useLocalStorage } from '@/hooks/useLocalStorage'
 import { Module } from '@/models/Module'
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -17,12 +19,15 @@ export default function Modules() {
   const [modules, setModules] = useState<Module[]>([])
   const navigate = useNavigate()
 
+  const [preferedLayout, setPreferedLayout, _] = useLocalStorage('modules-layout', 'grid')
+
   const [confirmDelete, setConfirmDelete] = useState<boolean>(false)
   const [moduleToDelete, setModuleToDelete] = useState<Module | null>(null)
   const [uploadModalOpen, setUploadModalOpen] = useState<boolean>(false)
 
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [searchFilter, setSearchFilter] = useState<string>('All')
+  const [selectedLayout, setSelectedLayout] = useState<string>(preferedLayout)
 
   const { t } = useTranslation()
   const { tSuccess, tError } = useToast()
@@ -140,6 +145,12 @@ export default function Modules() {
       })
   }
 
+  const toggleLayout = () => {
+    const newLayout = selectedLayout === 'grid' ? 'list' : 'grid'
+    setSelectedLayout(newLayout)
+    setPreferedLayout(newLayout)
+  }
+
   return (
     <div className="flex flex-col h-full pb-20">
       <h1 className="text-2xl font-bold">{t('modules.title')}</h1>
@@ -154,6 +165,12 @@ export default function Modules() {
           onFilterChange={(filter) => setSearchFilter(filter)}
         />
 
+        <label className="btn border border-gray-300 swap swap-rotate">
+          <input type="checkbox" onChange={toggleLayout} />
+          <GridIcon className="w-6 h-6 swap-on" />
+          <ListIcon className="w-6 h-6 swap-off" />
+        </label>
+
         <button className="btn border border-gray-300" onClick={() => setUploadModalOpen(true)}>
           <UploadIcon className="w-5 h-5" />
           Add
@@ -162,18 +179,32 @@ export default function Modules() {
 
       {modules.length === 0 && <p className="text-center text-neutral mt-10">{t('modules.search_no_results')}</p>}
 
-      <div className="grid grid-cols-2 xl:grid-cols-3 gap-8 items-center">
-        {modules.map((module, i) => (
-          <ModuleCard
-            key={i}
-            id={module.id}
-            title={module.name}
-            description={module.description}
-            active={module.enabled}
-            onAction={handleAction}
-          />
-        ))}
-      </div>
+      {selectedLayout === 'list' ? (
+        <div className="table-pin-rows overflow-auto">
+          <table className="table">
+            <thead className="bg-base-200">
+              <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Infos</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {modules.map((module) => (
+                <ModuleRow key={module.id} module={module} onAction={handleAction} />
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 xl:grid-cols-3 gap-8 items-center">
+          {modules.map((module) => (
+            <ModuleCard key={module.id} module={module} onAction={handleAction} />
+          ))}
+        </div>
+      )}
 
       {moduleToDelete && (
         <ConfirmModuleDeleteModal
