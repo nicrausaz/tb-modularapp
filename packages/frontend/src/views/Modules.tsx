@@ -9,6 +9,7 @@ import { useToast } from '@/contexts/ToastContext'
 import { useFetchAuth } from '@/hooks/useFetch'
 import { Module } from '@/models/Module'
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
 export default function Modules() {
@@ -23,6 +24,7 @@ export default function Modules() {
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [searchFilter, setSearchFilter] = useState<string>('All')
 
+  const { t } = useTranslation()
   const { tSuccess, tError } = useToast()
 
   useEffect(() => {
@@ -162,6 +164,7 @@ export default function Modules() {
         </button>
       </div>
 
+      {modules.length === 0 && <p className="text-center text-neutral mt-10">No modules found</p>}
       <div className="grid grid-cols-2 xl:grid-cols-3 gap-8 items-center">
         {modules.map((module, i) => (
           <ModuleCard

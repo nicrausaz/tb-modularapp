@@ -1,6 +1,7 @@
 import { User, UserCreate } from '@/models/User'
 import ConfirmModal from '../ConfirmModal'
 import { useState } from 'react'
+import FilePreviewerInput from '../FilePreviewerInput'
 
 type UserEditionModalProps = {
   isOpen: boolean
@@ -29,6 +30,10 @@ export default function UserEditionModal({ isOpen, user, onClose, onConfirm }: U
     onConfirm(mode, newUser)
   }
 
+  const uploadPicture = (file: File) => {
+    console.log('upload picture', file)
+  }
+
   const cleanAndClose = () => {
     setUsername('')
     setPassword('')
@@ -39,6 +44,12 @@ export default function UserEditionModal({ isOpen, user, onClose, onConfirm }: U
     <ConfirmModal isOpen={isOpen} title={title} onConfirm={handleConfirm} onClose={cleanAndClose}>
       <div className="modal-body">
         <div className="form-control">
+          <FilePreviewerInput
+            onUpload={() => {
+              uploadPicture
+            }}
+            allowedFormats={['image/*']}
+          />
           <label className="label">
             <span className="label-text">Username</span>
           </label>

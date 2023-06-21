@@ -1,12 +1,10 @@
 import { AddUserIcon, SettingsIcon, TrashIcon } from '@/assets/icons'
-import { User } from '@/models/User'
+import { User, UserCreate } from '@/models/User'
 import UserEditionModal from './UserEditionModal'
 import { useState } from 'react'
 import fetcher from '@/api/fetcher'
-
-type UsersListProps = {
-  users: User[]
-}
+import { useToast } from '@/contexts/ToastContext'
+import ConfirmUserDeleteModal from './ConfirmUserDeleteModal'
 
 type UserRowProps = {
   user: User
@@ -37,11 +35,18 @@ function UserRow({ user, onClickEdit, onClickDelete }: UserRowProps) {
   )
 }
 
-export default function UsersList({ users }: UsersListProps) {
+type UsersListProps = {
+  users: User[]
+  onUpdated(): void
+}
+
+export default function UsersList({ users, onUpdated }: UsersListProps) {
   const [userEditionModalOpen, setUserEditionModalOpen] = useState(false)
   const [userDeletionModalOpen, setUserDeletionModalOpen] = useState(false)
   const [editingUser, setEditingUser] = useState<User | null>(null)
   const [deletingUser, setDeletingUser] = useState<User | null>(null)
+
+  const { tSuccess } = useToast()
 
   const openAddUserModal = () => {
     setUserEditionModalOpen(true)
@@ -58,8 +63,11 @@ export default function UsersList({ users }: UsersListProps) {
     setDeletingUser(user)
   }
 
-  const handleConfirm = async (action: string, user: User) => {
+  const handleConfirm = async (action: string, user: UserCreate) => {
     setUserEditionModalOpen(false)
+
+    console.log('action', action)
+    console.log('user', user)
 
     if (action === 'create') {
       await fetcher('/api/users', {
@@ -69,7 +77,8 @@ export default function UsersList({ users }: UsersListProps) {
         },
         body: JSON.stringify(user),
       })
-    } else {
+      tSuccess('Success', 'User created')
+    } else if (action === 'update') {
       await fetcher(`/api/users/${user.id}`, {
         method: 'PATCH',
         headers: {
@@ -77,7 +86,19 @@ export default function UsersList({ users }: UsersListProps) {
         },
         body: JSON.stringify(user),
       })
+      tSuccess('Success', 'User updated')
     }
+
+    onUpdated()
+  }
+
+  const handleDelete = async (userId: number) => {
+    setUserDeletionModalOpen(false)
+    await fetcher(`/api/users/${userId}`, {
+      method: 'DELETE',
+    })
+    tSuccess('Success', 'User deleted')
+    onUpdated()
   }
 
   return (
@@ -101,7 +122,12 @@ export default function UsersList({ users }: UsersListProps) {
         onConfirm={handleConfirm}
         onClose={() => setUserEditionModalOpen(false)}
       />
-      {/* <ConfirmUserDeleteModal isOpen={userDeletionModalOpen} /> */}
+      <ConfirmUserDeleteModal
+        user={deletingUser}
+        isOpen={userDeletionModalOpen}
+        onConfirm={handleDelete}
+        onClose={() => setUserDeletionModalOpen(false)}
+      />
     </div>
   )
 }

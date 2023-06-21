@@ -1,11 +1,20 @@
+import fetcher from '@/api/fetcher'
 import LoadingTopBar from '@/components/LoadingTopBar'
 import ThemePicker from '@/components/ThemePicker'
 import UsersList from '@/components/users/UsersList'
 import { useFetchAuth } from '@/hooks/useFetch'
 import { User } from '@/models/User'
+import { useEffect, useState } from 'react'
 
 export default function Settings() {
-  const { data: users, loading, error } = useFetchAuth<User[]>('/api/users')
+  const { data, loading, error } = useFetchAuth<User[]>('/api/users')
+  const [users, setUsers] = useState<User[]>([])
+
+  useEffect(() => {
+    if (data) {
+      setUsers(data)
+    }
+  }, [data])
 
   if (loading) {
     return <LoadingTopBar />
@@ -17,6 +26,14 @@ export default function Settings() {
 
   if (!users) {
     return <div>No users</div>
+  }
+
+  const refreshUsers = async () => {
+    const data = await fetcher<User[]>('/api/users')
+    console.log('refresh', data)
+    if (data) {
+      setUsers(data)
+    }
   }
 
   return (
@@ -44,7 +61,7 @@ export default function Settings() {
         </div>
         <div className="divider text-2xl text-neutral font-bold my-6">Box configuration</div>
 
-        <UsersList users={users} />
+        <UsersList users={users} onUpdated={refreshUsers} />
       </div>
     </div>
   )

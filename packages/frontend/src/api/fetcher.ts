@@ -23,9 +23,17 @@ export default async function fetcher<T>(url: string, options?: RequestInit, aut
       return null
     }
 
-    const jsonData = await response.json()
-    return jsonData as T
+    return (await getJsonOrText(response)) as T
   } catch (error) {
     throw new Error(error)
+  }
+}
+
+const getJsonOrText = async (response: Response) => {
+  const contentType = response.headers.get('content-type')
+  if (contentType && contentType.includes('application/json')) {
+    return await response.json()
+  } else {
+    return await response.text()
   }
 }

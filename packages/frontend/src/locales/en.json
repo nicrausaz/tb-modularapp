@@ -15,6 +15,10 @@
       "submit": "Log in"
     }
   },
+  "modules": {
+    "title": "Modules",
+    "search_no_results": "No modules matching your search were found."
+  },
   "errors": {
     "not_found": {
       "title": "Page not found",
