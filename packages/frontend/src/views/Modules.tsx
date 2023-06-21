@@ -153,7 +153,7 @@ export default function Modules() {
 
   return (
     <div className="flex flex-col h-full pb-20">
-      <h1 className="text-2xl font-bold">{t('modules.title')}</h1>
+      {/* <h1 className="text-2xl font-bold">{t('modules.title')}</h1> */}
 
       <div className="my-4 flex gap-2">
         <SearchBar
@@ -177,34 +177,37 @@ export default function Modules() {
         </button>
       </div>
 
-      {modules.length === 0 && <p className="text-center text-neutral mt-10">{t('modules.search_no_results')}</p>}
+      <hr />
+      <div className="m-2">
+        {modules.length === 0 && <p className="text-center text-neutral mt-10">{t('modules.search_no_results')}</p>}
 
-      {selectedLayout === 'list' ? (
-        <div className="table-pin-rows overflow-auto">
-          <table className="table">
-            <thead className="bg-base-200">
-              <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Infos</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {modules.map((module) => (
-                <ModuleRow key={module.id} module={module} onAction={handleAction} />
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-center">
-          {modules.map((module) => (
-            <ModuleCard key={module.id} module={module} onAction={handleAction} />
-          ))}
-        </div>
-      )}
+        {selectedLayout === 'list' ? (
+          <div className="table-pin-rows overflow-auto">
+            <table className="table">
+              <thead className="bg-base-200">
+                <tr>
+                  <th>Name</th>
+                  <th>Description</th>
+                  <th>Infos</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {modules.map((module) => (
+                  <ModuleRow key={module.id} module={module} onAction={handleAction} />
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-center">
+            {modules.map((module) => (
+              <ModuleCard key={module.id} module={module} onAction={handleAction} />
+            ))}
+          </div>
+        )}
+      </div>
 
       {moduleToDelete && (
         <ConfirmModuleDeleteModal

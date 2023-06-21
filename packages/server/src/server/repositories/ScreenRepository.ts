@@ -240,7 +240,7 @@ export default class ScreenRepository {
   private updateScreen(screen: ScreenEntity) {
     const db = getDB()
     return new Promise((resolve, reject) => {
-      db.run('UPDATE Screens SET name = ? WHERE id = ?', [screen.name, screen.id], (err) => {
+      db.run('UPDATE Screens SET name = ?, enabled = ? WHERE id = ?', [screen.name, screen.enabled, screen.id], (err) => {
         if (err) {
           reject(err)
         }

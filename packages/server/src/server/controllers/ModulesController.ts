@@ -65,8 +65,19 @@ export default class ModulesController {
     // res.write('data: Connected\n\n')
 
     // Gestion de la fin de la connexion SSE
+    // TODO: THIS IS NOT WORKING
     req.on('close', () => {
+      console.log('SSE Connection closed')
       this.moduleService.unsubscribeFromModuleEvents(moduleId, handleModuleEvent)
+    })
+
+    req.on('end', () => {
+      console.log('SSE Connection closed')
+      this.moduleService.unsubscribeFromModuleEvents(moduleId, handleModuleEvent)
+    })
+
+    res.on('close', () => {
+      console.log('SSE Connection closed (res)')
     })
   }
 

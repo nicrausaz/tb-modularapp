@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import GridLayout, { Layout } from 'react-grid-layout'
 import ScreenEditorCell from './ScreenEditorCell'
 import { Module } from '@/models/Module'
@@ -44,6 +44,7 @@ const layoutToScreenSlot = (layout: AugmentedLayout): ScreenSlot => {
 
 export default function ScreenEditor({ slots, onChange, readonly = false }: ScreenEditorProps) {
   const [layout, setLayout] = useState<AugmentedLayout[]>([])
+  const container = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     setLayout(slots.map(screenSlotToLayout))
@@ -59,7 +60,7 @@ export default function ScreenEditor({ slots, onChange, readonly = false }: Scre
   }
 
   const onLayoutChange = (
-    updated: AugmentedLayout[],
+    updated: Layout[],
     _oldItem: Layout,
     _newItem: Layout,
     _placeholder: Layout,
@@ -88,22 +89,21 @@ export default function ScreenEditor({ slots, onChange, readonly = false }: Scre
     isResizable: !readonly,
     cols: 12,
     rowHeight: 150,
-    width: 1200,
+    maxRows: 5,
+    width: container.current?.clientWidth || 0,
     resizeHandles: ['se'],
     compactType: null,
   }
 
-  if (!layout.length) {
-    return null
-  }
-
   return (
-    <GridLayout {...editorProps} layout={layout} onDragStop={onLayoutChange} className="border relative">
-      {slots.map((slot) => (
-        <div key={slot.id}>
-          <ScreenEditorCell slot={slot} onDelete={removeSlot} readonly={readonly} />
-        </div>
-      ))}
-    </GridLayout>
+    <div className="border rounded-lg h-screen w-screen" ref={container}>
+      <GridLayout {...editorProps} layout={layout} onDragStop={onLayoutChange}>
+        {slots.map((slot) => (
+          <div key={slot.id}>
+            <ScreenEditorCell slot={slot} onDelete={removeSlot} readonly={readonly} />
+          </div>
+        ))}
+      </GridLayout>
+    </div>
   )
 }

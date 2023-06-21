@@ -11,41 +11,30 @@ export default function ModuleRender({ id }: { id: string }) {
   useEffect(() => {
     const source = new EventSource(`/api/modules/${id}/events`)
 
-    source.addEventListener(
-      'message',
-      (e) => {
-        setData(JSON.parse(e.data).data)
-        setRender(JSON.parse(e.data).render)
-      },
-      false,
-    )
+    source.onmessage = (e) => {
+      setData(JSON.parse(e.data).data)
+      setRender(JSON.parse(e.data).render)
+    }
 
-    source.addEventListener(
-      'open',
-      function (e) {
-        setLoading(false)
-        setStatus('active')
-      },
-      false,
-    )
-    source.addEventListener(
-      'error',
-      function (e) {
-        setLoading(false)
-        setStatus('error')
-      },
-      false,
-    )
+    source.onopen = () => {
+      setLoading(false)
+      setStatus('active')
+    }
+
+    source.onerror = () => {
+      setLoading(false)
+      setStatus('error')
+    }
 
     return () => {
+      console.log('close on client')
       source.close()
     }
-  }, [])
+  }, [id])
 
   if (loading) {
-    // todo: center
     return (
-      <div className="w-full h-full text-center">
+      <div className="w-full h-full flex justify-center">
         <span className="loading loading-ring loading-lg"></span>
       </div>
     )

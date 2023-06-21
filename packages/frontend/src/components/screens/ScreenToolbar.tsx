@@ -12,6 +12,7 @@ type ScreenToolbarProps = {
   onSlotAdd: () => void
   onNameChange: (name: string) => void
   onDelete: (screen: Screen) => void
+  onToggleEnabled: (enabled: boolean) => void
 }
 
 export default function ScreenToolbar({
@@ -23,6 +24,7 @@ export default function ScreenToolbar({
   onSlotAdd,
   onNameChange,
   onDelete,
+  onToggleEnabled,
 }: ScreenToolbarProps) {
   const [screenName, setScreenName] = useState('')
 
@@ -54,6 +56,10 @@ export default function ScreenToolbar({
     onDelete(currentScreen)
   }
 
+  const toggleEnabled = () => {
+    onToggleEnabled(!currentScreen.enabled)
+  }
+
   return (
     <div className="flex justify-between items-center border w-full rounded-lg shadow bg-base-200 p-2 mb-4">
       <div>
@@ -66,7 +72,12 @@ export default function ScreenToolbar({
         />
       </div>
       <div className="flex items-center">
-        <input type="checkbox" className="toggle toggle-success" />
+        <input
+          type="checkbox"
+          className="toggle toggle-success"
+          onChange={toggleEnabled}
+          defaultChecked={currentScreen.enabled}
+        />
         <div className="dropdown dropdown-hover dropdown-end mr-2">
           <label tabIndex={0} className="btn m-1 truncate">
             {screenName}

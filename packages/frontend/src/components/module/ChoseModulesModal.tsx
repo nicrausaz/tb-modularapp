@@ -70,7 +70,6 @@ export default function ChoseModulesModal({ isOpen, onClose, onConfirm }: Confir
   }
 
   const isSelected = (module: Module) => {
-    console.log("checking if module is selected", module.name)
     return selectedModules.find((m) => m.id === module.id) !== undefined
   }
 

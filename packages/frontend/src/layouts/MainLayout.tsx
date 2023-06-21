@@ -27,7 +27,7 @@ function MainLayout() {
   ]
 
   return (
-    <div>
+    <div className="min-h-screen">
       <ToastContainer />
       <Navbar />
       <div className="mx-4 my-2">

@@ -139,6 +139,7 @@ export default function Dashboard() {
           onSave={saveScreen}
           onSlotAdd={() => setModulesModalOpen(true)}
           onDelete={() => setDeleteScreenModalOpen(true)}
+          onToggleEnabled={() => setScreen({ ...screen, enabled: !screen.enabled })}
         />
         {screen.slots.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-32">
