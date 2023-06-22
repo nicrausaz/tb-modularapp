@@ -34,9 +34,9 @@ export default function LoginForm({ onSubmit }: LoginFormProps) {
       <div className="card-body">
         <div className="form-control">
           <label className="label">
-            <span className="label-text">{t('login.form.email')}</span>
+            <span className="label-text">{t('login.form.username')}</span>
           </label>
-          <input type="text" placeholder="email" className="input input-bordered" onChange={handleUsernameChange} />
+          <input type="text" placeholder="username" className="input input-bordered" onChange={handleUsernameChange} />
         </div>
         <div className="form-control">
           <label className="label">

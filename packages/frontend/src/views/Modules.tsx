@@ -152,7 +152,7 @@ export default function Modules() {
   }
 
   return (
-    <div className="flex flex-col h-full pb-20">
+    <div className="flex flex-col h-full pb-20 mx-4">
       {/* <h1 className="text-2xl font-bold">{t('modules.title')}</h1> */}
 
       <div className="my-4 flex gap-2">
@@ -176,9 +176,8 @@ export default function Modules() {
           Add
         </button>
       </div>
-
       <hr />
-      <div className="m-2">
+      <div className="my-4">
         {modules.length === 0 && <p className="text-center text-neutral mt-10">{t('modules.search_no_results')}</p>}
 
         {selectedLayout === 'list' ? (

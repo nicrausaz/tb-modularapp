@@ -12,6 +12,8 @@ export default function ModuleSelectRow({ module, selected = false, onSelect }: 
     onSelect(module, event.target.checked)
   }
 
+  const iconLink = module.icon ? `/api/box/static/module/${module.id}/${module.icon}` : '/assets/module_placeholder.svg'
+
   return (
     <tr title={module.description}>
       <th>
@@ -23,7 +25,7 @@ export default function ModuleSelectRow({ module, selected = false, onSelect }: 
         <div className="flex items-center space-x-3">
           <div className="avatar">
             <div className="mask w-12 h-12">
-              <img src="/assets/module_placeholder.svg" />
+              <img src={iconLink} />
             </div>
           </div>
           <div>

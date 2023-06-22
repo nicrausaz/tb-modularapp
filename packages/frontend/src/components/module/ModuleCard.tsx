@@ -32,6 +32,8 @@ export default function ModuleCard({ module, onAction }: ModuleCardProps) {
     })
   }
 
+  const iconLink = module.icon ? `/api/box/static/module/${module.id}/${module.icon}` : '/assets/module_placeholder.svg'
+
   return (
     <div className="card card-side bg-base-200 shadow-xl disabled">
       <div className="absolute -translate-y-2">
@@ -42,7 +44,7 @@ export default function ModuleCard({ module, onAction }: ModuleCardProps) {
         )}
       </div>
       <Link className="card-body flex flex-row items-center" title={module.description} to={`/modules/${module.id}`}>
-        <img className="mask" src="/assets/module_placeholder.svg" width={100} height={100} />
+        <img className="mask" src={iconLink} width={100} height={100} />
         <div>
           {module.nickname ? (
             <h2 className="card-title">

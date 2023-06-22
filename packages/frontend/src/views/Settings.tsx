@@ -35,18 +35,15 @@ export default function Settings() {
       setUsers(data)
     }
   }
-
+  // todo: use same layout as module.tsx
   return (
     <div className="flex flex-col w-full items-center pb-20">
-      <div className="bg-base-100 shadow rounded-box w-full md:w-3/4 p-4">
-        <div className="hero">
+      <div className="bg-base-100 shadow rounded-box w-full md:w-3/4 p-4 ">
+        <div className="hero bg-gradient-to-r from-primary to-accent">
           <div className="hero-content flex-col lg:flex-row-reverse justify-between">
-            <img
-              className="mask mask-squircle w-40 lg:w-60 shadow-2xl"
-              src="https://daisyui.com/images/stock/photo-1494232410401-ad00d5433cfa.jpg"
-            />
+            <img className="mask w-40 lg:w-50 shadow-2xl" src="http://localhost:3000/api/box/static/box_logo.svg" />
             <div>
-              <h1 className="text-5xl font-bold">Modular app</h1>
+              <h1 className="text-4xl font-bold">Modular app</h1>
               <div>
                 <svg className="w-6 h-6 mr-2" viewBox="0 0 24 24" />
                 <p className="font-bold">v1.0</p>

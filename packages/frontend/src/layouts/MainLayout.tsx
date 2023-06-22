@@ -30,7 +30,7 @@ function MainLayout() {
     <div className="min-h-screen">
       <ToastContainer />
       <Navbar />
-      <div className="mx-4 my-2">
+      <div>
         <Outlet />
       </div>
       <FooterNav links={links} active={active} />

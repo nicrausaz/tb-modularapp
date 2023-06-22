@@ -38,13 +38,15 @@ export default function ModuleRow({ module, onAction }: ModuleCardProps) {
     navigate(`/modules/${module.id}`)
   }
 
+  const iconLink = module.icon ? `/api/box/static/module/${module.id}/${module.icon}` : '/assets/module_placeholder.svg'
+
   return (
     <tr className="cursor-pointer" onClick={handleClick}>
       <td>
         <div className="flex items-center space-x-3">
           <div className="avatar">
             <div className="mask w-12 h-12">
-              <img src="/assets/module_placeholder.svg" />
+              <img src={iconLink} />
             </div>
           </div>
           <div>

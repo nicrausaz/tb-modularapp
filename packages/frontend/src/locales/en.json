@@ -9,7 +9,7 @@
     "title": "Log in",
     "subtitle": "Log in to your account and start automating your workflow.",
     "form": {
-      "email": "Email",
+      "username": "Username",
       "password": "Password",
       "forgot": "Forgot your password ?",
       "submit": "Log in"

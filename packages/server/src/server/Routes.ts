@@ -329,12 +329,13 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
 
   app.get('/api/box/static/:filename', boxController.staticFile)
 
+  app.get('/api/box/static/module/:moduleId/:filename', boxController.moduleStaticFile)
+
   app.post('api/box', JwtAuthMiddleware, boxController.update)
 
   /**
    * User routes
    */
-
   app.get('/api/users', JwtAuthMiddleware, userController.index)
 
   app.post('/api/users', JwtAuthMiddleware, userController.create)

@@ -84,18 +84,17 @@ export default function Module() {
       })
   }
 
+  const iconLink = module.icon ? `/api/box/static/module/${module.id}/${module.icon}` : '/assets/module_placeholder.svg'
+
   return (
     <div className="flex flex-col h-full pb-20">
-      <div className="hero ">
-        <div className="hero-content flex-col lg:flex-row-reverse justify-between">
-          <img
-            className="mask mask-squircle w-32 lg:w-40 shadow-2xl"
-            src="https://daisyui.com/images/stock/photo-1494232410401-ad00d5433cfa.jpg"
-          />
+      <div className="hero bg-gradient-to-r from-primary to-accent shadow-inner py-10">
+        <div className="hero-content flex-col lg:flex-row-reverse justify-between gap-10">
+          <img className="mask w-32 lg:w-40" src={iconLink} />
           {/* {module.icon} */}
           <div className=" ">
             {module.nickname ? (
-              <span className="text-4xl font-bold ">
+              <span className="text-4xl font-bold">
                 {module.nickname} <span className="text-sm italic text-neutral">({module.name})</span>
               </span>
             ) : (
@@ -177,7 +176,9 @@ export default function Module() {
             </label>
           </div>
           <div className="flex items-center justify-end gap-2 mt-2">
-            <button className="btn btn-primary" onClick={handleSaveModule}>Save</button>
+            <button className="btn btn-primary" onClick={handleSaveModule}>
+              Save
+            </button>
           </div>
         </div>
       </div>
