@@ -153,13 +153,19 @@ export default class ModulesController {
    */
   upload = (req: Request, res: Response, next: NextFunction) => {
     if (!req.files || Object.keys(req.files).length === 0) {
-      throw new BadRequestError('No files were uploaded.')
+      throw new BadRequestError('No files were uploaded')
+    }
+
+    const file = req.files.file as UploadedFile
+
+    if (file.mimetype !== 'application/zip') {
+      throw new BadRequestError('The file must be a zip')
     }
 
     this.moduleService
-      .uploadModule(req.files.file as UploadedFile)
+      .uploadModule(file)
       .then((id) => res.status(201).send({ message: 'Module uploaded and registered successfully', moduleId: id }))
-      .catch(() => next(new BadRequestError('The module could not be uploaded. Please check its configuration.')))
+      .catch(() => next(new BadRequestError('The module could not be uploaded. Please check its configuration')))
   }
 
   /**

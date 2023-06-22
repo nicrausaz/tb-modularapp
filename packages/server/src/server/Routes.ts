@@ -133,8 +133,8 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    * @swagger
    * /api/modules:
    *   get:
-   *     summary: Get the connected user information
-   *     description: Decode the JWT token and return the user information
+   *     summary: Get the imported modules
+   *     description: Get the list of modules imported in the application
    *     tags: [Modules]
    *     security:
    *       - bearer: []
@@ -146,15 +146,9 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *             schema:
    *               type: object
    *               properties:
-   *                 id:
-   *                   type: number
-   *                 username:
-   *                   type: string
-   *                 iat:
-   *                   type: number
-   *                 exp:
-   *                   type: number
-   *             example: {
+   *                 modules:
+   *                   type: array
+   *             example: [{
    *                           "id": "1344ca73-5bd2-472e-a75d-45d2c6c5f7a0",
    *                           "name": "ZIP-Module",
    *                           "description": "A module used for debug",
@@ -164,14 +158,145 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *                           "nickname": null,
    *                           "enabled": false,
    *                           "importedAt": "2023-06-22 08:08:47"
-   *                       }
+   *                       }]
    */
   app.get('/api/modules', JwtAuthMiddleware, modulesController.index)
 
+  /**
+   * @swagger
+   * /api/modules:
+   *   post:
+   *     summary: Import a module
+   *     description: Import the archive file of a module into the application
+   *     tags: [Modules]
+   *     security:
+   *       - bearer: []
+   *     consumes:
+   *       - multipart/form-data
+   *     parameters:
+   *        - in: formData
+   *          name: file
+   *          type: file
+   *          description: The module archive file
+   *     responses:
+   *       200:
+   *         description: Module imported successfully
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *                 moduleId:
+   *                   type: string
+   *             example: {
+   *                          "message": "Module uploaded and registered successfully",
+   *                          "moduleId": "1344ca73-5bd2-472e-a75d-45d2c6c5f7a0"
+   *                       }
+   *       400:
+   *         description: No file provided, invalid file format or invalid archive structure. Each error is returned in the response message
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *             example: {
+   *                          "message": "No files were uploaded",
+   *                       }
+   */
   app.post('/api/modules', JwtAuthMiddleware, modulesController.upload)
 
+  /**
+   * @swagger
+   * /api/modules/{id}:
+   *   get:
+   *     summary: Get a module
+   *     description: Get a module information and its configuration
+   *     tags: [Modules]
+   *     security:
+   *       - bearer: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: The module id
+   *     responses:
+   *       200:
+   *         description: Module exists
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *                 moduleId:
+   *                   type: string
+   *             example: {
+   *                         "id": "1344ca73-5bd2-472e-a75d-45d2c6c5f7a0",
+   *                         "name": "ZIP-Module",
+   *                         "description": "A module used for debug",
+   *                         "author": "Nicolas Crausaz",
+   *                         "version": "1.0.0",
+   *                         "icon": "debug.png",
+   *                         "nickname": null,
+   *                         "enabled": false,
+   *                         "importedAt": "2023-06-22 08:08:47",
+   *                         "defaultConfig": [],
+   *                         "currentConfig": []
+   *                      }
+   *       404:
+   *         description: The module does not exist
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *             example: {
+   *                          "message": "Module not found",
+   *                       }
+   */
   app.get('/api/modules/:id', JwtAuthMiddleware, modulesController.module)
 
+  /**
+   * @swagger
+   * /api/modules/{id}:
+   *   delete:
+   *     summary: Delete a module
+   *     description: Delete a module from the application
+   *     tags: [Modules]
+   *     security:
+   *       - bearer: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: The module id
+   *     responses:
+   *       204:
+   *         description: Module deleted
+   *       404:
+   *         description: The module does not exist
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *             example: {
+   *                          "message": "Module not found",
+   *                       }
+   */
   app.delete('/api/modules/:id', JwtAuthMiddleware, modulesController.delete)
 
   app.get('/api/modules/:id/events', modulesController.moduleEvents)
