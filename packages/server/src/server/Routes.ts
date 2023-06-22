@@ -299,6 +299,8 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    */
   app.delete('/api/modules/:id', JwtAuthMiddleware, modulesController.delete)
 
+  app.patch('/api/modules/:id', JwtAuthMiddleware, modulesController.update)
+
   app.get('/api/modules/:id/events', modulesController.moduleEvents)
 
   app.post('/api/modules/:id/events', JwtAuthMiddleware, modulesController.sendEvent)

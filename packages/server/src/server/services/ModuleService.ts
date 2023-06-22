@@ -1,4 +1,4 @@
-import { ModuleConfigurationUpdateDTO, ModuleDTO, ModuleDTOWithConfigs } from '../models/DTO/ModuleDTO'
+import { ModuleConfigurationUpdateDTO, ModuleDTO, ModuleDTOWithConfigs, UpdateModuleDTO } from '../models/DTO/ModuleDTO'
 import { ModuleRepository } from '../repositories'
 import type { UploadedFile } from 'express-fileupload'
 
@@ -19,6 +19,10 @@ export default class ModuleService {
   getModuleWithEvents = async (id: string): Promise<ModuleDTOWithConfigs | null> => {
     const entry = await this.getModuleEntry(id)
     return entry?.enabled ? entry : null
+  }
+
+  updateModule = (id: string, update: UpdateModuleDTO): Promise<string | null> => {
+    return this.moduleRepository.updateModule(id, update)
   }
 
   updateModuleConfiguration = (id: string, config: ModuleConfigurationUpdateDTO) => {

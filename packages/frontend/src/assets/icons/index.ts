@@ -17,6 +17,9 @@ import CrossIcon from './CrossIcon'
 import AddUserIcon from './AddUserIcon'
 import GridIcon from './GridIcon'
 import ListIcon from './ListIcon'
+import DeveloperIcon from './DeveloperIcon'
+import VersionIcon from './VersionIcon'
+import TimeIcon from './TimeIcon'
 
 export {
   BoxIcon,
@@ -38,4 +41,7 @@ export {
   AddUserIcon,
   GridIcon,
   ListIcon,
+  DeveloperIcon,
+  VersionIcon,
+  TimeIcon,
 }

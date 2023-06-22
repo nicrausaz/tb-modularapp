@@ -12,6 +12,10 @@ export type ModuleDTO = {
   readonly importedAt: Date
 }
 
+export type UpdateModuleDTO = {
+  readonly nickname: string
+}
+
 export type ModuleDTOWithConfigs = ModuleDTO & {
   readonly defaultConfig: SpecificConfigurationEntry[]
   currentConfig: SpecificConfigurationEntry[]

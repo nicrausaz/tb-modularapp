@@ -7,6 +7,7 @@ export type Module = {
   readonly description: string
   readonly author: string
   readonly version: string
+  readonly icon: string
   enabled: boolean
   currentConfig: Configuration
   readonly importedAt: Date

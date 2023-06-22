@@ -1,7 +1,7 @@
 import { getDB } from '../../database/database'
 import ModuleDatabaseManager from '../helpers/ModuleDatabaseManager'
 import ModuleMapper from '../mappers/ModuleMapper'
-import { ModuleConfigurationUpdateDTO, ModuleDTO, ModuleDTOWithConfigs } from '../models/DTO/ModuleDTO'
+import { ModuleConfigurationUpdateDTO, ModuleDTO, ModuleDTOWithConfigs, UpdateModuleDTO } from '../models/DTO/ModuleDTO'
 import type { UploadedFile } from 'express-fileupload'
 import { randomUUID } from 'crypto'
 import { mkdirSync, rmSync } from 'fs'
@@ -29,6 +29,26 @@ export default class ModuleRepository {
     const module = await this.manager.getModule(id)
 
     return ModuleMapper.toModuleDTOWithConfigs(module)
+  }
+
+  async updateModule(id: string, update: UpdateModuleDTO): Promise<string | null> {
+    const entry = await this.manager.getModule(id)
+
+    if (!entry) {
+      return null
+    }
+
+    const db = getDB()
+    return new Promise((resolve, reject) => {
+      db.all('UPDATE Modules SET nickname = ? WHERE id = ? RETURNING id', [update.nickname, id], (err, rows) => {
+        if (err) {
+          reject(err)
+        }
+
+        resolve((rows[0] as { id: string }).id)
+      })
+      db.close()
+    })
   }
 
   async updateModuleConfiguration(id: string, config: ModuleConfigurationUpdateDTO): Promise<string | null> {

@@ -32,8 +32,8 @@ export default function ConfigurationEditor({ configuration, onSave }: Configura
       ])}
 
       <div className="flex items-center justify-end gap-2 mt-2">
-        <button className="btn btn-primary">Reset to default</button>
-        <button className="btn btn-error" onClick={handleSave}>
+        <button className="btn">Reset to default</button>
+        <button className="btn btn-primary" onClick={handleSave}>
           Save
         </button>
       </div>

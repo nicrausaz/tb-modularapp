@@ -34,6 +34,20 @@ export default class ModulesController {
     res.send(module)
   }
 
+  update = async (req: Request, res: Response) => {
+    const updatedId = await this.moduleService.updateModule(req.params.id, req.body)
+
+    if (!updatedId) {
+      logger.warn(`Module with id ${req.params.id} not found`)
+      throw new NotFoundError('Module not found')
+    }
+
+    res.status(200).send({
+      message: 'Screen updated successfully',
+      updatedId,
+    })
+  }
+
   /**
    * GET
    * Register to a module's events & render trough SSE

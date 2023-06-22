@@ -44,10 +44,17 @@ export default function ModuleCard({ module, onAction }: ModuleCardProps) {
       <Link className="card-body flex flex-row items-center" title={module.description} to={`/modules/${module.id}`}>
         <img className="mask" src="/assets/module_placeholder.svg" width={100} height={100} />
         <div>
-          <h2 className="card-title">{module.name}</h2>
-          <p className='mb-2'>{module.description}</p>
+          {module.nickname ? (
+            <h2 className="card-title">
+              {module.nickname} <span className='text-sm italic text-neutral'>({module.name})</span>
+            </h2>
+          ) : (
+            <h2 className="card-title">{module.name}</h2>
+          )}
+
+          <p className="mb-2">{module.description}</p>
           <div className="flex items-center space-x-2 ml-2">
-            <span className='text-sm'>{module.author}</span>
+            <span className="text-sm">{module.author}</span>
             <span className="badge badge-sm">{module.version}</span>
           </div>
           <div className="card-actions justify-end"></div>
