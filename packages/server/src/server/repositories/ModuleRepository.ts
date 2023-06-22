@@ -2,7 +2,6 @@ import { getDB } from '../../database/database'
 import ModuleDatabaseManager from '../helpers/ModuleDatabaseManager'
 import ModuleMapper from '../mappers/ModuleMapper'
 import { ModuleConfigurationUpdateDTO, ModuleDTO, ModuleDTOWithConfigs } from '../models/DTO/ModuleDTO'
-import { ModuleProps } from '@yalk/module'
 import type { UploadedFile } from 'express-fileupload'
 import { randomUUID } from 'crypto'
 import { mkdirSync, rmSync } from 'fs'
@@ -67,6 +66,10 @@ export default class ModuleRepository {
 
   subscribeToModuleEvents(id: string, handler: (render: string) => void) {
     this.manager.subscribeTo(id, handler)
+  }
+
+  sendEventToModule(id: string, data: unknown) {
+    this.manager.sendDataTo(id, data)
   }
 
   unsubscribeFromModuleEvents(id: string, handler: (render: string) => void) {

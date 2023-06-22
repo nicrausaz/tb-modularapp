@@ -1,6 +1,5 @@
 import { ModuleConfigurationUpdateDTO, ModuleDTO, ModuleDTOWithConfigs } from '../models/DTO/ModuleDTO'
 import { ModuleRepository } from '../repositories'
-import { ModuleProps } from '@yalk/module'
 import type { UploadedFile } from 'express-fileupload'
 
 /**
@@ -36,6 +35,10 @@ export default class ModuleService {
 
   unsubscribeFromModuleEvents = (id: string, handler: (render: string) => void) => {
     return this.moduleRepository.unsubscribeFromModuleEvents(id, handler)
+  }
+
+  sendEventToModule = (id: string, data: unknown) => {
+    return this.moduleRepository.sendEventToModule(id, data)
   }
 
   registerModule = (id: string) => {

@@ -2,7 +2,7 @@ import { Manager } from '@yalk/module-manager'
 import { getDB } from '../../database/database'
 import { ModuleEntity } from '../models/entities/Module'
 import ModuleMapper from '../mappers/ModuleMapper'
-import { Module, ModuleProps } from '@yalk/module'
+import { Module } from '@yalk/module'
 
 /**
  * Record type to represent a module in the database and in the manager
@@ -169,6 +169,15 @@ export default class ModuleDatabaseManager {
    */
   stop(): void {
     this.manager.stop()
+  }
+
+  /**
+   * Send data to a module
+   * @param moduleId module id
+   * @param data data to send
+   */
+  sendDataTo(moduleId: string, data: unknown): void {
+    this.manager.sendDataTo(moduleId, data)
   }
 
   /**

@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express'
-import { ModuleProps } from '@yalk/module'
 import { ModuleService } from '../services'
 import type { UploadedFile } from 'express-fileupload'
 import { BadRequestError, NotFoundError } from '../middlewares/HTTPError'
@@ -41,6 +40,13 @@ export default class ModulesController {
     // Get the module
     const moduleId = req.params.id
 
+    // todo: rename this function
+    const entry = await this.moduleService.getModuleWithEvents(moduleId)
+
+    if (!entry) {
+      return next(new NotFoundError('The specified module does not exist or is not enabled'))
+    }
+
     const handleModuleEvent = (render: string) => {
       res.write(`data: ${render}\n\n`)
     }
@@ -73,14 +79,15 @@ export default class ModulesController {
    */
   sendEvent = async (req: Request, res: Response, next: NextFunction) => {
     const moduleId = req.params.id
+
+    // todo: rename this function
     const entry = await this.moduleService.getModuleWithEvents(moduleId)
 
     if (!entry) {
       return next(new NotFoundError('The specified module does not exist or is not enabled'))
     }
 
-    // Todo: method to send an event to a module
-    // entry.module.emit('data', req.body)
+    this.moduleService.sendEventToModule(moduleId, req.body)
 
     res.status(204).send()
   }

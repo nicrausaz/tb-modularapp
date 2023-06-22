@@ -172,6 +172,15 @@ export default class Manager {
   }
 
   /**
+   * Send data to a module
+   * @param moduleId module id
+   * @param data data to send
+   */
+  sendDataTo(moduleId: ModuleId, data: unknown): void {
+    this.getModule(moduleId).module.receiveData(data as ModuleProps)
+  }
+
+  /**
    * Set the configuration of a module. Only the specified existing keys will be updated.
    * @param moduleId module id
    * @param configuration configuration to set

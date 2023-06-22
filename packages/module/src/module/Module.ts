@@ -11,12 +11,12 @@ export interface ModuleProps {
 
 export default abstract class Module extends EventEmitter {
   private static readonly UPDATE_STATE_KEY = 'update'
-  private static readonly RECEIVE_DATA_KEY = 'data'
+  // private static readonly RECEIVE_DATA_KEY = 'data'
 
   constructor(private readonly _configuration: Configuration, private readonly _renderer?: ModuleRenderer) {
     super()
     // Bind the onReceive event
-    this.on(Module.RECEIVE_DATA_KEY, () => this.onReceive)
+    // this.on(Module.RECEIVE_DATA_KEY, () => this.onReceive)
   }
 
   /**
@@ -45,7 +45,7 @@ export default abstract class Module extends EventEmitter {
    * Called when the module receives data
    * @param data The data to process
    */
-  abstract onReceive(data: ModuleProps): void
+  protected abstract onReceive(data: ModuleProps): void
 
   /**
    * Apply configuration changes to the module, only existing fiels will be updated, others will be ignored
@@ -70,6 +70,15 @@ export default abstract class Module extends EventEmitter {
    */
   unregisterFromUpdates(callback: (render: string) => void): void {
     this.off(Module.UPDATE_STATE_KEY, callback)
+  }
+
+  /**
+   * Give data to the module
+   * @param data The data to give
+   */
+  receiveData(data: ModuleProps): void {
+    this.onReceive(data)
+    // this.emit(Module.RECEIVE_DATA_KEY, data) // TODO: no need for an event ?
   }
 
   get name(): string {
