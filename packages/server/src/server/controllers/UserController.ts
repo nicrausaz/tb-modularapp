@@ -6,11 +6,19 @@ import { NotFoundError } from '../middlewares/HTTPError'
 export default class UserController {
   constructor(private userService: UserService) {}
 
+  /**
+   * GET
+   * Get all users
+   */
   index = async (req: Request, res: Response) => {
     const users = await this.userService.getUsers()
     res.send(users)
   }
 
+  /**
+   * GET
+   * Get a user by its id
+   */
   user = async (req: Request, res: Response, next: NextFunction) => {
     const id = parseInt(req.params.id)
     const user = await this.userService.getUser(id)

@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from 'express'
 import { ModuleService } from '../services'
 import type { UploadedFile } from 'express-fileupload'
-import { BadRequestError, NotFoundError } from '../middlewares/HTTPError'
+import { BadRequestError, ForbiddenError, NotFoundError } from '../middlewares/HTTPError'
+import logger from '../libs/logger'
 
 /**
  * Controller for the modules routes
@@ -26,6 +27,7 @@ export default class ModulesController {
     const module = await this.moduleService.getModule(moduleId)
 
     if (!module) {
+      logger.warn(`Module with id ${moduleId} not found`)
       return next(new NotFoundError('Module not found'))
     }
 
@@ -44,7 +46,13 @@ export default class ModulesController {
     const entry = await this.moduleService.getModuleWithEvents(moduleId)
 
     if (!entry) {
-      return next(new NotFoundError('The specified module does not exist or is not enabled'))
+      logger.warn(`Module with id ${moduleId} not found`)
+      return next(new NotFoundError('Module not found'))
+    }
+
+    if (!entry.enabled) {
+      logger.warn(`Module with id ${moduleId} not enabled`)
+      return next(new ForbiddenError('Module not enabled'))
     }
 
     const handleModuleEvent = (render: string) => {
@@ -60,17 +68,14 @@ export default class ModulesController {
 
     // res.write('data: Connected\n\n')
 
-    // Gestion de la fin de la connexion SSE
-    // TODO: THIS IS NOT WORKING (only working server side)
-    // req.on('close', () => {
-    //   console.log('SSE Connection closed')
-    //   this.moduleService.unsubscribeFromModuleEvents(moduleId, handleModuleEvent)
-    // })
+    // TODO: Find a way to unregister from module events when the client disconnects.
+    // With SSE, it seems that it is not possible to detect when the client disconnects.
 
-    // req.on('end', () => {
-    //   console.log('SSE Connection closed')
-    //   this.moduleService.unsubscribeFromModuleEvents(moduleId, handleModuleEvent)
-    // })
+    // Handle termination of the connection (server side)
+    req.on('close', () => {
+      console.log('SSE Connection closed')
+      this.moduleService.unsubscribeFromModuleEvents(moduleId, handleModuleEvent)
+    })
   }
 
   /**
@@ -84,7 +89,13 @@ export default class ModulesController {
     const entry = await this.moduleService.getModuleWithEvents(moduleId)
 
     if (!entry) {
-      return next(new NotFoundError('The specified module does not exist or is not enabled'))
+      logger.warn(`Module with id ${moduleId} not found`)
+      return next(new NotFoundError('Module not found'))
+    }
+
+    if (!entry.enabled) {
+      logger.warn(`Module with id ${moduleId} not enabled`)
+      return next(new ForbiddenError('Module not enabled'))
     }
 
     this.moduleService.sendEventToModule(moduleId, req.body)
@@ -97,9 +108,11 @@ export default class ModulesController {
    * Get a module's configuration
    */
   moduleConfiguration = async (req: Request, res: Response, next: NextFunction) => {
-    const module = await this.moduleService.getModule(req.params.id)
+    const moduleId = req.params.id
+    const module = await this.moduleService.getModule(moduleId)
 
     if (!module) {
+      logger.warn(`Module with id ${moduleId} not found`)
       return next(new NotFoundError('Module not found'))
     }
 
@@ -117,6 +130,7 @@ export default class ModulesController {
     const updatedId = this.moduleService.updateModuleConfiguration(req.params.id, req.body)
 
     if (!updatedId) {
+      logger.warn(`Module with id ${req.params.id} not found`)
       throw new NotFoundError('Module not found')
     }
 
@@ -134,6 +148,7 @@ export default class ModulesController {
     const updatedId = this.moduleService.updateModuleEnabled(req.params.id, req.body.enabled)
 
     if (!updatedId) {
+      logger.warn(`Module with id ${req.params.id} not found`)
       throw new NotFoundError('Module not found')
     }
 

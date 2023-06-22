@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { BoxService } from '../services'
-import path, { join } from 'path'
+import { join } from 'path'
 import { NotFoundError } from '../middlewares/HTTPError'
 
 export default class BoxController {

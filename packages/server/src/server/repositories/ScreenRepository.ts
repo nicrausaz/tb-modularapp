@@ -56,12 +56,14 @@ export default class ScreenRepository {
     }
   }
 
-  async create(screen: ScreenEntity) {
+  async create(screen: ScreenEntity): Promise<number> {
     await this.createScreen(screen)
+    // Create slots
     await Promise.all(screen.slots.map((slot) => this.insertOrUpdateScreenSlot(screen.id, slot)))
+    return screen.id
   }
 
-  async update(screen: ScreenEntity) {
+  async update(screen: ScreenEntity): Promise<number> {
     await this.updateScreen(screen)
 
     // Remove slots that are not in the new screen
@@ -71,6 +73,7 @@ export default class ScreenRepository {
 
     // Update or create slots that are in the new screen
     await Promise.all(screen.slots.map((slot) => this.insertOrUpdateScreenSlot(screen.id, slot)))
+    return screen.id
   }
 
   async exists(id: number): Promise<boolean> {
@@ -240,12 +243,16 @@ export default class ScreenRepository {
   private updateScreen(screen: ScreenEntity) {
     const db = getDB()
     return new Promise((resolve, reject) => {
-      db.run('UPDATE Screens SET name = ?, enabled = ? WHERE id = ?', [screen.name, screen.enabled, screen.id], (err) => {
-        if (err) {
-          reject(err)
-        }
-        resolve(screen)
-      })
+      db.run(
+        'UPDATE Screens SET name = ?, enabled = ? WHERE id = ?',
+        [screen.name, screen.enabled, screen.id],
+        (err) => {
+          if (err) {
+            reject(err)
+          }
+          resolve(screen)
+        },
+      )
       db.close()
     })
   }

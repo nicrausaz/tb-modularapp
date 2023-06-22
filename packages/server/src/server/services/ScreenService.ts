@@ -15,14 +15,14 @@ export default class ScreenService {
     return screen ? ScreenMapper.toDTO(screen) : null
   }
 
-  async createOrUpdateScreen(screen: UpdateScreenDTO): Promise<void> {
+  async createOrUpdateScreen(screen: UpdateScreenDTO): Promise<number> {
     const screenEntity = ScreenMapper.screenUpdatetoEntity(screen)
 
     if (await this.screenRepository.exists(screen.id)) {
-      await this.screenRepository.update(screenEntity)
-    } else {
-      await this.screenRepository.create(screenEntity)
+      return await this.screenRepository.update(screenEntity)
     }
+
+    return await this.screenRepository.create(screenEntity)
   }
 
   async deleteScreen(id: number): Promise<void> {
