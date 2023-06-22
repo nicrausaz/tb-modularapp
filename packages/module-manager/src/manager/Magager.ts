@@ -15,7 +15,7 @@ type ModuleEntry = {
   enabled: boolean
 }
 
-type ModuleStateEntry = ModuleEntry & {
+export type ManagerEntry = ModuleEntry & {
   id: ModuleId
 }
 
@@ -32,7 +32,7 @@ export default class Manager {
 
   constructor(private readonly modulesPath: string) {}
 
-  async loadModulesFromPath() {
+  async loadModulesFromPath(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       readdir(this.modulesPath, async (err, files) => {
         if (err) {
@@ -54,7 +54,7 @@ export default class Manager {
    * Register a new module to the manager
    * The module will be initialized first
    */
-  registerModule(id: ModuleId, module: Module) {
+  registerModule(id: ModuleId, module: Module): void {
     module.init()
     this.modules.set(id, {
       module,
@@ -68,7 +68,7 @@ export default class Manager {
    * @param id module id
    * @throws ModuleNotFoundError if the module is not registered
    */
-  unregisterModule(id: ModuleId) {
+  unregisterModule(id: ModuleId): void {
     const entry = this.getEntryOrThrow(id)
 
     if (entry.enabled) {
@@ -85,7 +85,7 @@ export default class Manager {
    * @param id module id
    * @throws ModuleNotFoundError if the module is not registered
    */
-  enableModule(id: ModuleId) {
+  enableModule(id: ModuleId): void {
     const entry = this.getEntryOrThrow(id)
 
     if (!entry.enabled) {
@@ -100,7 +100,7 @@ export default class Manager {
    * @param id module id
    * @throws ModuleNotFoundError if the module is not registered
    */
-  disableModule(id: ModuleId) {
+  disableModule(id: ModuleId): void {
     const entry = this.getEntryOrThrow(id)
 
     if (entry.enabled) {
@@ -112,14 +112,14 @@ export default class Manager {
   /**
    * Start all the modules
    */
-  start() {
+  start(): void {
     this.modules.forEach((_, key) => this.enableModule(key))
   }
 
   /**
    * Stop all the modules
    */
-  stop() {
+  stop(): void {
     this.modules.forEach((_, id) => this.disableModule(id))
   }
 
@@ -127,7 +127,7 @@ export default class Manager {
    * Get all the registered modules
    * @returns Array of registered modules
    */
-  getModules(): ModuleStateEntry[] {
+  getModules(): ManagerEntry[] {
     return Array.from(this.modules).map(([key, entry]) => {
       return {
         id: key,
@@ -143,9 +143,10 @@ export default class Manager {
    * @returns the module
    * @throws ModuleNotFoundError if the module is not registered
    */
-  getModule(id: ModuleId): { module: Module; enabled: boolean } {
+  getModule(id: ModuleId): ManagerEntry {
     const entry = this.getEntryOrThrow(id)
     return {
+      id,
       module: entry.module,
       enabled: entry.enabled,
     }
@@ -157,7 +158,7 @@ export default class Manager {
    * @param callback the callback to call when the module is updated
    * @throws ModuleNotFoundError if the module is not registered
    */
-  subscribeTo(moduleId: ModuleId, callback: (data: ModuleProps) => void) {
+  subscribeTo(moduleId: ModuleId, callback: (data: ModuleProps) => void): void {
     this.getModule(moduleId).module.on('update', callback)
   }
 
@@ -166,7 +167,7 @@ export default class Manager {
    * @param moduleId
    * @param callback
    */
-  unsubscribeFrom(moduleId: ModuleId, callback: (data: ModuleProps) => void) {
+  unsubscribeFrom(moduleId: ModuleId, callback: (data: ModuleProps) => void): void {
     this.getModule(moduleId).module.off('update', callback)
   }
 
@@ -181,7 +182,7 @@ export default class Manager {
       name: string
       value: SpecificConfigurationEntryTypeValue
     }>,
-  ) {
+  ): void {
     const module = this.getEntryOrThrow(moduleId).module
     module.setConfiguration(configuration)
   }
@@ -218,7 +219,14 @@ export default class Manager {
       const specific = SpecificConfiguration.fromObject(config.specificConfig)
 
       // Build the module configuration
-      const configuration = new Configuration(config.name, config.description, config.version, config.author, config.icon, specific)
+      const configuration = new Configuration(
+        config.name,
+        config.description,
+        config.version,
+        config.author,
+        config.icon,
+        specific,
+      )
 
       // Load the renderer
       const renderer = new (await import(join(modulePath, Manager.MODULE_RENDERED_FILENAME))).default()
@@ -232,8 +240,12 @@ export default class Manager {
     }
   }
 
-  private deleteModule(filename: string) {
-    const modulePath = join(this.modulesPath, filename)
+  /**
+   * Delete a module from the file system
+   * @param filename module id (matches the folder name)
+   */
+  private deleteModule(moduleId: ModuleId): void {
+    const modulePath = join(this.modulesPath, moduleId)
 
     if (!existsSync(modulePath)) {
       throw new Error('Module sources not found')

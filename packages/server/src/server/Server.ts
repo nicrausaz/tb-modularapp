@@ -31,6 +31,7 @@ export default class Server {
     // Bind swagger
     this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
     
+    // Bind error middleware
     this.app.use(ErrorMiddleware)
   }
 

@@ -9,6 +9,14 @@ const swaggerSpec = swaggerJSDoc({
       version: '1.0.0',
       description: 'This is the API documentation for the Modular APP',
     },
+    components: {
+      securitySchemes: {
+        bearer: {
+          type: 'http',
+          scheme: 'bearer',
+        },
+      },
+    },
   },
   apis: [path.join(__dirname, '../../Routes.ts')],
 })

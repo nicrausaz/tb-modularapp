@@ -5,6 +5,9 @@ import { ModuleService } from '../services'
 import type { UploadedFile } from 'express-fileupload'
 import { BadRequestError, NotFoundError } from '../middlewares/HTTPError'
 
+/**
+ * Controller for the modules routes
+ */
 export default class ModulesController {
   constructor(private moduleService: ModuleService) {}
 
@@ -12,20 +15,20 @@ export default class ModulesController {
    * GET
    * Get all the modules
    */
-  index = (req: Request, res: Response) => {
-    res.send(this.moduleService.getModules())
+  index = async (req: Request, res: Response) => {
+    res.send(await this.moduleService.getModules())
   }
 
   /**
    * GET
    * Get a module by its id
    */
-  module = (req: Request, res: Response) => {
+  module = async (req: Request, res: Response, next: NextFunction) => {
     const moduleId = req.params.id
-    const module = this.moduleService.getModule(moduleId)
+    const module = await this.moduleService.getModule(moduleId)
 
     if (!module) {
-      throw new NotFoundError('Module not found')
+      return next(new NotFoundError('Module not found'))
     }
 
     res.send(module)
@@ -35,14 +38,16 @@ export default class ModulesController {
    * GET
    * Register to a module's events & render trough SSE
    */
-  moduleEvents = (req: Request, res: Response) => {
+  moduleEvents = async (req: Request, res: Response, next: NextFunction) => {
     // Get the module
     const moduleId = req.params.id
-    const entry = this.moduleService.getModuleWithEvents(moduleId)
+    const entry = await this.moduleService.getModuleWithEvents(moduleId)
 
     if (!entry) {
-      throw new NotFoundError('The specified module does not exist or is not enabled')
+      return next(new NotFoundError('The specified module does not exist or is not enabled'))
     }
+
+    /*
 
     const module = entry.module
 
@@ -57,6 +62,8 @@ export default class ModulesController {
     // Subscribe to the module's events
     this.moduleService.subscribeToModuleEvents(moduleId, handleModuleEvent)
 
+        */
+
     // Configure the SSE
     res.setHeader('Content-Type', 'text/event-stream')
     res.setHeader('Cache-Control', 'no-cache')
@@ -65,35 +72,32 @@ export default class ModulesController {
     // res.write('data: Connected\n\n')
 
     // Gestion de la fin de la connexion SSE
-    // TODO: THIS IS NOT WORKING
-    req.on('close', () => {
-      console.log('SSE Connection closed')
-      this.moduleService.unsubscribeFromModuleEvents(moduleId, handleModuleEvent)
-    })
+    // TODO: THIS IS NOT WORKING (only working server side)
+    // req.on('close', () => {
+    //   console.log('SSE Connection closed')
+    //   this.moduleService.unsubscribeFromModuleEvents(moduleId, handleModuleEvent)
+    // })
 
-    req.on('end', () => {
-      console.log('SSE Connection closed')
-      this.moduleService.unsubscribeFromModuleEvents(moduleId, handleModuleEvent)
-    })
-
-    res.on('close', () => {
-      console.log('SSE Connection closed (res)')
-    })
+    // req.on('end', () => {
+    //   console.log('SSE Connection closed')
+    //   this.moduleService.unsubscribeFromModuleEvents(moduleId, handleModuleEvent)
+    // })
   }
 
   /**
    * POST
    * Send an event to a module
    */
-  sendEvent = (req: Request, res: Response) => {
+  sendEvent = async (req: Request, res: Response, next: NextFunction) => {
     const moduleId = req.params.id
-    const entry = this.moduleService.getModuleWithEvents(moduleId)
+    const entry = await this.moduleService.getModuleWithEvents(moduleId)
 
     if (!entry) {
-      throw new NotFoundError('The specified module does not exist or is not enabled')
+      return next(new NotFoundError('The specified module does not exist or is not enabled'))
     }
 
-    entry.module.emit('data', req.body)
+    // Todo: method to send an event to a module
+    // entry.module.emit('data', req.body)
 
     res.status(204).send()
   }
@@ -102,11 +106,11 @@ export default class ModulesController {
    * GET
    * Get a module's configuration
    */
-  moduleConfiguration = (req: Request, res: Response) => {
-    const module = this.moduleService.getModule(req.params.id)
+  moduleConfiguration = async (req: Request, res: Response, next: NextFunction) => {
+    const module = await this.moduleService.getModule(req.params.id)
 
     if (!module) {
-      throw new NotFoundError('Module not found')
+      return next(new NotFoundError('Module not found'))
     }
 
     res.send({

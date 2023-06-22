@@ -1,5 +1,4 @@
-import ModuleMapper from '../mappers/ModuleMapper'
-import { ModuleConfigurationUpdateDTO } from '../models/DTO/ModuleDTO'
+import { ModuleConfigurationUpdateDTO, ModuleDTO, ModuleDTOWithConfigs } from '../models/DTO/ModuleDTO'
 import { ModuleRepository } from '../repositories'
 import { ModuleProps } from '@yalk/module'
 import type { UploadedFile } from 'express-fileupload'
@@ -10,23 +9,16 @@ import type { UploadedFile } from 'express-fileupload'
 export default class ModuleService {
   constructor(private moduleRepository: ModuleRepository) {}
 
-  getModules = () => {
-    return this.moduleRepository
-      .getModules()
-      .map((entry) => ModuleMapper.toModuleDTO(entry.id, entry.module, entry.enabled))
+  getModules = async (): Promise<ModuleDTO[]> => {
+    return this.moduleRepository.getModules()
   }
 
-  getModule = (id: string) => {
-    const entry = this.getModuleEntry(id)
-
-    if (!entry) {
-      return null
-    }
-    return ModuleMapper.toModuleDTOWithConfigs(id, entry.module, entry.enabled)
+  getModule = async (id: string): Promise<ModuleDTOWithConfigs | null> => {
+    return this.getModuleEntry(id)
   }
 
-  getModuleWithEvents = (id: string) => {
-    const entry = this.getModuleEntry(id)
+  getModuleWithEvents = async (id: string): Promise<ModuleDTOWithConfigs | null> => {
+    const entry = await this.getModuleEntry(id)
     return entry?.enabled ? entry : null
   }
 
@@ -42,7 +34,7 @@ export default class ModuleService {
 
   updateModuleEnabled = (id: string, enabled: boolean) => {
     const entry = this.getModuleEntry(id)
-    
+
     if (!entry) {
       return null
     }
@@ -70,9 +62,9 @@ export default class ModuleService {
     return this.moduleRepository.unregisterModule(id)
   }
 
-  private getModuleEntry = (id: string) => {
+  private getModuleEntry = async (id: string) => {
     try {
-      return this.moduleRepository.getModuleById(id)
+      return await this.moduleRepository.getModuleById(id)
     } catch (_) {
       return null
     }

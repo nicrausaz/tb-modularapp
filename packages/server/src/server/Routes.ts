@@ -41,14 +41,15 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
     }
   })
 
-  // Defines the routes used to expose the API for device interaction
-  // app.get('/api', homeController.index)
-
+  /**
+   * Auth routes
+   */
   /**
    * @swagger
    * /api/auth/login:
    *   post:
    *     summary: Authenticate a user
+   *     tags: [Auth]
    *     description: Authenticate a user with a username and a password and return a JWT token
    *     requestBody:
    *        required: true
@@ -81,27 +82,89 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    */
   app.post('/api/auth/login', authController.login)
 
-  app.post('/api/auth/logout', authController.logout)
-
   /**
    * @swagger
    * /api/auth/me:
-   *  get:
-   *   summary: Get the current user
-   *   description: Get the current user from the JWT token
-   *  responses:
-   *   200:
-   *     description: Return the current user
-   *     content:
-   *       application/json:
-   *         schema:
-   *           type: object
-   *
+   *   get:
+   *     summary: Get the connected user information
+   *     tags: [Auth]
+   *     description: Decode the JWT token and return the user information
+   *     security:
+   *       - bearer: []
+   *     responses:
+   *       200:
+   *         description: Valid token, return the user information
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 id:
+   *                   type: number
+   *                 username:
+   *                   type: string
+   *                 iat:
+   *                   type: number
+   *                 exp:
+   *                   type: number
+   *             example: {
+   *                           "id": 1,
+   *                           "username": "admin",
+   *                           "iat": 1687410812,
+   *                           "exp": 1687497212
+   *                       }
+   *       401:
+   *        description: Invalid or expired token
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: object
+   *              properties:
+   *                message:
+   *                  type: string
+   *            example: {"message": "Token invalid or expired"}
    */
   app.get('/api/auth/me', JwtAuthMiddleware, authController.me)
 
   /**
    * Modules routes
+   */
+  /**
+   * @swagger
+   * /api/modules:
+   *   get:
+   *     summary: Get the connected user information
+   *     description: Decode the JWT token and return the user information
+   *     tags: [Modules]
+   *     security:
+   *       - bearer: []
+   *     responses:
+   *       200:
+   *         description: List of modules
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 id:
+   *                   type: number
+   *                 username:
+   *                   type: string
+   *                 iat:
+   *                   type: number
+   *                 exp:
+   *                   type: number
+   *             example: {
+   *                           "id": "1344ca73-5bd2-472e-a75d-45d2c6c5f7a0",
+   *                           "name": "ZIP-Module",
+   *                           "description": "A module used for debug",
+   *                           "author": "Test",
+   *                           "version": "1.0.0",
+   *                           "icon": "debug.png",
+   *                           "nickname": null,
+   *                           "enabled": false,
+   *                           "importedAt": "2023-06-22 08:08:47"
+   *                       }
    */
   app.get('/api/modules', JwtAuthMiddleware, modulesController.index)
 
@@ -152,7 +215,6 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
   app.patch('/api/users/:id', JwtAuthMiddleware, userController.update)
 
   app.delete('/api/users/:id', JwtAuthMiddleware, userController.delete)
-
 }
 
 export default configureRoutes

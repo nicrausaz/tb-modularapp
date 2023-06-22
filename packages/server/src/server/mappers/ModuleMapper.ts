@@ -1,30 +1,46 @@
-import { SpecificConfiguration, Module } from '@yalk/module'
+import { SpecificConfiguration, Module, SpecificConfigurationEntry } from '@yalk/module'
 import { ModuleDTO, ModuleDTOWithConfigs } from '../models/DTO/ModuleDTO'
 import { ModuleEntity } from '../models/entities/Module'
+import { ModuleDatabaseManagerRecord } from '../helpers/ModuleDatabaseManager'
 
 export default class ModuleMapper {
-  static toModuleDTO(id: string, module: Module, enabled: boolean): ModuleDTO {
+  static DBManagerEntryToModuleDTO(entry: ModuleDatabaseManagerRecord): ModuleDTO {
     return {
-      id: id,
-      name: module.name,
-      description: module.description,
-      author: module.author,
-      version: module.version,
-      icon: module.icon,
-      // nickname: module.nickname,
-      enabled: enabled,
+      id: entry.id,
+      name: entry.name,
+      description: entry.description,
+      author: entry.author,
+      version: entry.version,
+      icon: entry.icon,
+      nickname: entry.nickname,
+      enabled: entry.enabled,
+      importedAt: entry.importedAt,
     }
   }
 
-  static toModuleDTOWithConfigs(id: string, module: Module, enabled: boolean): ModuleDTOWithConfigs {
+  static toModuleDTO(entry: ModuleDatabaseManagerRecord): ModuleDTO {
     return {
-      ...this.toModuleDTO(id, module, enabled),
-      defaultConfig: this.toModuleConfigurationDTO(module.defaultConfig),
-      currentConfig: this.toModuleConfigurationDTO(module.currentConfig),
+      id: entry.id,
+      name: entry.name,
+      description: entry.description,
+      author: entry.author,
+      version: entry.version,
+      icon: entry.icon,
+      nickname: entry.nickname,
+      enabled: entry.enabled,
+      importedAt: entry.importedAt,
     }
   }
 
-  static toModuleConfigurationDTO(config: SpecificConfiguration) {
+  static toModuleDTOWithConfigs(entry: ModuleDatabaseManagerRecord): ModuleDTOWithConfigs {
+    return {
+      ...this.toModuleDTO(entry),
+      defaultConfig: this.toModuleConfigurationDTO(entry.module.defaultConfig),
+      currentConfig: this.toModuleConfigurationDTO(entry.module.currentConfig),
+    }
+  }
+
+  static toModuleConfigurationDTO(config: SpecificConfiguration): SpecificConfigurationEntry[] {
     const entries = []
 
     for (const value of config.entries.values()) {
@@ -33,7 +49,22 @@ export default class ModuleMapper {
     return entries
   }
 
-  static toModuleEntity(id: string, module: Module, enabled: boolean): ModuleEntity {
+  static DBManagerEntrytoModuleEntity(entry: ModuleDatabaseManagerRecord): ModuleEntity {
+    return {
+      id: entry.id,
+      name: entry.name,
+      description: entry.description,
+      author: entry.author,
+      version: entry.version,
+      configuration: this.toModuleConfigurationDTO(entry.module.currentConfig),
+      enabled: entry.enabled,
+      icon: entry.icon,
+      nickname: entry.nickname,
+      importedAt: entry.importedAt,
+    }
+  }
+
+  static ManagerEntrytoModuleEntity(id: string, module: Module, enabled: boolean): ModuleEntity {
     return {
       id: id,
       name: module.name,
@@ -42,9 +73,12 @@ export default class ModuleMapper {
       version: module.version,
       configuration: this.toModuleConfigurationDTO(module.currentConfig),
       enabled: enabled,
+      icon: module.icon,
+      importedAt: new Date(),
     }
   }
 
+  // TODO: less data in slot
   static toSlotModule(module: ModuleEntity): ModuleDTO {
     return {
       id: module.id,
@@ -53,6 +87,9 @@ export default class ModuleMapper {
       author: module.author,
       version: module.version,
       enabled: module.enabled,
+      icon: module.icon,
+      nickname: module.nickname,
+      importedAt: module.importedAt,
     }
   }
 }

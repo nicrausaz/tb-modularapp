@@ -1,7 +1,7 @@
 import { getDB } from '../../database/database'
 import ModuleDatabaseManager from '../helpers/ModuleDatabaseManager'
 import ModuleMapper from '../mappers/ModuleMapper'
-import { ModuleConfigurationUpdateDTO } from '../models/DTO/ModuleDTO'
+import { ModuleConfigurationUpdateDTO, ModuleDTO, ModuleDTOWithConfigs } from '../models/DTO/ModuleDTO'
 import { ModuleProps } from '@yalk/module'
 import type { UploadedFile } from 'express-fileupload'
 import { randomUUID } from 'crypto'
@@ -11,24 +11,36 @@ import AdmZip from 'adm-zip'
 export default class ModuleRepository {
   constructor(private manager: ModuleDatabaseManager) {}
 
-  getModules() {
-    return this.manager.getModules()
+  /**
+   * Get all existing modules
+   * @returns modules
+   */
+  async getModules(): Promise<ModuleDTO[]> {
+    const modules = await this.manager.getModules()
+
+    return modules.map(ModuleMapper.DBManagerEntryToModuleDTO)
   }
 
-  getModuleById(id: string) {
-    return this.manager.getModule(id)
+  /**
+   * Get a module by its id
+   * @param id module id
+   * @returns module
+   */
+  async getModuleById(id: string): Promise<ModuleDTOWithConfigs> {
+    const module = await this.manager.getModule(id)
+
+    return ModuleMapper.toModuleDTOWithConfigs(module)
   }
 
-  updateModuleConfiguration(id: string, config: ModuleConfigurationUpdateDTO) {
-    const entry = this.manager.getModule(id)
+  async updateModuleConfiguration(id: string, config: ModuleConfigurationUpdateDTO) {
+    const entry = await this.manager.getModule(id)
 
-    if (!module) {
+    if (!entry) {
       return null
     }
 
     entry.module.setConfiguration(config.fields)
-
-    const moduleEntity = ModuleMapper.toModuleEntity(id, entry.module, entry.enabled)
+    const moduleEntity = ModuleMapper.DBManagerEntrytoModuleEntity(entry)
 
     const db = getDB()
     db.run(

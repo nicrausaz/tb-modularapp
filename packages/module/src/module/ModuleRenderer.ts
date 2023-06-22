@@ -1,3 +1,4 @@
+import React from 'react'
 import { ModuleProps } from './Module'
 
 /**
@@ -9,5 +10,5 @@ export default abstract class ModuleRenderer {
    * Defines the module render
    * @param data the data accessible to the renderer
    */
-  abstract render(data: ModuleProps): JSX.Element
+  abstract render(data: ModuleProps): React.JSX.Element
 }

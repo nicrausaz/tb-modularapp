@@ -8,5 +8,5 @@ export type ModuleEntity = {
   author: string
   configuration: object
   enabled: boolean
-  // importedAt: Date
+  importedAt: Date
 }
