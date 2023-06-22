@@ -3,14 +3,15 @@ import { Configuration } from './configuration/Configuration'
 import { SpecificConfiguration } from './configuration/SpecificConfiguration'
 import ModuleRenderer from './ModuleRenderer'
 import { SpecificConfigurationEntryTypeValue } from './configuration/SpecificConfigurationEntry'
+import { renderToStaticMarkup } from 'react-dom/server'
 
 export interface ModuleProps {
   [key: string]: unknown
 }
 
 export default abstract class Module extends EventEmitter {
-  static readonly UPDATE_STATE_KEY = 'update'
-  static readonly RECEIVE_DATA_KEY = 'data'
+  private static readonly UPDATE_STATE_KEY = 'update'
+  private static readonly RECEIVE_DATA_KEY = 'data'
 
   constructor(private readonly _configuration: Configuration, private readonly _renderer?: ModuleRenderer) {
     super()
@@ -54,6 +55,21 @@ export default abstract class Module extends EventEmitter {
     configuration.forEach((field) => {
       this.currentConfig.updateEntryFromKey(field.name, field.value)
     })
+  }
+
+  /**
+   * Register to the module updates
+   * When the module updates, the callback will be called with the new rendered HTML
+   */
+  registerToUpdates(callback: (render: string) => void): void {
+    this.on(Module.UPDATE_STATE_KEY, callback)
+  }
+
+  /**
+   * Unregister from the module updates
+   */
+  unregisterFromUpdates(callback: (render: string) => void): void {
+    this.off(Module.UPDATE_STATE_KEY, callback)
   }
 
   get name(): string {
@@ -102,10 +118,13 @@ export default abstract class Module extends EventEmitter {
   }
 
   /**
-   * Emit an update event
+   * Notifies a state change and triggers a re-render
    * @param data The data to send
    */
   protected notify<T extends ModuleProps>(data: T): void {
-    this.emit(Module.UPDATE_STATE_KEY, data)
+    // Render the module to HTML and emit the result
+    if (this._renderer) {
+      this.emit(Module.UPDATE_STATE_KEY, renderToStaticMarkup(this._renderer.render(data)))
+    }
   }
 }

@@ -3,7 +3,6 @@ import ErrorIcon from '@/assets/icons/ErrorIcon'
 import { useEffect, useState } from 'react'
 
 export default function ModuleRender({ id }: { id: string }) {
-  const [data, setData] = useState<any>({})
   const [loading, setLoading] = useState<boolean>(true)
   const [render, setRender] = useState<string>('')
   const [status, setStatus] = useState<string>('')
@@ -12,8 +11,7 @@ export default function ModuleRender({ id }: { id: string }) {
     const source = new EventSource(`/api/modules/${id}/events`)
 
     source.onmessage = (e) => {
-      setData(JSON.parse(e.data).data)
-      setRender(JSON.parse(e.data).render)
+      setRender(e.data)
     }
 
     source.onopen = () => {

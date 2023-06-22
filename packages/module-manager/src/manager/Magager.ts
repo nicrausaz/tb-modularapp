@@ -158,8 +158,8 @@ export default class Manager {
    * @param callback the callback to call when the module is updated
    * @throws ModuleNotFoundError if the module is not registered
    */
-  subscribeTo(moduleId: ModuleId, callback: (data: ModuleProps) => void): void {
-    this.getModule(moduleId).module.on('update', callback)
+  subscribeTo(moduleId: ModuleId, callback: (render: string) => void): void {
+    this.getModule(moduleId).module.registerToUpdates(callback)
   }
 
   /**
@@ -167,8 +167,8 @@ export default class Manager {
    * @param moduleId
    * @param callback
    */
-  unsubscribeFrom(moduleId: ModuleId, callback: (data: ModuleProps) => void): void {
-    this.getModule(moduleId).module.off('update', callback)
+  unsubscribeFrom(moduleId: ModuleId, callback: (render: string) => void): void {
+    this.getModule(moduleId).module.unregisterFromUpdates(callback)
   }
 
   /**

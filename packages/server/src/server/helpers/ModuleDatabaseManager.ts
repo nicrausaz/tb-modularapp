@@ -151,7 +151,7 @@ export default class ModuleDatabaseManager {
    * @param moduleId module id
    * @param callback callback function to call when the event is triggered
    */
-  subscribeTo(moduleId: string, callback: (data: ModuleProps) => void): void {
+  subscribeTo(moduleId: string, callback: (render: string) => void): void {
     this.manager.subscribeTo(moduleId, callback)
   }
 
@@ -160,7 +160,7 @@ export default class ModuleDatabaseManager {
    * @param moduleId module id
    * @param callback callback function to unbind
    */
-  unsubscribeFrom(moduleId: string, callback: (data: ModuleProps) => void): void {
+  unsubscribeFrom(moduleId: string, callback: (render: string) => void): void {
     this.manager.unsubscribeFrom(moduleId, callback)
   }
 

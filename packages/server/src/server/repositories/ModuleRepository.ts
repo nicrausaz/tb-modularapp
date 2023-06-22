@@ -32,7 +32,7 @@ export default class ModuleRepository {
     return ModuleMapper.toModuleDTOWithConfigs(module)
   }
 
-  async updateModuleConfiguration(id: string, config: ModuleConfigurationUpdateDTO) {
+  async updateModuleConfiguration(id: string, config: ModuleConfigurationUpdateDTO): Promise<string | null> {
     const entry = await this.manager.getModule(id)
 
     if (!entry) {
@@ -43,28 +43,33 @@ export default class ModuleRepository {
     const moduleEntity = ModuleMapper.DBManagerEntrytoModuleEntity(entry)
 
     const db = getDB()
-    db.run(
-      'UPDATE Modules SET configuration = ? WHERE id = ?',
-      [JSON.stringify(moduleEntity.configuration), id],
-      (err) => {
-        if (err) {
-          console.log(err)
-        }
-      },
-    )
-    db.close()
+
+    return new Promise((resolve, reject) => {
+      db.all(
+        'UPDATE Modules SET configuration = ? WHERE id = ? RETURNING id',
+        [JSON.stringify(moduleEntity.configuration), id],
+        (err, rows) => {
+          if (err) {
+            reject(err)
+          }
+
+          resolve(rows[0] as string)
+        },
+      )
+      db.close()
+    })
   }
 
   updateModuleEnabled(id: string, enabled: boolean) {
     enabled ? this.manager.enableModule(id) : this.manager.disableModule(id)
-    return this.manager.getModule(id)
+    return id
   }
 
-  subscribeToModuleEvents(id: string, handler: (data: ModuleProps) => void) {
+  subscribeToModuleEvents(id: string, handler: (render: string) => void) {
     this.manager.subscribeTo(id, handler)
   }
 
-  unsubscribeFromModuleEvents(id: string, handler: (data: ModuleProps) => void) {
+  unsubscribeFromModuleEvents(id: string, handler: (render: string) => void) {
     this.manager.unsubscribeFrom(id, handler)
   }
 

@@ -23,30 +23,18 @@ export default class ModuleService {
   }
 
   updateModuleConfiguration = (id: string, config: ModuleConfigurationUpdateDTO) => {
-    const entry = this.getModuleEntry(id)
-
-    if (!entry) {
-      return null
-    }
-
     return this.moduleRepository.updateModuleConfiguration(id, config)
   }
 
   updateModuleEnabled = (id: string, enabled: boolean) => {
-    const entry = this.getModuleEntry(id)
-
-    if (!entry) {
-      return null
-    }
-
     return this.moduleRepository.updateModuleEnabled(id, enabled)
   }
 
-  subscribeToModuleEvents = (id: string, handler: (data: ModuleProps) => void) => {
+  subscribeToModuleEvents = (id: string, handler: (render: string) => void) => {
     return this.moduleRepository.subscribeToModuleEvents(id, handler)
   }
 
-  unsubscribeFromModuleEvents = (id: string, handler: (data: ModuleProps) => void) => {
+  unsubscribeFromModuleEvents = (id: string, handler: (render: string) => void) => {
     return this.moduleRepository.unsubscribeFromModuleEvents(id, handler)
   }
 

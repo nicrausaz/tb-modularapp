@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express'
-import { renderToStaticMarkup } from 'react-dom/server'
 import { ModuleProps } from '@yalk/module'
 import { ModuleService } from '../services'
 import type { UploadedFile } from 'express-fileupload'
@@ -41,28 +40,12 @@ export default class ModulesController {
   moduleEvents = async (req: Request, res: Response, next: NextFunction) => {
     // Get the module
     const moduleId = req.params.id
-    const entry = await this.moduleService.getModuleWithEvents(moduleId)
 
-    if (!entry) {
-      return next(new NotFoundError('The specified module does not exist or is not enabled'))
+    const handleModuleEvent = (render: string) => {
+      res.write(`data: ${render}\n\n`)
     }
 
-    /*
-
-    const module = entry.module
-
-    const handleModuleEvent = (data: ModuleProps) => {
-      const reponseData = {
-        data,
-        render: module.renderer !== undefined ? renderToStaticMarkup(module.renderer.render(data)) : null,
-      }
-      res.write(`data: ${JSON.stringify(reponseData)}\n\n`)
-    }
-
-    // Subscribe to the module's events
     this.moduleService.subscribeToModuleEvents(moduleId, handleModuleEvent)
-
-        */
 
     // Configure the SSE
     res.setHeader('Content-Type', 'text/event-stream')
@@ -124,13 +107,16 @@ export default class ModulesController {
    * Update a module's configuration
    */
   moduleConfigurationUpdate = (req: Request, res: Response) => {
-    const entry = this.moduleService.updateModuleConfiguration(req.params.id, req.body)
+    const updatedId = this.moduleService.updateModuleConfiguration(req.params.id, req.body)
 
-    if (entry === null) {
+    if (!updatedId) {
       throw new NotFoundError('Module not found')
     }
 
-    res.status(204).send()
+    res.status(200).send({
+      message: 'Module configuration updated successfully',
+      moduleId: updatedId,
+    })
   }
 
   /**
@@ -138,13 +124,17 @@ export default class ModulesController {
    * Update a module's status (enabled or disabled)
    */
   moduleStatusUpdate = (req: Request, res: Response) => {
-    const entry = this.moduleService.updateModuleEnabled(req.params.id, req.body.enabled)
+    const updatedId = this.moduleService.updateModuleEnabled(req.params.id, req.body.enabled)
 
-    if (!entry) {
+    if (!updatedId) {
       throw new NotFoundError('Module not found')
     }
 
-    res.status(204).send()
+    const message = req.body.enabled ? 'Module enabled successfully' : 'Module disabled successfully'
+    res.status(200).send({
+      message,
+      moduleId: updatedId,
+    })
   }
 
   /**
