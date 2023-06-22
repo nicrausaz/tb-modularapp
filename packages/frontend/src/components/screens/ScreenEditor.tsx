@@ -69,7 +69,7 @@ export default function ScreenEditor({ slots, onChange, readonly = false }: Scre
   ) => {
     // Merge the new layout with the old one
     const newLayout: AugmentedLayout[] = layout.map((l) => {
-      const newSlot = updated.find((s) => s.i === l.i)
+      const newSlot = updated.find((s) => s.i === l.i)!
       return {
         ...newSlot,
         module: l.module,
