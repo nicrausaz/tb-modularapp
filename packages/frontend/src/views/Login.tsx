@@ -29,7 +29,8 @@ export default function Login() {
       <ToastContainer />
       <div className="hero-content flex-col lg:flex-row">
         <div className="text-center lg:text-left">
-          <h1 className="text-5xl font-bold">{t('login.title')}</h1>
+          <img className="mask w-28 md:w-40 mx-auto" src="/api/box/static/logo.svg" />
+          <h1 className="text-5xl font-bold pt-4">{t('login.title')}</h1>
           <p className="py-6">{t('login.subtitle')}</p>
         </div>
         <LoginForm onSubmit={handleSubmit} />

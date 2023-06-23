@@ -6,6 +6,16 @@ import { JwtAuthMiddleware } from './middlewares/AuthMiddleware'
 import ModuleDatabaseManager from './helpers/ModuleDatabaseManager'
 import { join } from 'path'
 import UserController from './controllers/UserController'
+import {
+  loginRules,
+  moduleConfigurationUpdateRules,
+  moduleStatusUpdateRules,
+  moduleUpdateRules,
+  screenUpdateRules,
+  userCreateRules,
+  userUpdateRules,
+} from './models/validators'
+import Validator from './middlewares/ValidationMiddleware'
 
 /**
  * Define all the routes for the application
@@ -80,7 +90,7 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *                message:
    *                  type: string
    */
-  app.post('/api/auth/login', authController.login)
+  app.post('/api/auth/login', Validator(loginRules), authController.login)
 
   /**
    * @swagger
@@ -299,7 +309,7 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    */
   app.delete('/api/modules/:id', JwtAuthMiddleware, modulesController.delete)
 
-  app.patch('/api/modules/:id', JwtAuthMiddleware, modulesController.update)
+  app.patch('/api/modules/:id', Validator(moduleUpdateRules), JwtAuthMiddleware, modulesController.update)
 
   app.get('/api/modules/:id/events', modulesController.moduleEvents)
 
@@ -307,9 +317,54 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
 
   app.get('/api/modules/:id/configuration', JwtAuthMiddleware, modulesController.moduleConfiguration)
 
-  app.put('/api/modules/:id/configuration', JwtAuthMiddleware, modulesController.moduleConfigurationUpdate)
+  app.put(
+    '/api/modules/:id/configuration',
+    Validator(moduleConfigurationUpdateRules),
+    JwtAuthMiddleware,
+    modulesController.moduleConfigurationUpdate,
+  ) // TODO: validator
 
-  app.post('/api/modules/:id/status', JwtAuthMiddleware, modulesController.moduleStatusUpdate)
+  /**
+   * @swagger
+   * /api/modules/{id}/status:
+   *   post:
+   *     summary: Update the status of a module
+   *     description: Enable or disable a module
+   *     tags: [Modules]
+   *     security:
+   *       - bearer: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: The module id
+   *     responses:
+   *       200:
+   *         description: Module enabled or disabled
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *                 moduleId:
+   *                   type: string
+   *             example: {
+   *                          "message": "Module enabled successfully",
+   *                          "moduleId": "1344ca73-5bd2-472e-a75d-45d2c6c5f7a0"
+   *                       }
+   *       400:
+   *         description: Invalid status value. The status must be a boolean
+   */
+  app.post(
+    '/api/modules/:id/status',
+    Validator(moduleStatusUpdateRules),
+    JwtAuthMiddleware,
+    modulesController.moduleStatusUpdate,
+  )
 
   /**
    * Screens routes
@@ -318,7 +373,7 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
 
   app.get('/api/screens/:id', screensController.screen)
 
-  app.put('/api/screens/:id', JwtAuthMiddleware, screensController.createOrUpdate)
+  app.put('/api/screens/:id', Validator(screenUpdateRules), JwtAuthMiddleware, screensController.createOrUpdate)
 
   app.delete('/api/screens/:id', JwtAuthMiddleware, screensController.delete)
 
@@ -331,16 +386,16 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
 
   app.get('/api/box/static/module/:moduleId/:filename', boxController.moduleStaticFile)
 
-  app.post('api/box', JwtAuthMiddleware, boxController.update)
+  app.post('api/box', Validator([]), JwtAuthMiddleware, boxController.update) // TODO: validator
 
   /**
    * User routes
    */
   app.get('/api/users', JwtAuthMiddleware, userController.index)
 
-  app.post('/api/users', JwtAuthMiddleware, userController.create)
+  app.post('/api/users', Validator(userCreateRules), JwtAuthMiddleware, userController.create)
 
-  app.patch('/api/users/:id', JwtAuthMiddleware, userController.update)
+  app.patch('/api/users/:id', Validator(userUpdateRules), JwtAuthMiddleware, userController.update)
 
   app.delete('/api/users/:id', JwtAuthMiddleware, userController.delete)
 }

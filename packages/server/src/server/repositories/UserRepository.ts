@@ -52,7 +52,7 @@ export default class UserRepository {
     const db = getDB()
 
     return new Promise((resolve, reject) => {
-      db.all('SELECT id, username FROM Users', (err, rows) => {
+      db.all('SELECT id, username, isDefault FROM Users', (err, rows) => {
         if (err) {
           reject(err)
         }
@@ -66,7 +66,7 @@ export default class UserRepository {
     const db = getDB()
 
     return new Promise((resolve, reject) => {
-      db.all('SELECT id, username FROM Users WHERE id = ?', [id], (err, row) => {
+      db.all('SELECT id, username, isDefault FROM Users WHERE id = ?', [id], (err, row) => {
         if (err || row.length === 0) {
           reject(err)
         }

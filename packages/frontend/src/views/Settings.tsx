@@ -41,7 +41,7 @@ export default function Settings() {
       <div className="bg-base-100 shadow rounded-box w-full md:w-3/4 p-4 ">
         <div className="hero bg-gradient-to-r from-primary to-accent">
           <div className="hero-content flex-col lg:flex-row-reverse justify-between">
-            <img className="mask w-40 lg:w-50 shadow-2xl" src="http://localhost:3000/api/box/static/box_logo.svg" />
+            <img className="mask w-40 lg:w-50" src="/api/box/static/logo.svg" />
             <div>
               <h1 className="text-4xl font-bold">Modular app</h1>
               <div>

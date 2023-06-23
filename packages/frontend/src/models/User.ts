@@ -1,6 +1,7 @@
 export type User = {
   id: number
   username: string
+  isDefault: boolean
 }
 
 export type UserCreate = {

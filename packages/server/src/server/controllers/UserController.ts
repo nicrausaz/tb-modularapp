@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import { UserService } from '../services'
 import logger from '../libs/logger'
 import { NotFoundError } from '../middlewares/HTTPError'
+import { validationResult } from 'express-validator'
 
 export default class UserController {
   constructor(private userService: UserService) {}
@@ -35,6 +36,11 @@ export default class UserController {
    * Create a new user
    */
   create = async (req: Request, res: Response) => {
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      return res.status(400).json({ errors: result.array() });
+    }
+    
     await this.userService.createUser(req.body)
     res.status(201).send()
   }
@@ -62,14 +68,13 @@ export default class UserController {
    */
   delete = async (req: Request, res: Response, next: NextFunction) => {
     const id = parseInt(req.params.id)
-    const user = await this.userService.getUser(id)
 
-    if (!user) {
-      logger.warn(`User with id ${id} not found`)
-      return next(new NotFoundError('User not found'))
-    }
-
-    await this.userService.deleteUser(id)
-    res.status(204).send()
+    this.userService
+      .deleteUser(id)
+      .then(() => res.status(204).send())
+      .catch((err) => {
+        logger.error(err)
+        next(err)
+      })
   }
 }

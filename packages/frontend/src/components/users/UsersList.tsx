@@ -21,15 +21,19 @@ function UserRow({ user, onClickEdit, onClickDelete }: UserRowProps) {
             <img src="/assets/placeholder.svg" alt="Avatar Tailwind CSS Component" />
           </div>
         </div>
-        {user.username}
+        <div>
+          {user.username} {user.isDefault && <span className="badge badge-ghost ml-2">Default</span>}
+        </div>
       </div>
       <div className="flex-0">
         <button className="btn btn-circle bg-base-100 mr-1" onClick={() => onClickEdit(user)}>
           <SettingsIcon className="w-4 h-4" />
         </button>
-        <button className="btn btn-circle bg-base-100" onClick={() => onClickDelete(user)}>
-          <TrashIcon className="w-4 h-4" />
-        </button>
+        {!user.isDefault && (
+          <button className="btn btn-circle bg-base-100" onClick={() => onClickDelete(user)}>
+            <TrashIcon className="w-4 h-4" />
+          </button>
+        )}
       </div>
     </div>
   )

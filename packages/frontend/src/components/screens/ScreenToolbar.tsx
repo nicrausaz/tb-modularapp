@@ -113,7 +113,7 @@ export default function ScreenToolbar({
         </button>
         <Link className="btn btn-info" to={`/visualize/${currentScreen?.id}`} target="_blank">
           Preview
-          <OpenNewTabIcon className="w-5 h-5" />
+          <OpenNewTabIcon className="w-4 h-4" />
         </Link>
       </div>
     </div>

@@ -11,7 +11,7 @@ export default function Home() {
   }, [authenticatedUser])
 
   return (
-    <div className="flex flex-col h-full w-full">
+    <div className="flex flex-col h-full w-full pb-20">
       <div className="hero h-1/2 overflow-hidden">
         <div className="hero-content text-center">
           <div className="max-w-2xl">
@@ -28,7 +28,7 @@ export default function Home() {
       </div>
       <div className="divider"></div>
       <div className="w-full px-10">
-        <div className="grid grid-cols-3 text-center gap-6">
+        <div className="flex flex-col sm:grid grid-cols-3 text-center gap-6">
           <Link className="card bg-primary text-primary-content" to={'/dashboard'}>
             <div className="card-body">
               <h2 className="card-title">Configure your visualization screens</h2>

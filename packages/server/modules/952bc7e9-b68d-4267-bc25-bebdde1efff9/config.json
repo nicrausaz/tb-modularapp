@@ -1,0 +1,34 @@
+{
+  "name": "ZIP-Module",
+  "description": "A module used for debug",
+  "version": "1.0.0",
+  "author": "Nicolas Crausaz",
+  "icon": "debug.png",
+  "specificConfig": {
+    "message": {
+      "type": "text",
+      "label": "Message",
+      "description": "The message to say",
+      "value": "DEBUG"
+    },
+    "refreshRate": {
+      "type": "number",
+      "label": "Refresh rate",
+      "description": "The refresh rate in ms",
+      "value": 1000
+    },
+    "showDate": {
+      "type": "bool",
+      "label": "Show date",
+      "description": "Show the date",
+      "value": true
+    },
+    "color": {
+      "type": "option",
+      "label": "Background color",
+      "description": "The color of the background",
+      "value": "#FFFFFF",
+      "options": ["#FFFFFF", "#000000", "#FF0000"]
+    }
+  }
+}
