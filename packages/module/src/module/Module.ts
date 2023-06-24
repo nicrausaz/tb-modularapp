@@ -11,12 +11,9 @@ export interface ModuleProps {
 
 export default abstract class Module extends EventEmitter {
   private static readonly UPDATE_STATE_KEY = 'update'
-  // private static readonly RECEIVE_DATA_KEY = 'data'
 
   constructor(private readonly _configuration: Configuration, private readonly _renderer?: ModuleRenderer) {
     super()
-    // Bind the onReceive event
-    // this.on(Module.RECEIVE_DATA_KEY, () => this.onReceive)
   }
 
   /**
@@ -78,7 +75,6 @@ export default abstract class Module extends EventEmitter {
    */
   receiveData(data: ModuleProps): void {
     this.onReceive(data)
-    // this.emit(Module.RECEIVE_DATA_KEY, data) // TODO: no need for an event ?
   }
 
   get name(): string {

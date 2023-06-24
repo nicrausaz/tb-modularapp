@@ -322,7 +322,7 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
     Validator(moduleConfigurationUpdateRules),
     JwtAuthMiddleware,
     modulesController.moduleConfigurationUpdate,
-  ) // TODO: validator
+  )
 
   /**
    * @swagger

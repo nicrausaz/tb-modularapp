@@ -70,9 +70,6 @@ export default function UsersList({ users, onUpdated }: UsersListProps) {
   const handleConfirm = async (action: string, user: UserCreate) => {
     setUserEditionModalOpen(false)
 
-    console.log('action', action)
-    console.log('user', user)
-
     if (action === 'create') {
       await fetcher('/api/users', {
         method: 'POST',

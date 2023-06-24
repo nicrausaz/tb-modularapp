@@ -1,5 +1,4 @@
-import { CrossIcon } from '@/assets/icons'
-import ErrorIcon from '@/assets/icons/ErrorIcon'
+import { ErrorIcon } from '@/assets/icons'
 import { useEffect, useState } from 'react'
 
 export default function ModuleRender({ id }: { id: string }) {

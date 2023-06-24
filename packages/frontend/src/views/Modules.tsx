@@ -13,6 +13,8 @@ import { Module } from '@/models/Module'
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
+import IconButton from '../components/IconButton'
+import ModulesTable from '@/components/module/ModulesTable'
 
 export default function Modules() {
   const { data, error, loading } = useFetchAuth<Module[]>('/api/modules')
@@ -153,8 +155,6 @@ export default function Modules() {
 
   return (
     <div className="flex flex-col h-full pb-20 mx-4">
-      {/* <h1 className="text-2xl font-bold">{t('modules.title')}</h1> */}
-
       <div className="my-4 flex gap-2">
         <SearchBar
           hasFilters={true}
@@ -171,34 +171,20 @@ export default function Modules() {
           <ListIcon className="w-6 h-6 swap-off" />
         </label>
 
-        <button className="btn border border-gray-300" onClick={() => setUploadModalOpen(true)}>
-          <UploadIcon className="w-5 h-5" />
-          Add
-        </button>
+        <IconButton
+          icon={<UploadIcon className="w-5 h-5" />}
+          onClick={() => setUploadModalOpen(true)}
+          className="border border-gray-300"
+          label="Add"
+          position={'left'}
+        />
       </div>
       <hr />
       <div className="my-4">
         {modules.length === 0 && <p className="text-center text-neutral mt-10">{t('modules.search_no_results')}</p>}
 
-        {selectedLayout === 'list' ? (
-          <div className="table-pin-rows overflow-auto">
-            <table className="table">
-              <thead className="bg-base-200">
-                <tr>
-                  <th>Name</th>
-                  <th>Description</th>
-                  <th>Infos</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {modules.map((module) => (
-                  <ModuleRow key={module.id} module={module} onAction={handleAction} />
-                ))}
-              </tbody>
-            </table>
-          </div>
+        {modules.length && selectedLayout === 'list' ? (
+          <ModulesTable modules={modules} onAction={handleAction} />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-center">
             {modules.map((module) => (

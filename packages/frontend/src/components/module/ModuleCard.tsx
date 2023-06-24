@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom'
-import ContextDropdown from '../ContextDropdown'
-import { MoreDotsVertIcon } from '@/assets/icons'
+import ContextDropdown from '@/components/ContextDropdown'
+import Image from '@/components/Image'
 import { Module } from '@/models/Module'
+import { MoreDotsVertIcon } from '@/assets/icons'
 
 type ModuleCardProps = {
   module: Module
@@ -44,11 +45,11 @@ export default function ModuleCard({ module, onAction }: ModuleCardProps) {
         )}
       </div>
       <Link className="card-body flex flex-row items-center" title={module.description} to={`/modules/${module.id}`}>
-        <img className="mask" src={iconLink} width={100} height={100} />
-        <div>
+        <Image src={iconLink} fallback="/assets/module_placeholder.svg" alt="module_icon" width={80} height={80} />
+        <div className="ml-2">
           {module.nickname ? (
             <h2 className="card-title">
-              {module.nickname} <span className='text-sm italic text-neutral'>({module.name})</span>
+              {module.nickname} <span className="text-sm italic text-neutral">({module.name})</span>
             </h2>
           ) : (
             <h2 className="card-title">{module.name}</h2>

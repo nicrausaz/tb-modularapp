@@ -10,5 +10,6 @@ export type Module = {
   readonly icon: string
   enabled: boolean
   currentConfig: Configuration
+  readonly defaultConfig: Configuration
   readonly importedAt: Date
 }

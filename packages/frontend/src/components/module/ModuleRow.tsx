@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom'
-import ContextDropdown from '../ContextDropdown'
-import { MoreDotsVertIcon } from '@/assets/icons'
+import ContextDropdown from '@/components/ContextDropdown'
+import Image from '@/components/Image'
 import { Module } from '@/models/Module'
+import { MoreDotsVertIcon } from '@/assets/icons'
 
 type ModuleCardProps = {
   module: Module
@@ -46,7 +47,7 @@ export default function ModuleRow({ module, onAction }: ModuleCardProps) {
         <div className="flex items-center space-x-3">
           <div className="avatar">
             <div className="mask w-12 h-12">
-              <img src={iconLink} />
+              <Image src={iconLink} fallback="/assets/module_placeholder.svg" alt="module_icon" />
             </div>
           </div>
           <div>
@@ -55,7 +56,7 @@ export default function ModuleRow({ module, onAction }: ModuleCardProps) {
         </div>
       </td>
       <td>{module.description}</td>
-      <td>
+      <td className="hidden md:table-cell">
         {module.author}
         <br />
         <span className="badge badge-ghost badge-sm">{module.version}</span>

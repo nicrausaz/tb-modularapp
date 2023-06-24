@@ -10,7 +10,7 @@ import Modules from '@/views/Modules'
 import AuthenticatedRoute from './AuthenticatedRoute'
 import Home from '@/views/Home'
 import Visualize from '@/views/Visualize'
-import Profile from '@/views/Profile'
+import About from '@/views/About'
 
 const routes: RouteObject[] = [
   {
@@ -53,8 +53,8 @@ const routes: RouteObject[] = [
         element: <Settings />,
       },
       {
-        path: '/profile',
-        element: <Profile />,
+        path: '/about',
+        element: <About />,
       },
     ],
   },

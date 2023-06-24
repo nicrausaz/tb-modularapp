@@ -2,6 +2,7 @@ import { AddSquareIcon, ArrowDownIcon, NewScreenIcon, OpenNewTabIcon, SaveIcon, 
 import { Screen } from '@/models/Screen'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import IconButton from '@/components/IconButton'
 
 type ScreenToolbarProps = {
   currentScreen: Screen
@@ -99,22 +100,41 @@ export default function ScreenToolbar({
             </li>
           </ul>
         </div>
-        <button className="btn btn-outline mr-2" onClick={onSlotAdd}>
-          Add
-          <AddSquareIcon className="w-4 h-4" />
-        </button>
-        <button className="btn btn-error mr-2" onClick={handleDeleteScreen}>
-          Delete
-          <TrashIcon className="w-4 h-4" />
-        </button>
-        <button className="btn btn-success mr-2" onClick={handleSaveScreen}>
-          save
-          <SaveIcon />
-        </button>
-        <Link className="btn btn-info" to={`/visualize/${currentScreen?.id}`} target="_blank">
-          Preview
-          <OpenNewTabIcon className="w-4 h-4" />
-        </Link>
+        <div className="flex gap-2">
+          <IconButton
+            onClick={onSlotAdd}
+            icon={<AddSquareIcon className="w-4 h-4" />}
+            position="right"
+            label="Add"
+            className="btn-outline"
+          />
+
+          <IconButton
+            onClick={handleDeleteScreen}
+            icon={<TrashIcon className="w-4 h-4" />}
+            position="right"
+            label="Delete"
+            className="btn-error"
+          />
+
+          <IconButton
+            onClick={handleSaveScreen}
+            icon={<SaveIcon className="w-4 h-4" />}
+            position="right"
+            label="Save"
+            className="btn-success"
+          />
+
+          <IconButton
+            icon={<OpenNewTabIcon className="w-4 h-4" />}
+            position="right"
+            label="Preview"
+            className="btn-info"
+            to={`/visualize/${currentScreen?.id}`}
+            target="_blank"
+            asLink={true}
+          />
+        </div>
       </div>
     </div>
   )

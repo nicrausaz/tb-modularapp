@@ -105,7 +105,7 @@ export default class ModuleRepository {
   }
 
   async uploadModule(file: UploadedFile) {
-    const copyFiles = ['config.json', 'index.js', 'app.js'] // TODO: Make this configurable
+    const copyFiles = ['config.json', 'index.js', 'app.js'] // TODO: Make this configurable or get it from module system
     const moduleId = randomUUID()
     // Create the module directory
     mkdirSync(`${process.env.MODULES_DIR}/${moduleId}`)

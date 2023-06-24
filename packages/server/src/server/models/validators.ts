@@ -80,7 +80,11 @@ export const moduleUpdateRules = [body('nickname').trim().escape().notEmpty().wi
  * Validation rule for module configuration update
  * @see ModuleConfigurationUpdateDTO
  */
-export const moduleConfigurationUpdateRules = [] // TODO
+export const moduleConfigurationUpdateRules = [
+  body('fields').isArray().withMessage('Fields must be an array'),
+  body('fields.*.name').trim().escape().notEmpty().withMessage('Name is required'),
+  body('fields.*.value').trim().escape().notEmpty().withMessage('Value is required'),
+]
 
 /**
  * Validation rule for module status update
@@ -100,6 +104,6 @@ export const screenUpdateRules = [
   body('slots.*.moduleId').trim().escape().notEmpty().withMessage('Module id is required'),
   body('slots.*.width').notEmpty().isInt().withMessage('Width must be an integer'),
   body('slots.*.height').notEmpty().isInt().withMessage('Height must be an integer'),
-  body('slots.*.x').notEmpty().isInt().withMessage('X must be an integer'),
-  body('slots.*.y').notEmpty().isInt().withMessage('Y must be an integer'),
+  body('slots.*.x').notEmpty().isInt().withMessage('x must be an integer'),
+  body('slots.*.y').notEmpty().isInt().withMessage('y must be an integer'),
 ]

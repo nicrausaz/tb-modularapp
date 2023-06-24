@@ -1,5 +1,6 @@
 import fetcher from '@/api/fetcher'
 import { DeveloperIcon, TimeIcon, VersionIcon } from '@/assets/icons'
+import Image from '@/components/Image'
 import LoadingTopBar from '@/components/LoadingTopBar'
 import ConfigurationEditor from '@/components/module/ConfigurationEditor'
 import ModuleRender from '@/components/module/ModuleRender'
@@ -90,8 +91,7 @@ export default function Module() {
     <div className="flex flex-col h-full pb-20">
       <div className="hero bg-gradient-to-r from-primary to-accent shadow-inner py-10">
         <div className="hero-content flex-col lg:flex-row-reverse justify-between gap-10">
-          <img className="mask w-32 lg:w-40" src={iconLink} />
-          {/* {module.icon} */}
+          <Image src={iconLink} className="w-32 lg:w-40" fallback='/assets/module_placeholder.svg' alt='module_icon'/>
           <div className=" ">
             {module.nickname ? (
               <span className="text-4xl font-bold">
@@ -166,7 +166,7 @@ export default function Module() {
               type="text"
               placeholder="Enter module nickname"
               className="input input-bordered w-full"
-              value={module.nickname}
+              value={module.nickname ?? ''}
               onChange={(e) => setModule({ ...module, nickname: e.target.value })}
             />
             <label className="label">
@@ -185,7 +185,11 @@ export default function Module() {
       <div className="flex flex-col w-full items-center">
         <div className="divider text-2xl text-neutral font-bold my-6">Configuration</div>
         <div className="bg-base-100 shadow rounded-box w-full md:w-3/4 p-4">
-          <ConfigurationEditor configuration={module.currentConfig} onSave={saveConfiguration} />
+          <ConfigurationEditor
+            configuration={module.currentConfig}
+            defaultConfiguration={module.defaultConfig}
+            onSave={saveConfiguration}
+          />
         </div>
       </div>
     </div>

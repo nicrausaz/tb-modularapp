@@ -20,6 +20,12 @@ import ListIcon from './ListIcon'
 import DeveloperIcon from './DeveloperIcon'
 import VersionIcon from './VersionIcon'
 import TimeIcon from './TimeIcon'
+import GitHubIcon from './GitHubIcon'
+import WebIcon from './WebIcon'
+import LogoutIcon from './LogoutIcon'
+import ErrorIcon from './ErrorIcon'
+import LoginIcon from './LoginIcon'
+import CheckIcon from './CheckIcon'
 
 export {
   BoxIcon,
@@ -44,4 +50,10 @@ export {
   DeveloperIcon,
   VersionIcon,
   TimeIcon,
+  GitHubIcon,
+  WebIcon,
+  LoginIcon,
+  LogoutIcon,
+  ErrorIcon,
+  CheckIcon,
 }
