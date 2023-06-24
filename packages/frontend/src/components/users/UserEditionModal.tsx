@@ -1,7 +1,7 @@
 import { User, UserCreate } from '@/models/User'
-import ConfirmModal from '../ConfirmModal'
+import ConfirmModal from '@/components/ConfirmModal'
+import FilePreviewerInput from '@/components/FilePreviewerInput'
 import { useState } from 'react'
-import FilePreviewerInput from '../FilePreviewerInput'
 
 type UserEditionModalProps = {
   isOpen: boolean
@@ -48,7 +48,7 @@ export default function UserEditionModal({ isOpen, user, onClose, onConfirm }: U
             onUpload={() => {
               uploadPicture
             }}
-            allowedFormats={['image/*']}
+            allowedFormats={['image/png', 'image/gif', 'image/jpeg', 'image/jpg', 'image/webp', 'image/svg+xml']}
           />
           <label className="label">
             <span className="label-text">Username</span>

@@ -1,6 +1,8 @@
 import { Configuration } from '@/models/Configuration'
 import ConfigurationInput from './ConfigurationInput'
 import { useState } from 'react'
+import IconButton from '../IconButton'
+import { SaveIcon } from '@/assets/icons'
 
 type ConfigurationEditorProps = {
   configuration: Configuration
@@ -44,9 +46,14 @@ export default function ConfigurationEditor({ configuration, defaultConfiguratio
         <button className="btn" onClick={onReset}>
           Reset to default
         </button>
-        <button className="btn btn-primary" onClick={handleSave}>
-          Save
-        </button>
+        <IconButton
+          onClick={handleSave}
+          icon={<SaveIcon className="w-4 h-4" />}
+          position="left"
+          label="Save"
+          className="btn-primary"
+          keepLabel={true}
+        />
       </div>
     </div>
   )

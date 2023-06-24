@@ -5,7 +5,6 @@ import SearchBar from '@/components/SearchBar'
 import UploadModal from '@/components/UploadModal'
 import ConfirmModuleDeleteModal from '@/components/module/ConfirmModuleDeleteModal'
 import ModuleCard from '@/components/module/ModuleCard'
-import ModuleRow from '@/components/module/ModuleRow'
 import { useToast } from '@/contexts/ToastContext'
 import { useFetchAuth } from '@/hooks/useFetch'
 import { useLocalStorage } from '@/hooks/useLocalStorage'
@@ -13,7 +12,7 @@ import { Module } from '@/models/Module'
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import IconButton from '../components/IconButton'
+import IconButton from '@/components/IconButton'
 import ModulesTable from '@/components/module/ModulesTable'
 
 export default function Modules() {
@@ -197,7 +196,7 @@ export default function Modules() {
       {moduleToDelete && (
         <ConfirmModuleDeleteModal
           isOpen={confirmDelete}
-          onClose={() => setUploadModalOpen(false)}
+          onClose={() => setConfirmDelete(false)}
           onConfirm={handleDelete}
           module={moduleToDelete}
         />

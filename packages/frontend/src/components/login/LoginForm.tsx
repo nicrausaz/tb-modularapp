@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
 import IconButton from '../IconButton'
 import { LoginIcon } from '@/assets/icons'
+import Input from '../Input'
 
 type LoginFormProps = {
   onSubmit: (username: string, password: string) => void
@@ -18,14 +19,27 @@ export default function LoginForm({ onSubmit }: LoginFormProps) {
   const [form, setForm] = useState({
     username: '',
     password: '',
+    usernameError: '',
+    passwordError: '',
   })
 
   const handleFormSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     if (form.username === '' || form.password === '') {
+      setForm({
+        ...form,
+        usernameError: form.username === '' ? t('login.form.username_error') : '',
+        passwordError: form.password === '' ? t('login.form.password_error') : '',
+      })
       return
     }
+
+    setForm({
+      ...form,
+      usernameError: '',
+      passwordError: '',
+    })
 
     onSubmit(form.username, form.password)
   }
@@ -35,44 +49,34 @@ export default function LoginForm({ onSubmit }: LoginFormProps) {
     <form className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100" onSubmit={handleFormSubmit} action="">
       <div className="card-body">
         <div className="form-control">
-          <label className="label">
-            <span className="label-text">{t('login.form.username')}</span>
-          </label>
-          <input
+          <Input
+            label={t('login.form.username')}
             type="text"
-            placeholder="username"
-            className="input input-bordered"
-            onChange={(e) =>
-              setForm({
-                ...form,
-                username: e.target.value,
-              })
-            }
-            autoCapitalize="off"
+            name="username"
+            value={form.username}
+            onChange={(value) => setForm({ ...form, username: value })}
+            placeholder={t('login.form.username_placeholder')}
+            props={{
+              autoCapitalize: 'off',
+            }}
+            error={form.usernameError}
           />
-        </div>
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">{t('login.form.password')}</span>
-          </label>
-          <input
+
+          <Input
+            label={t('login.form.password')}
             type="password"
-            placeholder="password"
-            className="input input-bordered"
-            onChange={(e) =>
-              setForm({
-                ...form,
-                password: e.target.value,
-              })
-            }
+            name="password"
+            value={form.password}
+            onChange={(value) => setForm({ ...form, password: value })}
+            placeholder={t('login.form.password_placeholder')}
+            error={form.passwordError}
           />
-        </div>
-        <div className="form-control mt-6">
+
           <IconButton
-            icon={<LoginIcon />}
+            icon={<LoginIcon className="w-4 h-4" />}
             label={t('login.form.submit')}
             type="submit"
-            className="btn-primary"
+            className="btn-primary mt-3"
             position="right"
             keepLabel={true}
           />

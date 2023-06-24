@@ -1,22 +1,27 @@
 import fetcher from '@/api/fetcher'
-import { DeveloperIcon, TimeIcon, VersionIcon } from '@/assets/icons'
+import { CopyIcon, DeveloperIcon, PlayIcon, SaveIcon, StopIcon, TimeIcon, TrashIcon, VersionIcon } from '@/assets/icons'
+import IconButton from '@/components/IconButton'
 import Image from '@/components/Image'
 import LoadingTopBar from '@/components/LoadingTopBar'
 import ConfigurationEditor from '@/components/module/ConfigurationEditor'
+import ConfirmModuleDeleteModal from '@/components/module/ConfirmModuleDeleteModal'
 import ModuleRender from '@/components/module/ModuleRender'
 import { useToast } from '@/contexts/ToastContext'
 import { useFetchAuth } from '@/hooks/useFetch'
 import { Configuration } from '@/models/Configuration'
 import type { Module } from 'models/Module'
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
+import { defineConfig } from 'vite'
 
 export default function Module() {
   const { moduleId } = useParams()
   const { tSuccess, tError } = useToast()
+  const navigate = useNavigate()
 
   const { data, error, loading } = useFetchAuth<Module>(`/api/modules/${moduleId}`)
   const [module, setModule] = useState(data)
+  const [confirmDelete, setConfirmDelete] = useState<boolean>(false)
 
   useEffect(() => {
     setModule(data)
@@ -85,14 +90,28 @@ export default function Module() {
       })
   }
 
+  const handleDelete = async () => {
+    setConfirmDelete(false)
+    await fetcher(`/api/modules/${module.id}`, {
+      method: 'DELETE',
+    })
+
+    navigate('/modules')
+  }
+
+  const copyId = () => {
+    navigator.clipboard.writeText(module.id)
+    tSuccess('Copied', 'Identifier copied to your clipboard')
+  }
+
   const iconLink = module.icon ? `/api/box/static/module/${module.id}/${module.icon}` : '/assets/module_placeholder.svg'
 
   return (
     <div className="flex flex-col h-full pb-20">
       <div className="hero bg-gradient-to-r from-primary to-accent shadow-inner py-10">
-        <div className="hero-content flex-col lg:flex-row-reverse justify-between gap-10">
-          <Image src={iconLink} className="w-32 lg:w-40" fallback='/assets/module_placeholder.svg' alt='module_icon'/>
-          <div className=" ">
+        <div className="hero-content flex-col lg:flex-row-reverse justify-between gap-10 backdrop-blur-xl bg-white/30 shadow-xl rounded-xl">
+          <Image src={iconLink} className="w-32 lg:w-40" fallback="/assets/module_placeholder.svg" alt="module_icon" />
+          <div>
             {module.nickname ? (
               <span className="text-4xl font-bold">
                 {module.nickname} <span className="text-sm italic text-neutral">({module.name})</span>
@@ -100,17 +119,19 @@ export default function Module() {
             ) : (
               <h1 className="text-4xl font-bold">{module.name}</h1>
             )}
-            <p className="py-6">{module.description}</p>
-            <div className="flex justify-between bg-base-200 italic rounded-lg px-2 py-1 shadow-inner gap-4">
-              <div className="flex items-center tooltip tooltip-bottom" data-tip="Author">
+            <p className="my-4">{module.description}</p>
+            <div className="divider" />
+
+            <div className="flex gap-2">
+              <div className="badge flex items-center tooltip tooltip-bottom" data-tip="Author">
                 <DeveloperIcon className="w-4 h-4 mr-2" />
                 <span className="font-light">{module.author}</span>
               </div>
-              <div className="flex items-center tooltip tooltip-bottom" data-tip="Version">
+              <div className="badge flex items-center tooltip tooltip-bottom" data-tip="Author">
                 <VersionIcon className="w-4 h-4 mr-2" />
                 <span className="font-light">{module.version}</span>
               </div>
-              <div className="flex items-center tooltip tooltip-bottom" data-tip="Import date">
+              <div className="badge flex items-center tooltip tooltip-bottom" data-tip="Author">
                 <TimeIcon className="w-4 h-4 mr-2" />
                 <span className="font-light">{module.importedAt.toString()}</span>
               </div>
@@ -130,13 +151,23 @@ export default function Module() {
             <div className="divider divider-horizontal p-1"></div>
             <div className="grid card rounded-box place-items-center">
               {module.enabled ? (
-                <button className="btn btn-error" onClick={() => handleChangeStatus('disabled')}>
-                  Stop
-                </button>
+                <IconButton
+                  onClick={() => handleChangeStatus('disable')}
+                  icon={<StopIcon className="w-4 h-4" />}
+                  position="left"
+                  label="Stop"
+                  className="btn-error"
+                  keepLabel={true}
+                />
               ) : (
-                <button className="btn btn-success" onClick={() => handleChangeStatus('enable')}>
-                  Start
-                </button>
+                <IconButton
+                  onClick={() => handleChangeStatus('enable')}
+                  icon={<PlayIcon className="w-4 h-4" />}
+                  position="left"
+                  label="Start"
+                  className="btn-success"
+                  keepLabel={true}
+                />
               )}
             </div>
           </div>
@@ -145,14 +176,19 @@ export default function Module() {
             <label className="label">
               <span className="label-text">Identifier</span>
             </label>
-            <input
-              name="id"
-              type="text"
-              readOnly={true}
-              disabled={true}
-              className="input input-bordered w-full"
-              value={module.id}
-            />
+            <div className="join">
+              <input
+                name="id"
+                type="text"
+                readOnly={true}
+                disabled={true}
+                className="input input-bordered w-full join-item"
+                value={module.id}
+              />
+              <button type="button" className="btn join-item flex-grow-0 bg-base-100" onClick={copyId}>
+                <CopyIcon className="w-5 h-5" />
+              </button>
+            </div>
             <label className="label">
               <span className="label-text-alt text-gray-500">
                 The identifier can be used to interact with the module through the API
@@ -176,9 +212,23 @@ export default function Module() {
             </label>
           </div>
           <div className="flex items-center justify-end gap-2 mt-2">
-            <button className="btn btn-primary" onClick={handleSaveModule}>
-              Save
-            </button>
+            <IconButton
+              onClick={() => setConfirmDelete(true)}
+              icon={<TrashIcon className="w-4 h-4" />}
+              position="left"
+              label="Delete"
+              className="btn-error"
+              keepLabel={true}
+            />
+
+            <IconButton
+              onClick={handleSaveModule}
+              icon={<SaveIcon className="w-4 h-4" />}
+              position="left"
+              label="Save"
+              className="btn-primary"
+              keepLabel={true}
+            />
           </div>
         </div>
       </div>
@@ -192,6 +242,13 @@ export default function Module() {
           />
         </div>
       </div>
+
+      <ConfirmModuleDeleteModal
+        isOpen={confirmDelete}
+        onClose={() => setConfirmDelete(false)}
+        onConfirm={handleDelete}
+        module={module}
+      />
     </div>
   )
 }

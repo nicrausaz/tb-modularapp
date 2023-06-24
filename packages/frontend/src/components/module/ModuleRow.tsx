@@ -51,7 +51,13 @@ export default function ModuleRow({ module, onAction }: ModuleCardProps) {
             </div>
           </div>
           <div>
-            <div className="font-bold">{module.name}</div>
+            {module.nickname ? (
+              <div className="font-bold">
+                {module.nickname} <span className="text-sm italic text-neutral font-normal">({module.name})</span>
+              </div>
+            ) : (
+              <div className="font-bold">{module.name}</div>
+            )}
           </div>
         </div>
       </td>

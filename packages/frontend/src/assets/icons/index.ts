@@ -26,6 +26,7 @@ import LogoutIcon from './LogoutIcon'
 import ErrorIcon from './ErrorIcon'
 import LoginIcon from './LoginIcon'
 import CheckIcon from './CheckIcon'
+import CopyIcon from './CopyIcon'
 
 export {
   BoxIcon,
@@ -56,4 +57,5 @@ export {
   LogoutIcon,
   ErrorIcon,
   CheckIcon,
+  CopyIcon,
 }

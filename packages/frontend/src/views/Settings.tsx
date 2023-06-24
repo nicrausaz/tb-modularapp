@@ -30,35 +30,43 @@ export default function Settings() {
 
   const refreshUsers = async () => {
     const data = await fetcher<User[]>('/api/users')
-    console.log('refresh', data)
     if (data) {
       setUsers(data)
     }
   }
-  // todo: use same layout as module.tsx
+
   return (
     <div className="flex flex-col w-full items-center pb-20">
-      <div className="bg-base-100 shadow rounded-box w-full md:w-3/4 p-4 ">
-        <div className="hero bg-gradient-to-r from-primary to-accent">
-          <div className="hero-content flex-col lg:flex-row-reverse justify-between">
-            <img className="mask w-40 lg:w-50" src="/api/box/static/logo.svg" />
+      <div className="hero bg-gradient-to-r from-primary to-accent p-10 ">
+        <div className="hero-content flex-col lg:flex-row justify-between backdrop-blur-xl bg-white/30 shadow-xl rounded-xl">
+          <img className="mask w-20 lg:w-36" src="/api/box/static/logo.svg" />
+          <div>
+            <h1 className="text-4xl font-bold">Modular app</h1>
             <div>
-              <h1 className="text-4xl font-bold">Modular app</h1>
-              <div>
-                <svg className="w-6 h-6 mr-2" viewBox="0 0 24 24" />
-                <p className="font-bold">v1.0</p>
-              </div>
+              <svg className="w-6 h-6 mr-2" viewBox="0 0 24 24" />
+              <span className="font-bold float-right">
+                <div className="badge">v1.0.0</div>
+              </span>
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="flex flex-col w-full items-center">
         <div className="divider text-2xl text-neutral font-bold my-6">Your preferences</div>
-        <div>
-          <h1>Settings</h1>
+        <div className="bg-base-100 shadow rounded-box w-full md:w-3/4 p-4">
+          <label className="label">
+            <span className="label-text">Theme</span>
+          </label>
           <ThemePicker />
         </div>
-        <div className="divider text-2xl text-neutral font-bold my-6">Box configuration</div>
+      </div>
 
-        <UsersList users={users} onUpdated={refreshUsers} />
+      <div className="flex flex-col w-full items-center">
+        <div className="divider text-2xl text-neutral font-bold my-6">Box configuration</div>
+        <div className="bg-base-100 shadow rounded-box w-full md:w-3/4 p-4">
+          <UsersList users={users} onUpdated={refreshUsers} />
+        </div>
       </div>
     </div>
   )

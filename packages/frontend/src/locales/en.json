@@ -10,7 +10,11 @@
     "subtitle": "Log in to your account and start automating your workflow.",
     "form": {
       "username": "Username",
+      "username_placeholder": "Enter your username",
+      "username_error": "Please enter your username",
       "password": "Password",
+      "password_placeholder": "Enter your password",
+      "password_error": "Please enter your password",
       "forgot": "Forgot your password ?",
       "submit": "Log in"
     }

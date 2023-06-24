@@ -5,7 +5,10 @@ type FilePreviewerInputProps = {
   allowedFormats?: string[]
   currentPicture?: string
 }
-// TODO
+
+/**
+ * File input with preview
+ */
 export default function FilePreviewerInput({ onUpload, allowedFormats }: FilePreviewerInputProps) {
   const [error, setError] = useState<string>('')
   const [file, setFile] = useState<File | null>(null)
@@ -21,13 +24,26 @@ export default function FilePreviewerInput({ onUpload, allowedFormats }: FilePre
     }
   }
 
+  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      if (allowedFormats && !allowedFormats.includes(file.type)) {
+        setError(`File type not allowed. Allowed types: ${allowed}`)
+        return
+      }
+      setError('')
+      setFile(file)
+      onUpload(file)
+    }
+  }
+
   return (
     <div
       className="rounded-full h-36 w-36 mx-auto cursor-pointer bg-cover bg-center border"
-      style={{ backgroundImage: preview }}
+      style={{ backgroundImage: `url(${preview})` }}
       onClick={openFilePicker}
     >
-      <input type="file" className="hidden" id="file-input" accept={allowed} ref={input} />
+      <input type="file" className="hidden" id="file-input" accept={allowed} ref={input} onChange={handleFile} />
       <label className="label">
         <span className="label-text-alt text-error">{error}</span>
       </label>
