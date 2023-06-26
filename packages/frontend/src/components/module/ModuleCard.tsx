@@ -36,7 +36,7 @@ export default function ModuleCard({ module, onAction }: ModuleCardProps) {
   const iconLink = module.icon ? `/api/box/static/module/${module.id}/${module.icon}` : '/assets/module_placeholder.svg'
 
   return (
-    <div className="card card-side bg-base-200 shadow-xl disabled">
+    <div className="card card-side bg-base-200 hover:bg-base-300 shadow-xl ">
       <div className="absolute -translate-y-2">
         {module.enabled ? (
           <div className="badge badge-success badge-xs animate-pulse"></div>

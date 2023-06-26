@@ -5,7 +5,7 @@ const swaggerSpec = swaggerJSDoc({
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'Modular APP API',
+      title: 'Modular App API',
       version: '1.0.0',
       description: 'This is the API documentation for the Modular APP',
     },

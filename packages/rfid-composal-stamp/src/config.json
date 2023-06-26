@@ -1,0 +1,15 @@
+{
+  "name": "Composal RFID Stamp",
+  "description": "Module allowing users to scan their badge through a RFID reader to clock in and out",
+  "version": "1.0.0",
+  "author": "Nicolas Crausaz",
+  "icon": "composal.svg",
+  "specificConfig": {
+    "refreshRate": {
+      "type": "text",
+      "label": "Authentication token",
+      "description": "The Bearer token used to authenticate the request",
+      "value": ""
+    }
+  }
+}

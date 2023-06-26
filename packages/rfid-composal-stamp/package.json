@@ -1,7 +1,7 @@
 {
-  "name": "@yalk/rfid-module",
+  "name": "@yalk/rfid-composal-stamp",
   "version": "1.0.0",
-  "description": "RFID module",
+  "description": "Module allowing users to scan their badge through a RFID reader to clock in and out",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "scripts": {

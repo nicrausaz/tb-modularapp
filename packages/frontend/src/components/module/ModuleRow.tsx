@@ -42,7 +42,7 @@ export default function ModuleRow({ module, onAction }: ModuleCardProps) {
   const iconLink = module.icon ? `/api/box/static/module/${module.id}/${module.icon}` : '/assets/module_placeholder.svg'
 
   return (
-    <tr className="cursor-pointer" onClick={handleClick}>
+    <tr className="cursor-pointer hover:bg-base-200" onClick={handleClick}>
       <td>
         <div className="flex items-center space-x-3">
           <div className="avatar">

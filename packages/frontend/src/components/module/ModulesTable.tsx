@@ -8,9 +8,9 @@ type ModulesTableProps = {
 
 export default function ModulesTable({ modules, onAction }: ModulesTableProps) {
   return (
-    <div className="table-pin-rows overflow-auto">
+    <div className=" overflow-auto">
       <table className="table">
-        <thead className="bg-base-200">
+        <thead>
           <tr>
             <th>Name</th>
             <th>Description</th>

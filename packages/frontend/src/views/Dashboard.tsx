@@ -128,7 +128,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className='mx-4 my-2'>
+    <div className="mx-4 my-2">
       <div>
         <ScreenToolbar
           currentScreen={screen}

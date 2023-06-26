@@ -30,7 +30,7 @@
       "path": "./packages/hour-module"
     },
     {
-      "path": "./packages/rfid-module"
+      "path": "./packages/rfid-composal-stamp"
     }
   ]
 }
