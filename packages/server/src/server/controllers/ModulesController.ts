@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { ModuleService } from '../services'
+import { ModuleService, ScreenService } from '../services'
 import type { UploadedFile } from 'express-fileupload'
 import { BadRequestError, ForbiddenError, NotFoundError } from '../middlewares/HTTPError'
 import logger from '../libs/logger'
@@ -150,6 +150,24 @@ export default class ModulesController {
 
     res.status(200).send({
       message: 'Module configuration updated successfully',
+      moduleId: updatedId,
+    })
+  }
+
+  /**
+   * POST
+   * Reset a module's configuration to its default
+   */
+  moduleConfigurationResetDefault = (req: Request, res: Response) => {
+    const updatedId = this.moduleService.resetModuleConfigurationToDefault(req.params.id)
+
+    if (!updatedId) {
+      logger.warn(`Module with id ${req.params.id} not found`)
+      throw new NotFoundError('Module not found')
+    }
+
+    res.status(200).send({
+      message: 'Module configuration reseted to default successfully',
       moduleId: updatedId,
     })
   }

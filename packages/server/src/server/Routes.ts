@@ -31,7 +31,7 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
 
   // Create the services
   const userService = new UserService(userRepository)
-  const moduleService = new ModuleService(modulesRepository)
+  const moduleService = new ModuleService(modulesRepository, screenRepository)
   const screenService = new ScreenService(screenRepository)
   const boxService = new BoxService(boxRepository)
 
@@ -324,6 +324,12 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
     modulesController.moduleConfigurationUpdate,
   )
 
+  app.post(
+    '/api/modules/:id/configuration/default',
+    JwtAuthMiddleware,
+    modulesController.moduleConfigurationResetDefault,
+  )
+
   /**
    * @swagger
    * /api/modules/{id}/status:
@@ -398,6 +404,8 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
   app.patch('/api/users/:id', Validator(userUpdateRules), JwtAuthMiddleware, userController.update)
 
   app.delete('/api/users/:id', JwtAuthMiddleware, userController.delete)
+
+  app.put('/api/users/:id/picture', JwtAuthMiddleware, userController.updatePicture)
 }
 
 export default configureRoutes

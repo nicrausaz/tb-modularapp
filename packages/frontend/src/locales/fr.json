@@ -23,15 +23,6 @@
     "title": "Modules",
     "search_no_results": "No modules matching your search were found."
   },
-  "module": {
-    "title": "Module",
-    "actions": {
-      "start": "Start",
-      "stop": "Stop",
-      "edit": "Edit",
-      "delete": "Delete"
-    }
-  },
   "settings": {
     "title": "Settings",
     "preferences": {

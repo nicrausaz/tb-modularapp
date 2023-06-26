@@ -97,7 +97,7 @@ export default function ScreenEditor({ slots, onChange, readonly = false }: Scre
 
   return (
     <div className="border rounded-lg h-screen w-screen" ref={container}>
-      <GridLayout {...editorProps} layout={layout} onDragStop={onLayoutChange}>
+      <GridLayout {...editorProps} layout={layout} onDragStop={onLayoutChange} onResizeStop={onLayoutChange}>
         {slots.map((slot) => (
           <div key={slot.id}>
             <ScreenEditorCell slot={slot} onDelete={removeSlot} readonly={readonly} />

@@ -23,6 +23,9 @@ class TestModule extends Module {
   onReceive(data: ModuleProps): void {
     this.data = data
   }
+  onNewSubscriber(): void {
+    throw new Error('Method not implemented.')
+  }
 }
 
 /**

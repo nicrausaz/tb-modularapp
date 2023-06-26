@@ -1,14 +1,18 @@
 import fetcher from '@/api/fetcher'
+import FilePreviewerInput from '@/components/FilePreviewerInput'
 import LoadingTopBar from '@/components/LoadingTopBar'
-import ThemePicker from '@/components/ThemePicker'
+import LanguagePicker from '@/components/settings/LanguagePicker'
+import ThemePicker from '@/components/settings/ThemePicker'
 import UsersList from '@/components/users/UsersList'
 import { useFetchAuth } from '@/hooks/useFetch'
 import { User } from '@/models/User'
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 export default function Settings() {
   const { data, loading, error } = useFetchAuth<User[]>('/api/users')
   const [users, setUsers] = useState<User[]>([])
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (data) {
@@ -59,12 +63,26 @@ export default function Settings() {
             <span className="label-text">Theme</span>
           </label>
           <ThemePicker />
+
+          <label className="label">
+            <span className="label-text">Language</span>
+          </label>
+          <LanguagePicker />
         </div>
       </div>
 
       <div className="flex flex-col w-full items-center">
         <div className="divider text-2xl text-neutral font-bold my-6">Box configuration</div>
         <div className="bg-base-100 shadow rounded-box w-full md:w-3/4 p-4">
+          <label className="label">
+            <span className="label-text">Box image</span>
+          </label>
+          <FilePreviewerInput
+            onUpload={(file) => console.log(file)}
+            placeholder="assets/logo.svg"
+            rounded={false}
+            className="h-20 w-20"
+          />
           <UsersList users={users} onUpdated={refreshUsers} />
         </div>
       </div>

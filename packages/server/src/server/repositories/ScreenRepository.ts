@@ -95,6 +95,23 @@ export default class ScreenRepository {
   }
 
   /**
+   * Delete all screen slots containing the specified module
+   * @param moduleId module id
+   */
+  async deleteModuleScreenSlots(moduleId: string): Promise<void> {
+    const db = getDB()
+    return new Promise<void>((resolve, reject) => {
+      db.run('DELETE FROM ScreenSlots WHERE moduleId = ?', [moduleId], (err) => {
+        if (err) {
+          reject(err)
+        }
+        resolve()
+      })
+      db.close()
+    })
+  }
+
+  /**
    * Delete the specified screen
    * @param id id of the screen to delete
    */

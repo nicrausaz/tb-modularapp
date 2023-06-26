@@ -12,8 +12,6 @@ export interface ComposalStampRFIDProps extends ModuleProps {
 }
 
 export default class ComposalStampRFID extends Module {
-  private readonly URL = 'https://yalk-composal-nico.herokuapp.com/api/badging/toggle'
-
   init(): void {
     // Nothing to do here
   }
@@ -23,11 +21,6 @@ export default class ComposalStampRFID extends Module {
   }
 
   start(): void {
-    this.notify({
-      status: 'idle',
-      data: null,
-    })
-    
     process.stdin.on('data', (data) => {
       const id = data.toString('utf8').trim()
 
@@ -43,7 +36,7 @@ export default class ComposalStampRFID extends Module {
       console.error("Erreur d'entrée standard :", error)
     })
 
-    process.on('exit', () => stop())
+    process.on('exit', () => this.stop())
 
     process.stdin.resume()
   }
@@ -56,8 +49,16 @@ export default class ComposalStampRFID extends Module {
     // Nothing to do here
   }
 
+  onNewSubscriber(): void {
+    this.notify({
+      status: 'idle',
+      data: null,
+    })
+  }
+
   private toggleClocking = async (rfid: string): Promise<void> => {
-    const response = await fetch(this.URL, {
+    const url = this.getEntryValue<string>('composalUrl')
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -42,10 +42,10 @@ export default function Modal({
         <h3 className="font-bold text-lg">{title}</h3>
         {children}
         <div className="modal-action">
-          <button className="btn" onClick={onClose}>
+          <button type="button" className="btn" onClick={onClose}>
             Close
           </button>
-          <button className={confirmClasses} onClick={onConfirm}>
+          <button type="submit" className={confirmClasses} onClick={onConfirm} >
             Confirm
           </button>
         </div>

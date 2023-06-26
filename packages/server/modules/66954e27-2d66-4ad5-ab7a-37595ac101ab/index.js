@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const module_1 = require("@yalk/module");
 class ComposalStampRFID extends module_1.Module {
-    URL = 'https://yalk-composal-nico.herokuapp.com/api/badging/toggle';
     init() {
         // Nothing to do here
     }
@@ -21,7 +20,7 @@ class ComposalStampRFID extends module_1.Module {
         process.stdin.on('error', (error) => {
             console.error("Erreur d'entrée standard :", error);
         });
-        process.on('exit', () => stop());
+        process.on('exit', () => this.stop());
         process.stdin.resume();
     }
     stop() {
@@ -30,8 +29,15 @@ class ComposalStampRFID extends module_1.Module {
     onReceive(data) {
         // Nothing to do here
     }
+    onNewSubscriber() {
+        // this.notify({
+        //     status: 'idle',
+        //     data: null,
+        // });
+    }
     toggleClocking = async (rfid) => {
-        const response = await fetch(this.URL, {
+        const url = this.getEntryValue('composalUrl');
+        const response = await fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

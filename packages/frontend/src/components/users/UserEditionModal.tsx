@@ -2,6 +2,9 @@ import { User, UserCreate } from '@/models/User'
 import ConfirmModal from '@/components/ConfirmModal'
 import FilePreviewerInput from '@/components/FilePreviewerInput'
 import { useState } from 'react'
+import Input from '@/components/Input'
+import fetcher from '@/api/fetcher'
+import { useToast } from '@/contexts/ToastContext'
 
 type UserEditionModalProps = {
   isOpen: boolean
@@ -17,7 +20,9 @@ export default function UserEditionModal({ isOpen, user, onClose, onConfirm }: U
   const [username, setUsername] = useState<string>(user?.username ?? '')
   const [password, setPassword] = useState<string>('')
 
-  const handleConfirm = () => {
+  const { tSuccess } = useToast()
+
+  const handleConfirm = async () => {
     const newUser: UserCreate = {
       username,
       password,
@@ -27,7 +32,31 @@ export default function UserEditionModal({ isOpen, user, onClose, onConfirm }: U
       newUser.id = user.id
     }
 
-    onConfirm(mode, newUser)
+    if (mode === 'create') {
+      await fetcher('/api/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newUser),
+      })
+      tSuccess('Success', 'User created')
+    } else if (mode === 'update') {
+
+      // TODO: Update picture
+
+
+      await fetcher(`/api/users/${newUser.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newUser),
+      })
+      tSuccess('Success', 'User updated')
+    }
+
+    // onConfirm(mode, newUser)
   }
 
   const uploadPicture = (file: File) => {
@@ -44,31 +73,36 @@ export default function UserEditionModal({ isOpen, user, onClose, onConfirm }: U
     <ConfirmModal isOpen={isOpen} title={title} onConfirm={handleConfirm} onClose={cleanAndClose}>
       <div className="modal-body">
         <div className="form-control">
-          <FilePreviewerInput
-            onUpload={() => {
-              uploadPicture
-            }}
-            allowedFormats={['image/png', 'image/gif', 'image/jpeg', 'image/jpg', 'image/webp', 'image/svg+xml']}
-          />
-          <label className="label">
-            <span className="label-text">Username</span>
-          </label>
-          <input
-            type="text"
+          {mode === 'update' && (
+            <div className="mx-auto">
+              <FilePreviewerInput
+                onUpload={() => {
+                  uploadPicture
+                }}
+                allowedFormats={['image/png', 'image/gif', 'image/jpeg', 'image/jpg', 'image/webp', 'image/svg+xml']}
+                className="w-32 h-32"
+              />
+            </div>
+          )}
+
+          <Input
+            label="Username"
             placeholder="Type a username..."
-            className="input input-bordered"
-            defaultValue={user?.username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={username}
+            onChange={(value) => setUsername(value)}
+            type="text"
+            name="username"
+            error=""
           />
 
-          <label className="label">
-            <span className="label-text">Password</span>
-          </label>
-          <input
-            type="password"
+          <Input
+            label="Password"
             placeholder="Type a password..."
-            className="input input-bordered"
-            onChange={(e) => setPassword(e.target.value)}
+            value={password}
+            onChange={(value) => setPassword(value)}
+            type="password"
+            name="password"
+            error=""
           />
         </div>
       </div>

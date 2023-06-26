@@ -3,6 +3,7 @@ import ContextDropdown from '@/components/ContextDropdown'
 import Image from '@/components/Image'
 import { Module } from '@/models/Module'
 import { MoreDotsVertIcon } from '@/assets/icons'
+import { useTranslation } from 'react-i18next'
 
 type ModuleCardProps = {
   module: Module
@@ -10,28 +11,22 @@ type ModuleCardProps = {
 }
 
 export default function ModuleCard({ module, onAction }: ModuleCardProps) {
+  const { t } = useTranslation()
+
   const actions = [
     {
-      label: 'Edit',
+      label: t(module.enabled ? 'module.actions.stop' : 'module.actions.start'),
+      onClick: () => onAction && onAction(module.enabled ? 'disable' : 'enable', module.id),
+    },
+    {
+      label: t('module.actions.edit'),
       onClick: () => onAction && onAction('edit', module.id),
     },
     {
-      label: 'Delete',
+      label: t('module.actions.delete'),
       onClick: () => onAction && onAction('delete', module.id),
     },
   ]
-
-  if (module.enabled) {
-    actions.push({
-      label: 'Disable',
-      onClick: () => onAction && onAction('disable', module.id),
-    })
-  } else {
-    actions.push({
-      label: 'Enable',
-      onClick: () => onAction && onAction('enable', module.id),
-    })
-  }
 
   const iconLink = module.icon ? `/api/box/static/module/${module.id}/${module.icon}` : '/assets/module_placeholder.svg'
 

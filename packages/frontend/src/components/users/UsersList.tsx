@@ -106,7 +106,9 @@ export default function UsersList({ users, onUpdated }: UsersListProps) {
     <div>
       <div className="border-b py-2">
         <div className="flex items-center justify-between">
-          <h3>Users</h3>
+          <label className="label">
+            <span className="label-text">Users</span>
+          </label>
           <button className="btn btn-sm mr-2" onClick={openAddUserModal}>
             add
             <AddUserIcon className="w-4 h-4" />

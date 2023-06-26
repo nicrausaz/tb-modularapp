@@ -1,5 +1,5 @@
 import { SpecificConfiguration, Module, SpecificConfigurationEntry } from '@yalk/module'
-import { ModuleDTO, ModuleDTOWithConfigs } from '../models/DTO/ModuleDTO'
+import { ModuleConfigurationUpdateDTO, ModuleDTO, ModuleDTOWithConfigs } from '../models/DTO/ModuleDTO'
 import { ModuleEntity } from '../models/entities/Module'
 import { ModuleDatabaseManagerRecord } from '../helpers/ModuleDatabaseManager'
 

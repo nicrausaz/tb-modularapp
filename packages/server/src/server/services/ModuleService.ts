@@ -1,12 +1,12 @@
 import { ModuleConfigurationUpdateDTO, ModuleDTO, ModuleDTOWithConfigs, UpdateModuleDTO } from '../models/DTO/ModuleDTO'
-import { ModuleRepository } from '../repositories'
+import { ModuleRepository, ScreenRepository } from '../repositories'
 import type { UploadedFile } from 'express-fileupload'
 
 /**
  * The module service implements the business logic for the modules
  */
 export default class ModuleService {
-  constructor(private moduleRepository: ModuleRepository) {}
+  constructor(private moduleRepository: ModuleRepository, private screenRepository: ScreenRepository) {}
 
   getModules = async (): Promise<ModuleDTO[]> => {
     return this.moduleRepository.getModules()
@@ -27,6 +27,10 @@ export default class ModuleService {
 
   updateModuleConfiguration = (id: string, config: ModuleConfigurationUpdateDTO) => {
     return this.moduleRepository.updateModuleConfiguration(id, config)
+  }
+
+  resetModuleConfigurationToDefault = (id: string) => {
+    return this.moduleRepository.resetModuleConfiguration(id)
   }
 
   updateModuleEnabled = (id: string, enabled: boolean) => {
@@ -54,7 +58,8 @@ export default class ModuleService {
   }
 
   unregisterModule = (id: string) => {
-    return this.moduleRepository.unregisterModule(id)
+    this.moduleRepository.unregisterModule(id)
+    return this.screenRepository.deleteModuleScreenSlots(id)
   }
 
   private getModuleEntry = async (id: string) => {

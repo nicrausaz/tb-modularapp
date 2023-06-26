@@ -16,7 +16,7 @@ class ComposalStampRFIDRenderer extends module_1.ModuleRenderer {
         if (status === 'start') {
             return (react_1.default.createElement("div", { className: "card bg-base-100" },
                 react_1.default.createElement("div", { className: "card-body flex flex-row items-center" },
-                    react_1.default.createElement("img", { src: avatar, className: "w-28 h-28" }),
+                    react_1.default.createElement("img", { src: avatar, className: "w-28 h-28 mask mask-squircle" }),
                     react_1.default.createElement("div", { className: "ml-2 w-full" },
                         react_1.default.createElement("h2", { className: "card-title text-2xl" },
                             "Welcome ",
@@ -30,7 +30,7 @@ class ComposalStampRFIDRenderer extends module_1.ModuleRenderer {
         if (status === 'end') {
             return (react_1.default.createElement("div", { className: "card bg-base-100" },
                 react_1.default.createElement("div", { className: "card-body flex flex-row items-center" },
-                    react_1.default.createElement("img", { src: avatar, className: "w-28 h-28" }),
+                    react_1.default.createElement("img", { src: avatar, className: "w-28 h-28 mask mask-squircle" }),
                     react_1.default.createElement("div", { className: "ml-2 w-full" },
                         react_1.default.createElement("h2", { className: "card-title text-2xl" },
                             "Goodbye ",

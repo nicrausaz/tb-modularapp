@@ -32,4 +32,8 @@ export default class HourModule extends Module {
   onReceive(data: ModuleProps): void {
     // Nothing to do here
   }
+
+  onNewSubscriber(): void {
+    // Nothing to do here
+  }
 }

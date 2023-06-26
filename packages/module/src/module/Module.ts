@@ -12,43 +12,37 @@ export interface ModuleProps {
 export default abstract class Module extends EventEmitter {
   private static readonly UPDATE_STATE_KEY = 'update'
 
-  constructor(private readonly _configuration: Configuration, private readonly _renderer?: ModuleRenderer) {
+  public constructor(private readonly _configuration: Configuration, private readonly _renderer?: ModuleRenderer) {
     super()
   }
 
   /**
    * Initialize the module
    */
-  abstract init(): void
+  public abstract init(): void
 
   /**
    * Clear the module
    */
-  abstract destroy(): void
+  public abstract destroy(): void
 
   /**
    * Start the module
    */
-  abstract start(): void
+  public abstract start(): void
 
   /**
    * Stop the module
    */
-  stop(): void {
+  public stop(): void {
     this.removeAllListeners()
   }
-
-  /**
-   * Called when the module receives data
-   * @param data The data to process
-   */
-  protected abstract onReceive(data: ModuleProps): void
 
   /**
    * Apply configuration changes to the module, only existing fiels will be updated, others will be ignored
    * @param configuration The configuration to apply
    */
-  setConfiguration(configuration: Array<{ name: string; value: SpecificConfigurationEntryTypeValue }>) {
+  public setConfiguration(configuration: Array<{ name: string; value: SpecificConfigurationEntryTypeValue }>) {
     configuration.forEach((field) => {
       this.currentConfig.updateEntryFromKey(field.name, field.value)
     })
@@ -58,14 +52,15 @@ export default abstract class Module extends EventEmitter {
    * Register to the module updates
    * When the module updates, the callback will be called with the new rendered HTML
    */
-  registerToUpdates(callback: (render: string) => void): void {
+  public registerToUpdates(callback: (render: string) => void): void {
     this.on(Module.UPDATE_STATE_KEY, callback)
+    this.onNewSubscriber()
   }
 
   /**
    * Unregister from the module updates
    */
-  unregisterFromUpdates(callback: (render: string) => void): void {
+  public unregisterFromUpdates(callback: (render: string) => void): void {
     this.off(Module.UPDATE_STATE_KEY, callback)
   }
 
@@ -73,7 +68,7 @@ export default abstract class Module extends EventEmitter {
    * Give data to the module
    * @param data The data to give
    */
-  receiveData(data: ModuleProps): void {
+  public receiveData(data: ModuleProps): void {
     this.onReceive(data)
   }
 
@@ -132,4 +127,16 @@ export default abstract class Module extends EventEmitter {
       this.emit(Module.UPDATE_STATE_KEY, renderToStaticMarkup(this._renderer.render(data)))
     }
   }
+
+  /**
+   * Called when the module receives data
+   * @param data The data to process
+   */
+  protected abstract onReceive(data: ModuleProps): void
+
+  /**
+   * Called when a new subscriber is registered
+   * This method is useful to send the current or initial state to the new subscriber
+   */
+  protected abstract onNewSubscriber(): void
 }

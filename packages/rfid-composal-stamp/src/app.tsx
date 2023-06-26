@@ -19,7 +19,7 @@ export default class ComposalStampRFIDRenderer extends ModuleRenderer {
       return (
         <div className="card bg-base-100">
           <div className="card-body flex flex-row items-center">
-            <img src={avatar} className="w-28 h-28 mask mask-squircle" />
+            <img src={avatar} className="mask mask-squircle w-28 h-28" />
             <div className="ml-2 w-full">
               <h2 className="card-title text-2xl">Welcome {data.display_name} !</h2>
 

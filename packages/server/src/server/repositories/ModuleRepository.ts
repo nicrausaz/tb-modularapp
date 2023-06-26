@@ -58,11 +58,9 @@ export default class ModuleRepository {
       return null
     }
 
-    entry.module.setConfiguration(config.fields)
     const moduleEntity = ModuleMapper.DBManagerEntrytoModuleEntity(entry)
 
     const db = getDB()
-
     return new Promise((resolve, reject) => {
       db.all(
         'UPDATE Modules SET configuration = ? WHERE id = ? RETURNING id',
@@ -79,6 +77,16 @@ export default class ModuleRepository {
     })
   }
 
+  async resetModuleConfiguration(id: string): Promise<string | null> {
+    const entry = await this.manager.getModule(id)
+
+    if (!entry) {
+      return null
+    }
+
+    // TODO
+    return null
+  }
   updateModuleEnabled(id: string, enabled: boolean) {
     enabled ? this.manager.enableModule(id) : this.manager.disableModule(id)
     return id
@@ -105,7 +113,7 @@ export default class ModuleRepository {
   }
 
   async uploadModule(file: UploadedFile) {
-    const copyFiles = ['config.json', 'index.js', 'app.js'] // TODO: Make this configurable or get it from module system
+    // const copyFiles = ['config.json', 'index.js', 'app.js'] // TODO: Make this configurable or get it from module system
     const moduleId = randomUUID()
     // Create the module directory
     mkdirSync(`${process.env.MODULES_DIR}/${moduleId}`)
@@ -119,7 +127,13 @@ export default class ModuleRepository {
 
         // Unzip the module
         const zip = new AdmZip(`${process.env.MODULES_DIR}/${moduleId}/${file.name}`)
-        const zipEntries = zip.getEntries().filter((entry) => copyFiles.includes(entry.name))
+        const zipEntries = zip.getEntries().filter((entry) => {
+          if (entry.entryName.startsWith('__MACOSX') || entry.entryName.startsWith('.')) {
+            return false
+          }
+          return true
+        })
+
         zipEntries.forEach((entry) =>
           zip.extractEntryTo(entry.entryName, `${process.env.MODULES_DIR}/${moduleId}`, false, true),
         )

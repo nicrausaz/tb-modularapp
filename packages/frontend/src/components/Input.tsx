@@ -28,7 +28,7 @@ export default function Input({
   props,
 }: InputProps) {
   const labelClasses = `label-text ${error ? 'text-error' : ''}`
-  const inputClasses = `input input-bordered ${className} ${error ? 'border border-error ' : ''}`
+  const inputClasses = `input input-bordered ${className} ${error ? 'border border-error text-error' : ''}`
   return (
     <>
       {label && (

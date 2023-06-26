@@ -4,25 +4,28 @@ const module_1 = require("@yalk/module");
 class HourModule extends module_1.Module {
     interval;
     init() {
-        return this;
+        // Nothing to do here
     }
     destroy() {
         // Nothing to do here
     }
     start() {
         this.interval = setInterval(() => {
-            this.emit('update', {
+            this.notify({
                 date: new Date().toLocaleString(),
             });
         }, this.getEntryValue('refreshRate'));
-        // this.on('create', (data) => {
-        //   console.log('Received create event from the HelloModule!', data)
-        // })
     }
     stop() {
         console.log('Stop from the HelloModule!');
         clearInterval(this.interval);
         this.removeAllListeners();
+    }
+    onReceive(data) {
+        // Nothing to do here
+    }
+    onNewSubscriber() {
+        // Nothing to do here
     }
 }
 exports.default = HourModule;

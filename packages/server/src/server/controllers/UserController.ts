@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
 import { UserService } from '../services'
 import logger from '../libs/logger'
-import { NotFoundError } from '../middlewares/HTTPError'
+import { BadRequestError, NotFoundError } from '../middlewares/HTTPError'
 import { validationResult } from 'express-validator'
+import { UploadedFile } from 'express-fileupload'
 
 export default class UserController {
   constructor(private userService: UserService) {}
@@ -36,11 +37,11 @@ export default class UserController {
    * Create a new user
    */
   create = async (req: Request, res: Response) => {
-    const result = validationResult(req);
+    const result = validationResult(req)
     if (!result.isEmpty()) {
-      return res.status(400).json({ errors: result.array() });
+      return res.status(400).json({ errors: result.array() })
     }
-    
+
     await this.userService.createUser(req.body)
     res.status(201).send()
   }
@@ -60,6 +61,25 @@ export default class UserController {
 
     await this.userService.updateUser(id, req.body)
     res.status(201).send()
+  }
+
+  /**
+   * PUT
+   * Add or replace an user's picture
+   */
+  updatePicture = (req: Request, res: Response, next: NextFunction) => {
+    const id = parseInt(req.params.id)
+
+    if (!req.files || Object.keys(req.files).length === 0) {
+      throw new BadRequestError('No files were uploaded')
+    }
+
+    const picture = req.files.picture as UploadedFile
+    const allowedMimeTypes = ['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'image/svg+xml']
+
+    if (!allowedMimeTypes.includes(picture.mimetype)) {
+      throw new BadRequestError('Invalid file type')
+    }
   }
 
   /**
