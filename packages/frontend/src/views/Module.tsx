@@ -12,7 +12,6 @@ import { Configuration } from '@/models/Configuration'
 import type { Module } from 'models/Module'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { defineConfig } from 'vite'
 
 export default function Module() {
   const { moduleId } = useParams()
@@ -127,11 +126,11 @@ export default function Module() {
                 <DeveloperIcon className="w-4 h-4 mr-2" />
                 <span className="font-light">{module.author}</span>
               </div>
-              <div className="badge flex items-center tooltip tooltip-bottom" data-tip="Author">
+              <div className="badge flex items-center tooltip tooltip-bottom" data-tip="Version">
                 <VersionIcon className="w-4 h-4 mr-2" />
                 <span className="font-light">{module.version}</span>
               </div>
-              <div className="badge flex items-center tooltip tooltip-bottom" data-tip="Author">
+              <div className="badge flex items-center tooltip tooltip-bottom" data-tip="Importation date">
                 <TimeIcon className="w-4 h-4 mr-2" />
                 <span className="font-light">{module.importedAt.toString()}</span>
               </div>

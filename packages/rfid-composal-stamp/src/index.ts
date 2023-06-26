@@ -23,6 +23,11 @@ export default class ComposalStampRFID extends Module {
   }
 
   start(): void {
+    this.notify({
+      status: 'idle',
+      data: null,
+    })
+    
     process.stdin.on('data', (data) => {
       const id = data.toString('utf8').trim()
 

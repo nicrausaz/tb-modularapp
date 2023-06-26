@@ -10,7 +10,7 @@ export default class ComposalStampRFIDRenderer extends ModuleRenderer {
       return (
         <div className="w-full h-full flex justify-center">
           <span className="loading loading-ring loading-lg"></span>
-          { status }
+          {status}
         </div>
       )
     }
@@ -19,7 +19,7 @@ export default class ComposalStampRFIDRenderer extends ModuleRenderer {
       return (
         <div className="card bg-base-100">
           <div className="card-body flex flex-row items-center">
-            <img src={avatar} className="w-28 h-28" />
+            <img src={avatar} className="w-28 h-28 mask mask-squircle" />
             <div className="ml-2 w-full">
               <h2 className="card-title text-2xl">Welcome {data.display_name} !</h2>
 
@@ -39,7 +39,7 @@ export default class ComposalStampRFIDRenderer extends ModuleRenderer {
       return (
         <div className="card bg-base-100">
           <div className="card-body flex flex-row items-center">
-            <img src={avatar} className="w-28 h-28" />
+            <img src={avatar} className="w-28 h-28 mask mask-squircle" />
             <div className="ml-2 w-full">
               <h2 className="card-title text-2xl">Goodbye {data.display_name} !</h2>
 
