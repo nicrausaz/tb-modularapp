@@ -86,7 +86,6 @@ export default function UserEditionModal({ isOpen, user, onClose, onConfirm }: U
         <div className="form-control">
           {mode === 'update' && user && (
             <div className="mx-auto">
-              {user.avatar}
               <FilePreviewerInput
                 onUpload={uploadPicture}
                 currentPicture={`/api/box/static/user/${user.avatar}`}
