@@ -3,6 +3,7 @@ export type UserEntity = {
   username: string
   password: string
   isDefault: boolean
+  avatar: string
 }
 
 export type User = {

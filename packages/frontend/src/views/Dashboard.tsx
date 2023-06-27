@@ -65,7 +65,6 @@ export default function Dashboard() {
   }
 
   const saveScreen = async (screen: Screen) => {
-    console.log('saveScreen', screen)
     setScreen({
       ...screen,
     })

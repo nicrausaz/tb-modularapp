@@ -2,6 +2,8 @@ import { UserRepository } from '../repositories'
 import { CreateUserDTO, LoginUserDTO, UpdateUserDTO } from '../models/DTO/UserDTO'
 import { generateToken } from '../libs/jwt'
 import { ForbiddenError, NotFoundError } from '../middlewares/HTTPError'
+import { UploadedFile } from 'express-fileupload'
+import { randomUUID } from "crypto"
 
 /**
  * The module service implements the business logic for the modules
@@ -58,5 +60,13 @@ export default class UserService {
       .catch((err) => {
         throw err
       })
+  }
+
+  uploadPicture = async (id: number, file: UploadedFile) => {
+    file.name = `${randomUUID()}.${file.name.split('.').pop()}`
+
+    return this.userRepository.uploadPicture(file)
+      .then(() => this.userRepository.updateUserAvatar(id, file.name))
+      .catch((err) => console.log(err, "tamer"))
   }
 }

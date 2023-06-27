@@ -386,13 +386,19 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
   /**
    * Box routes
    */
-  app.get('/api/box', JwtAuthMiddleware, boxController.index)
+  app.get('/api/box', boxController.index)
+  
+  app.post('/api/box', Validator([]), JwtAuthMiddleware, boxController.update) // TODO: validator
+  
+  app.put('/api/box/icon', JwtAuthMiddleware, boxController.updateIcon)
 
   app.get('/api/box/static/:filename', boxController.staticFile)
 
   app.get('/api/box/static/module/:moduleId/:filename', boxController.moduleStaticFile)
 
-  app.post('api/box', Validator([]), JwtAuthMiddleware, boxController.update) // TODO: validator
+  app.get('/api/box/static/user/:filename', boxController.userStaticFile)
+
+  
 
   /**
    * User routes
@@ -403,9 +409,9 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
 
   app.patch('/api/users/:id', Validator(userUpdateRules), JwtAuthMiddleware, userController.update)
 
-  app.delete('/api/users/:id', JwtAuthMiddleware, userController.delete)
+  app.put('/api/users/:id/avatar', JwtAuthMiddleware, userController.updatePicture)
 
-  app.put('/api/users/:id/picture', JwtAuthMiddleware, userController.updatePicture)
+  app.delete('/api/users/:id', JwtAuthMiddleware, userController.delete)
 }
 
 export default configureRoutes

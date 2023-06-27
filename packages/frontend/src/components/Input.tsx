@@ -1,6 +1,6 @@
 type InputProps = {
   label?: string
-  type: 'text' | 'password' | 'email' | 'number'
+  type?: 'text' | 'password' | 'email' | 'number'
   name: string
   value: string
   onChange: (value: string) => void

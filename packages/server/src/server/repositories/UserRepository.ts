@@ -2,13 +2,14 @@ import { CreateUserDTO, LoginUserDTO, UpdateUserDTO } from '../models/DTO/UserDT
 import { getDB } from '../../database/database'
 import { UserEntity } from '../models/entities/User'
 import { hashString, verifyString } from '../libs/security'
+import { UploadedFile } from 'express-fileupload'
 
 export default class UserRepository {
   public getById(id: string) {
     const db = getDB()
 
     return new Promise((resolve, reject) => {
-      db.all('SELECT * FROM Users WHERE id = ?', [id], (err, row) => {
+      db.all('SELECT id, username, isDefault, avatar FROM Users WHERE id = ?', [id], (err, row) => {
         if (err || row.length === 0) {
           reject(err)
         }
@@ -34,25 +35,11 @@ export default class UserRepository {
     })
   }
 
-  public getByUsername(username: string): Promise<UserEntity> {
-    const db = getDB()
-
-    return new Promise((resolve, reject) => {
-      db.all('SELECT * FROM Users WHERE username = ?', [username], (err, row) => {
-        if (err || row.length === 0) {
-          reject(err)
-        }
-        resolve(row[0] as UserEntity)
-      })
-      db.close()
-    })
-  }
-
   public getUsers(): Promise<UserEntity[]> {
     const db = getDB()
 
     return new Promise((resolve, reject) => {
-      db.all('SELECT id, username, isDefault FROM Users', (err, rows) => {
+      db.all('SELECT id, username, isDefault, avatar FROM Users', (err, rows) => {
         if (err) {
           reject(err)
         }
@@ -117,6 +104,20 @@ export default class UserRepository {
     })
   }
 
+  public async updateUserAvatar(id: number, avatar: string): Promise<void> {
+    const db = getDB()
+
+    return new Promise<void>((resolve, reject) => {
+      db.run('UPDATE Users SET avatar = ? WHERE id = ?', [avatar, id], (err) => {
+        if (err) {
+          reject(err)
+        }
+        resolve()
+      })
+      db.close()
+    })
+  }
+
   public async deleteUser(id: number): Promise<void> {
     const db = getDB()
 
@@ -126,6 +127,32 @@ export default class UserRepository {
           reject(err)
         }
         resolve()
+      })
+      db.close()
+    })
+  }
+
+  public uploadPicture(file: UploadedFile) {
+    console.log(file)
+    return new Promise<void>((resolve, reject) => {
+      file.mv(`${process.env.PUBLIC_DIR}/users/${file.name}`, async (err) => {
+        if (err) {
+          reject(err)
+        }
+        resolve()
+      })
+    })
+  }
+
+  private getByUsername(username: string): Promise<UserEntity> {
+    const db = getDB()
+
+    return new Promise((resolve, reject) => {
+      db.all('SELECT username, password FROM Users WHERE username = ?', [username], (err, row) => {
+        if (err || row.length === 0) {
+          reject(err)
+        }
+        resolve(row[0] as UserEntity)
       })
       db.close()
     })

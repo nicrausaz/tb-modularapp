@@ -67,19 +67,23 @@ export default class UserController {
    * PUT
    * Add or replace an user's picture
    */
-  updatePicture = (req: Request, res: Response, next: NextFunction) => {
+  updatePicture = async (req: Request, res: Response, next: NextFunction) => {
     const id = parseInt(req.params.id)
 
     if (!req.files || Object.keys(req.files).length === 0) {
-      throw new BadRequestError('No files were uploaded')
+      return next(new BadRequestError('No files were uploaded'))
     }
-
-    const picture = req.files.picture as UploadedFile
+    
+    const picture = req.files.file as UploadedFile
     const allowedMimeTypes = ['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'image/svg+xml']
 
     if (!allowedMimeTypes.includes(picture.mimetype)) {
-      throw new BadRequestError('Invalid file type')
+      return next(new BadRequestError('Invalid file type'))
     }
+
+    await this.userService.uploadPicture(id, picture)
+
+    res.status(201).send()
   }
 
   /**

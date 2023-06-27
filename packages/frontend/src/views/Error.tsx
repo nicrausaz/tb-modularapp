@@ -5,11 +5,9 @@ export default function ErrorPage() {
   const error = useRouteError()
   const { t } = useTranslation()
 
-  console.log(error)
-
-  if (!isRouteErrorResponse(error)) {
-    return <>unhandled</>
-  }
+  // if (!isRouteErrorResponse(error)) {
+  //   return <>unhandled</>
+  // }
 
   // TODO: match on types of errors to display different messages
 
@@ -23,7 +21,7 @@ export default function ErrorPage() {
             <span className="text-error">Oops !</span>
           </h6>
           {error ? (
-            <p className="mb-8 text-center text-neutral md:text-lg">{error.statusText}</p>
+            <p className="mb-8 text-center text-neutral md:text-lg">{error.message}</p>
           ) : (
             <p className="mb-8 text-center text-neutral md:text-lg">{t('errors.not_found.subtitle')}</p>
           )}

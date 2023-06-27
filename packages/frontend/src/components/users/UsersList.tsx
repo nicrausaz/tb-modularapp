@@ -1,10 +1,11 @@
 import { AddUserIcon, SettingsIcon, TrashIcon } from '@/assets/icons'
 import { User, UserCreate } from '@/models/User'
-import UserEditionModal from './UserEditionModal'
 import { useState } from 'react'
 import fetcher from '@/api/fetcher'
 import { useToast } from '@/contexts/ToastContext'
-import ConfirmUserDeleteModal from './ConfirmUserDeleteModal'
+import ConfirmUserDeleteModal from '@/components/users/ConfirmUserDeleteModal'
+import UserEditionModal from '@/components/users/UserEditionModal'
+import Image from '@/components/Image'
 
 type UserRowProps = {
   user: User
@@ -18,6 +19,11 @@ function UserRow({ user, onClickEdit, onClickDelete }: UserRowProps) {
       <div className="flex items-center gap-2 flex-1">
         <div className="avatar">
           <div className="mask mask-squircle w-10 h-10">
+            <Image
+              src={`/api/box/static/user/${user.avatar}`}
+              alt="current_user_avatar"
+              fallback="/assets/placeholder.svg"
+            />
             <img src="/assets/placeholder.svg" alt="Avatar Tailwind CSS Component" />
           </div>
         </div>

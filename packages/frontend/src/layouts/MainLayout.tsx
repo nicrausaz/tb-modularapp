@@ -1,10 +1,15 @@
 import FooterNav from '@/components/FooterNav'
 import Navbar from '@/components/Navbar'
 import ToastContainer from '@/components/ToastContainer'
+import { BoxProvider } from '@/contexts/BoxContext'
+import AuthenticatedRoute from '@/router/AuthenticatedRoute'
 import { useTranslation } from 'react-i18next'
 import { Outlet, useLocation } from 'react-router-dom'
 
-function MainLayout() {
+/**
+ * Layout for the main pages, should be authenticated
+ */
+export default function MainLayout() {
   const active = useLocation().pathname
   const { t } = useTranslation()
 
@@ -27,15 +32,17 @@ function MainLayout() {
   ]
 
   return (
-    <div className="min-h-screen">
-      <ToastContainer />
-      <Navbar />
-      <div>
-        <Outlet />
+    <AuthenticatedRoute>
+      <div className="min-h-screen">
+        <BoxProvider>
+          <ToastContainer />
+          <Navbar />
+          <div>
+            <Outlet />
+          </div>
+          <FooterNav links={links} active={active} />
+        </BoxProvider>
       </div>
-      <FooterNav links={links} active={active} />
-    </div>
+    </AuthenticatedRoute>
   )
 }
-
-export default MainLayout

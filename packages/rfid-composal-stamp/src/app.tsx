@@ -19,13 +19,15 @@ export default class ComposalStampRFIDRenderer extends ModuleRenderer {
       return (
         <div className="card bg-base-100">
           <div className="card-body flex flex-row items-center">
-            <img src={avatar} className="mask mask-squircle w-28 h-28" />
+            <div className="mask mask-squircle w-28 h-28">
+              <img src={avatar} />
+            </div>
             <div className="ml-2 w-full">
               <h2 className="card-title text-2xl">Welcome {data.display_name} !</h2>
 
               <p className="mb-2 flex items-center justify-between w-full">
                 <div>You just clocked in !</div>
-                <span className="text-4xl font-bold">08:00</span>
+                <span className="text-4xl font-bold">{data.clocked_in_at}</span>
               </p>
 
               <div className="card-actions justify-end">{additionalMessage}</div>

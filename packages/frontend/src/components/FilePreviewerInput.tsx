@@ -18,10 +18,15 @@ export default function FilePreviewerInput({
   placeholder,
   rounded = true,
   className,
+  currentPicture,
 }: FilePreviewerInputProps) {
   const [error, setError] = useState<string>('')
   const [file, setFile] = useState<File | null>(null)
   const input = useRef<HTMLInputElement>(null)
+
+  if (currentPicture) {
+    placeholder = currentPicture
+  }
 
   const allowed = allowedFormats?.join(', ') ?? ''
 
@@ -44,6 +49,7 @@ export default function FilePreviewerInput({
       }
       setError('')
       setFile(file)
+      console.log(file)
       onUpload(file)
     }
   }

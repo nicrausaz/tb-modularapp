@@ -7,29 +7,33 @@ import Settings from '@/views/Settings'
 import Dashboard from '@/views/Dashboard'
 import Module from '@/views/Module'
 import Modules from '@/views/Modules'
-import AuthenticatedRoute from './AuthenticatedRoute'
 import Home from '@/views/Home'
 import Visualize from '@/views/Visualize'
 import About from '@/views/About'
+import UnrestrictedLayout from '@/layouts/UnrestrictedLayout'
 
 const routes: RouteObject[] = [
   {
     path: '/login',
-    element: <Login />,
+    element: (
+      <UnrestrictedLayout>
+        <Login />
+      </UnrestrictedLayout>
+    ),
     errorElement: <Error />,
   },
   {
     path: '/visualize/:screenId',
-    element: <Visualize />,
+    element: (
+      <UnrestrictedLayout>
+        <Visualize />
+      </UnrestrictedLayout>
+    ),
     errorElement: <Error />,
   },
   {
     path: '/',
-    element: (
-      <AuthenticatedRoute>
-        <MainLayout />
-      </AuthenticatedRoute>
-    ),
+    element: <MainLayout />,
     errorElement: <Error />,
     children: [
       {

@@ -5,7 +5,7 @@ export default class BoxMapper {
   static toDTO(box: Box): BoxDTO {
     return {
       name: box.name,
-      picture: box.picture,
+      icon: box.icon,
       version: box.version,
     }
   }

@@ -14,6 +14,10 @@ type UserEditionModalProps = {
 }
 
 export default function UserEditionModal({ isOpen, user, onClose, onConfirm }: UserEditionModalProps) {
+  if (!isOpen) {
+    return null
+  }
+
   const mode = user ? 'update' : 'create'
   const title = user ? 'Edit user' : 'Create user'
 
@@ -42,9 +46,7 @@ export default function UserEditionModal({ isOpen, user, onClose, onConfirm }: U
       })
       tSuccess('Success', 'User created')
     } else if (mode === 'update') {
-
       // TODO: Update picture
-
 
       await fetcher(`/api/users/${newUser.id}`, {
         method: 'PATCH',
@@ -59,8 +61,17 @@ export default function UserEditionModal({ isOpen, user, onClose, onConfirm }: U
     // onConfirm(mode, newUser)
   }
 
-  const uploadPicture = (file: File) => {
-    console.log('upload picture', file)
+  const uploadPicture = async (file: File) => {
+    console.log('uploading picture')
+    const formData = new FormData()
+    formData.append('file', file)
+
+    await fetcher(`/api/users/${user?.id}/avatar`, {
+      method: 'PUT',
+      body: formData,
+    })
+    tSuccess('Success', 'User avatar updated')
+    // TODO: find a way to update the connected user avatar if it's the same user
   }
 
   const cleanAndClose = () => {
@@ -73,12 +84,12 @@ export default function UserEditionModal({ isOpen, user, onClose, onConfirm }: U
     <ConfirmModal isOpen={isOpen} title={title} onConfirm={handleConfirm} onClose={cleanAndClose}>
       <div className="modal-body">
         <div className="form-control">
-          {mode === 'update' && (
+          {mode === 'update' && user && (
             <div className="mx-auto">
+              {user.avatar}
               <FilePreviewerInput
-                onUpload={() => {
-                  uploadPicture
-                }}
+                onUpload={uploadPicture}
+                currentPicture={`/api/box/static/user/${user.avatar}`}
                 allowedFormats={['image/png', 'image/gif', 'image/jpeg', 'image/jpg', 'image/webp', 'image/svg+xml']}
                 className="w-32 h-32"
               />
@@ -96,7 +107,7 @@ export default function UserEditionModal({ isOpen, user, onClose, onConfirm }: U
           />
 
           <Input
-            label="Password"
+            label="Password (leave empty to keep the same password)"
             placeholder="Type a password..."
             value={password}
             onChange={(value) => setPassword(value)}
