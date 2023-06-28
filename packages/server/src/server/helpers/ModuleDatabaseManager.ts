@@ -1,6 +1,6 @@
 import { Manager } from '@yalk/module-manager'
 import { getDB } from '../../database/database'
-import { ModuleEntity } from '../models/entities/Module'
+import { ConfiguredModuleEntity, ModuleEntity } from '../models/entities/Module'
 import ModuleMapper from '../mappers/ModuleMapper'
 import { Module } from '@yalk/module'
 
@@ -116,7 +116,7 @@ export default class ModuleDatabaseManager {
         moduleEntity.version,
         moduleEntity.author,
         moduleEntity.icon,
-        JSON.stringify(moduleEntity.configuration),
+        moduleEntity.configuration,
       ],
       (err) => {
         if (err) {
@@ -225,12 +225,26 @@ export default class ModuleDatabaseManager {
         this.registerModule(id)
       }
     }
+
+    // Check if the module is in the local modules, if not, remove it
+    const modules = await this.modules()
+    for (const module of modules) {
+      if (!this.manager.getModule(module.id)) {
+        this.unregisterModule(module.id)
+      }
+    }
+
+    // Load the configuration of the modules from the database, if it exists
+    for (const module of modules) {
+      const entry = this.manager.getModule(module.id)
+      entry.module.setConfiguration(module.configuration)
+    }
   }
 
   /**
    * Get all the modules from the database
    */
-  private async modules(): Promise<ModuleEntity[]> {
+  private async modules(): Promise<ConfiguredModuleEntity[]> {
     const db = getDB()
 
     return new Promise((resolve, reject) => {
@@ -238,7 +252,7 @@ export default class ModuleDatabaseManager {
         if (err) {
           reject(err)
         }
-        return resolve(rows as ModuleEntity[])
+        resolve((rows as ModuleEntity[]).map(ModuleMapper.entityToConfiguredModuleEntity))
       })
       db.close()
     })
@@ -248,7 +262,7 @@ export default class ModuleDatabaseManager {
    * Get a module from the database
    * @param id module id
    */
-  private async module(id: string): Promise<ModuleEntity> {
+  private async module(id: string): Promise<ConfiguredModuleEntity> {
     const db = getDB()
 
     return new Promise((resolve, reject) => {
@@ -256,7 +270,7 @@ export default class ModuleDatabaseManager {
         if (err) {
           reject(err)
         }
-        return resolve(rows[0] as ModuleEntity)
+        return resolve(ModuleMapper.entityToConfiguredModuleEntity(rows[0] as ModuleEntity))
       })
       db.close()
     })

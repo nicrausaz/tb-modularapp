@@ -1,16 +1,16 @@
-import { Configuration } from '@/models/Configuration'
-import ConfigurationInput from './ConfigurationInput'
 import { useState } from 'react'
-import IconButton from '../IconButton'
+import { Configuration } from '@/models/Configuration'
+import ConfigurationInput from '@/components/module/ConfigurationInput'
+import IconButton from '@/components/IconButton'
 import { SaveIcon } from '@/assets/icons'
 
 type ConfigurationEditorProps = {
   configuration: Configuration
-  readonly defaultConfiguration: Configuration
   onSave: (configuration: Configuration) => void
+  onReset: () => void
 }
 
-export default function ConfigurationEditor({ configuration, defaultConfiguration, onSave }: ConfigurationEditorProps) {
+export default function ConfigurationEditor({ configuration, onSave, onReset }: ConfigurationEditorProps) {
   const [editingConfig, setEditingConfig] = useState<Configuration>([...configuration])
 
   const handleInputChange = (name: string, value: string | boolean | number) => {
@@ -22,21 +22,8 @@ export default function ConfigurationEditor({ configuration, defaultConfiguratio
     })
   }
 
-  const onReset = () => {
-    // todo: refactor
-    defaultConfiguration.forEach((input) => {
-      handleInputChange(input.name, input.value)
-    })
-  }
-
-  const handleSave = () => {
-    onSave(editingConfig)
-  }
-
   return (
     <div className="form-control w-full">
-      {JSON.stringify(configuration)}
-      {JSON.stringify(defaultConfiguration)}
       {configuration.map((input, i) => [
         <ConfigurationInput input={input} key={i} onValueChange={handleInputChange} />,
         <div className="divider m-0" key={`divider${i}`}></div>,
@@ -47,7 +34,7 @@ export default function ConfigurationEditor({ configuration, defaultConfiguratio
           Reset to default
         </button>
         <IconButton
-          onClick={handleSave}
+          onClick={() => onSave(editingConfig)}
           icon={<SaveIcon className="w-4 h-4" />}
           position="left"
           label="Save"

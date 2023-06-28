@@ -58,13 +58,14 @@ export default class ModuleRepository {
       return null
     }
 
+    entry.module.setConfiguration(config.fields)
     const moduleEntity = ModuleMapper.DBManagerEntrytoModuleEntity(entry)
 
     const db = getDB()
     return new Promise((resolve, reject) => {
       db.all(
         'UPDATE Modules SET configuration = ? WHERE id = ? RETURNING id',
-        [JSON.stringify(moduleEntity.configuration), id],
+        [moduleEntity.configuration, id],
         (err, rows) => {
           if (err) {
             reject(err)
@@ -84,8 +85,24 @@ export default class ModuleRepository {
       return null
     }
 
-    // TODO
-    return null
+    entry.module.resetConfiguration()
+    const moduleEntity = ModuleMapper.DBManagerEntrytoModuleEntity(entry)
+
+    const db = getDB()
+    return new Promise((resolve, reject) => {
+      db.all(
+        'UPDATE Modules SET configuration = ? WHERE id = ? RETURNING id',
+        [moduleEntity.configuration, id],
+        (err, rows) => {
+          if (err) {
+            reject(err)
+          }
+
+          resolve(rows[0] as string)
+        },
+      )
+      db.close()
+    })
   }
   updateModuleEnabled(id: string, enabled: boolean) {
     enabled ? this.manager.enableModule(id) : this.manager.disableModule(id)

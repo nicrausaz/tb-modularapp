@@ -4,6 +4,7 @@ import IconButton from '@/components/IconButton'
 import Image from '@/components/Image'
 import LoadingTopBar from '@/components/LoadingTopBar'
 import ConfigurationEditor from '@/components/module/ConfigurationEditor'
+import ConfirmConfigResetModal from '@/components/module/ConfirmConfigResetModal'
 import ConfirmModuleDeleteModal from '@/components/module/ConfirmModuleDeleteModal'
 import ModuleRender from '@/components/module/ModuleRender'
 import { useToast } from '@/contexts/ToastContext'
@@ -21,6 +22,7 @@ export default function Module() {
   const { data, error, loading } = useFetchAuth<Module>(`/api/modules/${moduleId}`)
   const [module, setModule] = useState(data)
   const [confirmDelete, setConfirmDelete] = useState<boolean>(false)
+  const [confirmReset, setConfirmReset] = useState<boolean>(false)
 
   useEffect(() => {
     setModule(data)
@@ -80,8 +82,7 @@ export default function Module() {
         fields: configuration,
       }),
     })
-      .then((res) => {
-        console.log(res)
+      .then(() => {
         tSuccess('Configuration saved', 'The configuration has been saved successfully')
       })
       .catch((err) => {
@@ -96,6 +97,28 @@ export default function Module() {
     })
 
     navigate('/modules')
+  }
+
+  const handleReset = async () => {
+    setConfirmReset(false)
+    try {
+      await fetcher(`/api/modules/${module.id}/configuration/default`, {
+        method: 'POST',
+      })
+
+      const config = await fetcher<Configuration>(`/api/modules/${module.id}/configuration`, {
+        method: 'GET',
+      })
+
+      setModule({
+        ...module,
+        currentConfig: config,
+      })
+
+      tSuccess('Configuration reset', 'The configuration has been reset successfully')
+    } catch (err) {
+      tError('Error', 'Failed to reset configuration')
+    }
   }
 
   const copyId = () => {
@@ -236,11 +259,17 @@ export default function Module() {
         <div className="bg-base-100 shadow rounded-box w-full md:w-3/4 p-4">
           <ConfigurationEditor
             configuration={module.currentConfig}
-            defaultConfiguration={module.defaultConfig}
             onSave={saveConfiguration}
+            onReset={() => setConfirmReset(true)}
           />
         </div>
       </div>
+
+      <ConfirmConfigResetModal
+        isOpen={confirmReset}
+        onClose={() => setConfirmReset(false)}
+        onConfirm={handleReset}
+      />
 
       <ConfirmModuleDeleteModal
         isOpen={confirmDelete}

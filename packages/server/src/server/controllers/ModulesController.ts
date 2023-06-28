@@ -73,12 +73,12 @@ export default class ModulesController {
       res.write(`data: ${render}\n\n`)
     }
 
-    this.moduleService.subscribeToModuleEvents(moduleId, handleModuleEvent)
-
     // Configure the SSE
     res.setHeader('Content-Type', 'text/event-stream')
     res.setHeader('Cache-Control', 'no-cache')
     res.setHeader('Connection', 'keep-alive')
+
+    this.moduleService.subscribeToModuleEvents(moduleId, handleModuleEvent)
 
     // res.write('data: Connected\n\n')
 
@@ -130,10 +130,7 @@ export default class ModulesController {
       return next(new NotFoundError('Module not found'))
     }
 
-    res.send({
-      default: module.defaultConfig,
-      current: module.currentConfig,
-    })
+    res.send(module.currentConfig)
   }
 
   /**
@@ -167,7 +164,7 @@ export default class ModulesController {
     }
 
     res.status(200).send({
-      message: 'Module configuration reseted to default successfully',
+      message: 'Module configuration reset to default successfully',
       moduleId: updatedId,
     })
   }

@@ -49,6 +49,13 @@ export default abstract class Module extends EventEmitter {
   }
 
   /**
+   * Reset the module configuration to default
+   */
+  public resetConfiguration() {
+    this._configuration.reset()
+  }
+
+  /**
    * Register to the module updates
    * When the module updates, the callback will be called with the new rendered HTML
    */

@@ -20,6 +20,12 @@ export class Configuration {
     this._defaultEntries = structuredClone(this._specificEntries)
   }
 
+  public reset(): void {
+    this._defaultEntries.entries.forEach((value, key) => {
+      this._specificEntries.entries.set(key, value)
+    })
+  }
+
   /**
    * Get the module name
    */

@@ -257,7 +257,6 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *                         "nickname": null,
    *                         "enabled": false,
    *                         "importedAt": "2023-06-22 08:08:47",
-   *                         "defaultConfig": [],
    *                         "currentConfig": []
    *                      }
    *       404:
@@ -315,6 +314,50 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
 
   app.post('/api/modules/:id/events', JwtAuthMiddleware, modulesController.sendEvent)
 
+  /**
+   * @swagger
+   * /api/modules/{id}/configuration:
+   *   get:
+   *     summary: Get the configuration of a module
+   *     description: Get the configuration of a module
+   *     tags: [Modules]
+   *     security:
+   *       - bearer: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: The module id
+   *     responses:
+   *       200:
+   *         description: Module exists
+   *         content:
+   *           application/json:
+   *           schema:
+   *             type: array
+   *           example:
+   *                 [
+   *                   {
+   *                     'name': 'refreshRate',
+   *                     'type': 'number',
+   *                     'label': 'Refresh rate',
+   *                     'description': 'The refresh rate in ms',
+   *                     'value': 1000,
+   *                   },
+   *                 ]
+   *       404:
+   *         description: The module does not exist
+   *         content:
+   *           application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               message:
+   *                 type: string
+   *           example: { 'message': 'Module not found' }
+   */
   app.get('/api/modules/:id/configuration', JwtAuthMiddleware, modulesController.moduleConfiguration)
 
   app.put(
@@ -387,9 +430,9 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    * Box routes
    */
   app.get('/api/box', boxController.index)
-  
+
   app.post('/api/box', Validator([]), JwtAuthMiddleware, boxController.update) // TODO: validator
-  
+
   app.put('/api/box/icon', JwtAuthMiddleware, boxController.updateIcon)
 
   app.get('/api/box/static/:filename', boxController.staticFile)
@@ -397,8 +440,6 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
   app.get('/api/box/static/module/:moduleId/:filename', boxController.moduleStaticFile)
 
   app.get('/api/box/static/user/:filename', boxController.userStaticFile)
-
-  
 
   /**
    * User routes

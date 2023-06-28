@@ -17,7 +17,6 @@ export type UpdateModuleDTO = {
 }
 
 export type ModuleDTOWithConfigs = ModuleDTO & {
-  readonly defaultConfig: SpecificConfigurationEntry[]
   currentConfig: SpecificConfigurationEntry[]
 }
 
