@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
 import { ScreensService } from '../services'
-import { ForbiddenError, NotFoundError } from '../middlewares/HTTPError'
-import logger from '../libs/logger'
 
+/**
+ * Controller for the screens routes
+ */
 export default class ScreensController {
   constructor(private screensService: ScreensService) {}
 
@@ -16,48 +17,34 @@ export default class ScreensController {
 
   /**
    * GET
-   * Get a screen by its id
+   * Get a screen by its id if it exists and is enabled
    */
   screen = async (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params.id
-    const screen = await this.screensService.getScreen(Number(id))
-
-    if (!screen) {
-      logger.warn(`Screen with id ${id} not found`)
-      next(new NotFoundError('Screen not found'))
-      return
-    }
-
-    if (!screen.enabled) {
-      logger.warn(`Screen with id ${id} not enabled`)
-      next(new ForbiddenError('Screen not enabled'))
-      return
-    }
-
-    res.send(screen)
+    this.screensService
+      .getScreen(Number(req.params.id))
+      .then((screen) => res.send(screen))
+      .catch(next)
   }
 
   /**
    * PUT
    * Create or update a screen
    */
-  createOrUpdate = async (req: Request, res: Response) => {
-    const screen = req.body
-    const screenId = await this.screensService.createOrUpdateScreen(screen)
-
-    res.status(200).send({
-      message: 'Screen updated successfully',
-      screenId,
-    })
+  createOrUpdate = (req: Request, res: Response, next: NextFunction) => {
+    this.screensService
+      .createOrUpdateScreen(req.body)
+      .then(() => res.status(204).send())
+      .catch(next)
   }
 
   /**
    * DELETE
    * Delete a screen
    */
-  delete = async (req: Request, res: Response) => {
-    const id = req.params.id
-    await this.screensService.deleteScreen(Number(id))
-    res.status(204).send()
+  delete = (req: Request, res: Response, next: NextFunction) => {
+    this.screensService
+      .deleteScreen(Number(req.params.id))
+      .then(() => res.status(204).send())
+      .catch(next)
   }
 }
