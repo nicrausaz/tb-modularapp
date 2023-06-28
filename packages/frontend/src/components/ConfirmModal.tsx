@@ -7,7 +7,7 @@ type ConfirmModalProps = {
   confirmColor?: string
   confirmEnabled?: boolean
   onConfirm: () => void
-  onClose: () => void
+  onCancel: () => void
 }
 
 /**
@@ -18,7 +18,7 @@ export default function ConfirmModal({
   title,
   children,
   onConfirm,
-  onClose,
+  onCancel,
   confirmColor,
   confirmEnabled = true,
 }: ConfirmModalProps) {
@@ -27,7 +27,7 @@ export default function ConfirmModal({
       isOpen={isOpen}
       title={title}
       onConfirm={onConfirm}
-      onClose={onClose}
+      onCancel={onCancel}
       confirmColor={confirmColor}
       confirmEnabled={confirmEnabled}
     >

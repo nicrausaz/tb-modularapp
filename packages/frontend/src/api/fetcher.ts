@@ -1,4 +1,6 @@
-export default async function fetcher<T>(url: string, options?: RequestInit, auth = true) {
+import { ValidationError } from './requests/errors'
+
+export default async function fetcher<T>(url: string, options?: RequestInit, auth = true): Promise<T> {
   let opts = { ...options }
 
   if (auth) {
@@ -15,6 +17,10 @@ export default async function fetcher<T>(url: string, options?: RequestInit, aut
 
   if (!response.ok) {
     const jsonData = await response.json()
+
+    if (jsonData.errors) {
+      throw new ValidationError(...jsonData.errors)
+    }
     throw new Error(jsonData.message)
   }
 

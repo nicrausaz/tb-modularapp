@@ -4,11 +4,11 @@ import { User } from '@/models/User'
 type ConfirmModuleDeleteModalProps = {
   isOpen: boolean
   user: User | null
-  onClose: () => void
   onConfirm(userId: number): void
+  onCancel: () => void
 }
 
-export default function ConfirmModuleDeleteModal({ isOpen, onClose, onConfirm, user }: ConfirmModuleDeleteModalProps) {
+export default function ConfirmModuleDeleteModal({ isOpen, onCancel, onConfirm, user }: ConfirmModuleDeleteModalProps) {
   if (!user) {
     return null
   }
@@ -18,7 +18,7 @@ export default function ConfirmModuleDeleteModal({ isOpen, onClose, onConfirm, u
       isOpen={isOpen}
       title="Confirm deletion"
       onConfirm={() => onConfirm(user.id)}
-      onClose={onClose}
+      onCancel={onCancel}
       confirmColor="btn-error"
     >
       <div className="modal-body">

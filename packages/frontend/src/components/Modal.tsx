@@ -2,8 +2,8 @@ import { useEffect, useRef } from 'react'
 
 type ModalProps = {
   isOpen: boolean
-  onClose: () => void
   onConfirm?: () => void
+  onCancel: () => void
   children: React.ReactNode
   title?: string
   confirmEnabled?: boolean
@@ -15,8 +15,8 @@ type ModalProps = {
  */
 export default function Modal({
   isOpen,
-  onClose,
   onConfirm,
+  onCancel,
   title,
   children,
   confirmEnabled = true,
@@ -27,25 +27,32 @@ export default function Modal({
   useEffect(() => {
     if (isOpen) {
       modalRef.current?.showModal()
-      modalRef.current?.addEventListener('cancel', onClose)
+      // modalRef.current?.addEventListener('cancel', onClose)
     } else {
-      modalRef.current?.removeEventListener('cancel', onClose)
+      // modalRef.current?.removeEventListener('cancel', onClose)
       modalRef.current?.close()
     }
   }, [isOpen])
 
   const confirmClasses = `btn ${confirmEnabled ? confirmColor : 'btn-disabled'}`
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (onConfirm) {
+      onConfirm()
+    }
+  }
+
   return (
     <dialog ref={modalRef} className="modal modal-bottom sm:modal-middle shadow-lg">
-      <form method="dialog" className="modal-box">
+      <form method="dialog" className="modal-box" onSubmit={handleSubmit}>
         <h3 className="font-bold text-lg">{title}</h3>
         {children}
         <div className="modal-action">
-          <button type="button" className="btn" onClick={onClose}>
+          <button type="button" className="btn" onClick={onCancel}>
             Close
           </button>
-          <button type="submit" className={confirmClasses} onClick={onConfirm} >
+          <button type="submit" className={confirmClasses}>
             Confirm
           </button>
         </div>

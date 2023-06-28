@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from 'react'
 import { useLocalStorage } from '@/hooks/useLocalStorage'
 import { User } from '@/models/User'
-import * as Api from '@/api/api'
+import * as Api from '@/api/requests/api'
 
 type AuthContextType = {
   token: string

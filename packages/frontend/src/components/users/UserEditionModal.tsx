@@ -1,15 +1,16 @@
-import { User, UserCreate } from '@/models/User'
+import { User, UserUpdate } from '@/models/User'
 import ConfirmModal from '@/components/ConfirmModal'
 import FilePreviewerInput from '@/components/FilePreviewerInput'
 import { useState } from 'react'
 import Input from '@/components/Input'
-import fetcher from '@/api/fetcher'
 import { useToast } from '@/contexts/ToastContext'
+import { create, update, updateAvatar } from '@/api/requests/users'
+import { ValidationError } from '@/api/requests/errors'
 
 type UserEditionModalProps = {
   isOpen: boolean
   onClose: () => void
-  onConfirm(action: 'create' | 'update', user: UserCreate): void
+  onConfirm(): void
   user: User | null
 }
 
@@ -21,98 +22,128 @@ export default function UserEditionModal({ isOpen, user, onClose, onConfirm }: U
   const mode = user ? 'update' : 'create'
   const title = user ? 'Edit user' : 'Create user'
 
-  const [username, setUsername] = useState<string>(user?.username ?? '')
-  const [password, setPassword] = useState<string>('')
+  const [form, setForm] = useState({
+    username: user?.username ?? '',
+    password: '',
+    avatar: null,
+  })
 
-  const { tSuccess } = useToast()
+  const [errors, setErrors] = useState({
+    username: '',
+    password: '',
+  })
 
-  const handleConfirm = async () => {
-    const newUser: UserCreate = {
+  const { tSuccess, tError } = useToast()
+
+  const userCreation = async (username: string, password: string): Promise<boolean> => {
+    const newUser = {
       username,
       password,
     }
 
-    if (mode === 'update' && user) {
-      newUser.id = user.id
+    return create(newUser)
+      .then(() => true)
+      .catch((err) => {
+        if (err instanceof ValidationError) {
+          setErrors({
+            username: err.f('username'),
+            password: err.f('password'),
+          })
+        } else {
+          tError('Error', 'An error occured while creating the user')
+        }
+        return false
+      })
+  }
+
+  const userUpdate = async (userId: number, username: string, password: string, avatar: File | null) => {
+    const newUser: UserUpdate = {
+      id: userId,
+      username: username,
     }
 
-    if (mode === 'create') {
-      await fetcher('/api/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newUser),
-      })
-      tSuccess('Success', 'User created')
-    } else if (mode === 'update') {
-      // TODO: Update picture
+    if (password) {
+      newUser.password = password
+    }
 
-      await fetcher(`/api/users/${newUser.id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newUser),
+    if (avatar) {
+      await updateAvatar(userId, avatar)
+    }
+
+    return update(newUser)
+      .then(() => true)
+      .catch((err) => {
+        if (err instanceof ValidationError) {
+          setErrors({
+            username: err.f('username'),
+            password: err.f('password'),
+          })
+        } else {
+          tError('Error', 'An error occured while creating the user')
+        }
+        return false
       })
+  }
+
+  const handleConfirm = async () => {
+    const { username, password, avatar } = form
+    if (mode === 'create') {
+      if (!(await userCreation(username, password))) {
+        return
+      }
+      tSuccess('Success', 'User created')
+    } else if (mode === 'update' && user) {
+      if (!(await userUpdate(user?.id, username, password, avatar))) {
+        return
+      }
       tSuccess('Success', 'User updated')
     }
 
-    // onConfirm(mode, newUser)
-  }
-
-  const uploadPicture = async (file: File) => {
-    console.log('uploading picture')
-    const formData = new FormData()
-    formData.append('file', file)
-
-    await fetcher(`/api/users/${user?.id}/avatar`, {
-      method: 'PUT',
-      body: formData,
-    })
-    tSuccess('Success', 'User avatar updated')
-    // TODO: find a way to update the connected user avatar if it's the same user
+    onConfirm()
   }
 
   const cleanAndClose = () => {
-    setUsername('')
-    setPassword('')
+    setForm({
+      username: '',
+      password: '',
+      avatar: null,
+    })
     onClose()
   }
 
   return (
-    <ConfirmModal isOpen={isOpen} title={title} onConfirm={handleConfirm} onClose={cleanAndClose}>
+    <ConfirmModal isOpen={isOpen} title={title} onConfirm={handleConfirm} onCancel={cleanAndClose}>
       <div className="modal-body">
         <div className="form-control">
           {mode === 'update' && user && (
             <div className="mx-auto">
               <FilePreviewerInput
-                onUpload={uploadPicture}
-                currentPicture={`/api/box/static/user/${user.avatar}`}
+                onUpload={(file) => setForm({ ...form, avatar: file })}
+                currentPicture={user.avatar ? `/api/box/static/user/${user.avatar}` : ''}
                 allowedFormats={['image/png', 'image/gif', 'image/jpeg', 'image/jpg', 'image/webp', 'image/svg+xml']}
                 className="w-32 h-32"
+                placeholder="/assets/placeholder.svg"
               />
             </div>
           )}
-
           <Input
             label="Username"
             placeholder="Type a username..."
-            value={username}
-            onChange={(value) => setUsername(value)}
+            value={form.username}
+            onChange={(value) => setForm({ ...form, username: value })}
             type="text"
             name="username"
-            error=""
+            error={errors.username}
           />
 
           <Input
-            label="Password (leave empty to keep the same password)"
+            label={mode === 'create' ? 'Password' : 'Password (leave empty to keep the same password)'}
             placeholder="Type a password..."
-            value={password}
-            onChange={(value) => setPassword(value)}
+            value={form.password}
+            onChange={(value) => setForm({ ...form, password: value })}
             type="password"
             name="password"
-            error=""
+            error={errors.password}
           />
         </div>
       </div>

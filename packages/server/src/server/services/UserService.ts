@@ -19,6 +19,7 @@ export default class UserService {
         const token = generateToken({
           id: user.id,
           username: user.username,
+          avatar: user.avatar,
         })
 
         return token

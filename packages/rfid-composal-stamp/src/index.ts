@@ -12,7 +12,6 @@ export interface ComposalStampRFIDProps extends ModuleProps {
 }
 
 export default class ComposalStampRFID extends Module {
-
   init(): void {}
 
   destroy(): void {
@@ -49,10 +48,10 @@ export default class ComposalStampRFID extends Module {
   }
 
   onNewSubscriber(): void {
-    // this.notify({
-    //   status: 'idle',
-    //   data: null,
-    // })
+    this.notify({
+      status: 'idle',
+      data: null,
+    })
   }
 
   private toggleClocking = async (rfid: string): Promise<void> => {

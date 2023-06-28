@@ -17,6 +17,6 @@ VALUES
   (1, 'Default screen');
 
 INSERT
-  OR REPLACE INTO Box (name, version)
+  OR REPLACE INTO Box (name, version, icon)
 VALUES
-  ('Modular APP', '1.0.0');
+  ('Modular APP', '1.0.0', 'logo.svg');

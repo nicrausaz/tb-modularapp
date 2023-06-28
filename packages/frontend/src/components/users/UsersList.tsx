@@ -28,7 +28,7 @@ function UserRow({ user, onClickEdit, onClickDelete }: UserRowProps) {
           </div>
         </div>
         <div>
-          {user.username} {user.isDefault && <span className="badge badge-ghost ml-2">Default</span>}
+          {user.username} {user.isDefault ? <span className="badge badge-ghost ml-2">Default</span> : ''}
         </div>
       </div>
       <div className="flex-0">
@@ -73,29 +73,8 @@ export default function UsersList({ users, onUpdated }: UsersListProps) {
     setDeletingUser(user)
   }
 
-  const handleConfirm = async (action: string, user: UserCreate) => {
+  const handleConfirm = () => {
     setUserEditionModalOpen(false)
-
-    if (action === 'create') {
-      await fetcher('/api/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(user),
-      })
-      tSuccess('Success', 'User created')
-    } else if (action === 'update') {
-      await fetcher(`/api/users/${user.id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(user),
-      })
-      tSuccess('Success', 'User updated')
-    }
-
     onUpdated()
   }
 
@@ -135,7 +114,7 @@ export default function UsersList({ users, onUpdated }: UsersListProps) {
         user={deletingUser}
         isOpen={userDeletionModalOpen}
         onConfirm={handleDelete}
-        onClose={() => setUserDeletionModalOpen(false)}
+        onCancel={() => setUserDeletionModalOpen(false)}
       />
     </div>
   )

@@ -96,7 +96,7 @@ export default function Settings() {
             placeholder="My box"
             onChange={(value) => console.log(value)}
             name="boxname"
-            value="Modular App"
+            value={box.name}
           />
 
           <label className="label">

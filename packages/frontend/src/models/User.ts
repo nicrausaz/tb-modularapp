@@ -6,7 +6,12 @@ export type User = {
 }
 
 export type UserCreate = {
-  id?: number
   username: string
   password: string
+}
+
+export type UserUpdate = {
+  id?: number
+  username: string
+  password?: string
 }
