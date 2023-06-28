@@ -1,11 +1,10 @@
 import express, { Request, Response } from 'express'
-import { AuthController, ModulesController, ScreenController, BoxController } from './controllers'
-import { BoxService, ModuleService, ScreenService, UserService } from './services'
-import { UserRepository, ModuleRepository, ScreenRepository, BoxRepository } from './repositories'
+import { AuthController, BoxController, ModulesController, ScreensController, UsersController } from './controllers'
+import { BoxService, ModulesService, ScreensService, UsersService } from './services'
+import { UsersRepository, ModulesRepository, ScreensRepository, BoxRepository } from './repositories'
 import { JwtAuthMiddleware } from './middlewares/AuthMiddleware'
 import ModuleDatabaseManager from './helpers/ModuleDatabaseManager'
 import { join } from 'path'
-import UserController from './controllers/UserController'
 import {
   loginRules,
   moduleConfigurationUpdateRules,
@@ -24,23 +23,23 @@ import Validator from './middlewares/ValidationMiddleware'
  */
 const configureRoutes = (app: express.Application, manager: ModuleDatabaseManager) => {
   // Create the repositories
-  const userRepository = new UserRepository()
-  const modulesRepository = new ModuleRepository(manager)
-  const screenRepository = new ScreenRepository()
+  const userRepository = new UsersRepository()
+  const modulesRepository = new ModulesRepository(manager)
+  const screensRepository = new ScreensRepository()
   const boxRepository = new BoxRepository()
 
   // Create the services
-  const userService = new UserService(userRepository)
-  const moduleService = new ModuleService(modulesRepository, screenRepository)
-  const screenService = new ScreenService(screenRepository)
+  const usersService = new UsersService(userRepository)
+  const modulesService = new ModulesService(modulesRepository, screensRepository)
+  const screensService = new ScreensService(screensRepository)
   const boxService = new BoxService(boxRepository)
 
   // Create the controllers
-  const authController = new AuthController(userService)
-  const modulesController = new ModulesController(moduleService)
-  const screensController = new ScreenController(screenService)
+  const authController = new AuthController(usersService)
+  const modulesController = new ModulesController(modulesService)
+  const screensController = new ScreensController(screensService)
   const boxController = new BoxController(boxService)
-  const userController = new UserController(userService)
+  const usersController = new UsersController(usersService)
 
   // Defines the routes used by the application
   app.get('/', (req: Request, res: Response) => {
@@ -444,15 +443,15 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
   /**
    * User routes
    */
-  app.get('/api/users', JwtAuthMiddleware, userController.index)
+  app.get('/api/users', JwtAuthMiddleware, usersController.index)
 
-  app.post('/api/users', Validator(userCreateRules), JwtAuthMiddleware, userController.create)
+  app.post('/api/users', Validator(userCreateRules), JwtAuthMiddleware, usersController.create)
 
-  app.patch('/api/users/:id', Validator(userUpdateRules), JwtAuthMiddleware, userController.update)
+  app.patch('/api/users/:id', Validator(userUpdateRules), JwtAuthMiddleware, usersController.update)
 
-  app.put('/api/users/:id/avatar', JwtAuthMiddleware, userController.updatePicture)
+  app.put('/api/users/:id/avatar', JwtAuthMiddleware, usersController.updatePicture)
 
-  app.delete('/api/users/:id', JwtAuthMiddleware, userController.delete)
+  app.delete('/api/users/:id', JwtAuthMiddleware, usersController.delete)
 }
 
 export default configureRoutes

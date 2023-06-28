@@ -1,6 +1,7 @@
 import ModulesController from './ModulesController'
 import AuthController from './AuthController'
-import ScreenController from './ScreenController'
+import ScreensController from './ScreensController'
 import BoxController from './BoxController'
+import UsersController from './UsersController'
 
-export { AuthController, BoxController, ModulesController, ScreenController }
+export { AuthController, BoxController, ModulesController, ScreensController, UsersController }

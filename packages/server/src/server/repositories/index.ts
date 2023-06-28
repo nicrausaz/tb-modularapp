@@ -1,6 +1,6 @@
-import ModuleRepository from './ModuleRepository'
-import UserRepository from './UserRepository'
-import ScreenRepository from './ScreenRepository'
+import ModulesRepository from './ModulesRepository'
+import UsersRepository from './UsersRepository'
+import ScreensRepository from './ScreensRepository'
 import BoxRepository from './BoxRepository'
 
-export { ModuleRepository, UserRepository, ScreenRepository, BoxRepository }
+export { ModulesRepository, UsersRepository, ScreensRepository, BoxRepository }

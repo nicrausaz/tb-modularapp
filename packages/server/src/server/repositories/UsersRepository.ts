@@ -4,7 +4,7 @@ import { UserEntity } from '../models/entities/User'
 import { hashString, verifyString } from '../libs/security'
 import { UploadedFile } from 'express-fileupload'
 
-export default class UserRepository {
+export default class UsersRepository {
   public getById(id: string) {
     const db = getDB()
 

@@ -1,18 +1,18 @@
-import { UserRepository } from '../repositories'
+import { UploadedFile } from 'express-fileupload'
+import { randomUUID } from 'crypto'
+import { UsersRepository } from '../repositories'
 import { CreateUserDTO, LoginUserDTO, UpdateUserDTO } from '../models/DTO/UserDTO'
 import { generateToken } from '../libs/jwt'
 import { ForbiddenError, NotFoundError } from '../middlewares/HTTPError'
-import { UploadedFile } from 'express-fileupload'
-import { randomUUID } from "crypto"
 
 /**
- * The module service implements the business logic for the modules
+ * The users service implements the business logic for the users
  */
-export default class UserService {
-  constructor(private userRepository: UserRepository) {}
+export default class UsersService {
+  constructor(private usersRepository: UsersRepository) {}
 
   authenticateUser = async (loginUser: LoginUserDTO) => {
-    return this.userRepository
+    return this.usersRepository
       .userAuthentification(loginUser)
       .then((user) => {
         // Generate auth token
@@ -30,19 +30,19 @@ export default class UserService {
   }
 
   getUsers = async () => {
-    return this.userRepository.getUsers()
+    return this.usersRepository.getUsers()
   }
 
   getUser = async (id: number) => {
-    return this.userRepository.getUser(id)
+    return this.usersRepository.getUser(id)
   }
 
   createUser = async (user: CreateUserDTO) => {
-    return this.userRepository.createUser(user)
+    return this.usersRepository.createUser(user)
   }
 
   updateUser = async (id: number, user: UpdateUserDTO) => {
-    return this.userRepository.updateUser(id, user)
+    return this.usersRepository.updateUser(id, user)
   }
 
   deleteUser = async (id: number) => {
@@ -56,7 +56,7 @@ export default class UserService {
           throw new ForbiddenError('Cannot delete the default user')
         }
 
-        return this.userRepository.deleteUser(id)
+        return this.usersRepository.deleteUser(id)
       })
       .catch((err) => {
         throw err
@@ -66,8 +66,9 @@ export default class UserService {
   uploadPicture = async (id: number, file: UploadedFile) => {
     file.name = `${randomUUID()}.${file.name.split('.').pop()}`
 
-    return this.userRepository.uploadPicture(file)
-      .then(() => this.userRepository.updateUserAvatar(id, file.name))
-      .catch((err) => console.log(err, "tamer"))
+    return this.usersRepository
+      .uploadPicture(file)
+      .then(() => this.usersRepository.updateUserAvatar(id, file.name))
+      .catch((err) => console.log(err, 'todo'))
   }
 }

@@ -1,6 +1,6 @@
-import ModuleService from './ModuleService'
-import UserService from './UserService'
-import ScreenService from './ScreenService'
+import ModulesService from './ModulesService'
+import UsersService from './UsersService'
+import ScreensService from './ScreensService'
 import BoxService from './BoxService'
 
-export { ModuleService, UserService, ScreenService, BoxService }
+export { ModulesService, UsersService, ScreensService, BoxService }

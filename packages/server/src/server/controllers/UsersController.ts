@@ -1,19 +1,19 @@
 import { NextFunction, Request, Response } from 'express'
-import { UserService } from '../services'
+import { UsersService } from '../services'
 import logger from '../libs/logger'
 import { BadRequestError, NotFoundError } from '../middlewares/HTTPError'
 import { validationResult } from 'express-validator'
 import { UploadedFile } from 'express-fileupload'
 
-export default class UserController {
-  constructor(private userService: UserService) {}
+export default class UsersController {
+  constructor(private usersService: UsersService) {}
 
   /**
    * GET
    * Get all users
    */
   index = async (req: Request, res: Response) => {
-    const users = await this.userService.getUsers()
+    const users = await this.usersService.getUsers()
     res.send(users)
   }
 
@@ -23,7 +23,7 @@ export default class UserController {
    */
   user = async (req: Request, res: Response, next: NextFunction) => {
     const id = parseInt(req.params.id)
-    const user = await this.userService.getUser(id)
+    const user = await this.usersService.getUser(id)
 
     if (!user) {
       logger.warn(`User with id ${id} not found`)
@@ -42,7 +42,7 @@ export default class UserController {
       return res.status(400).json({ errors: result.array() })
     }
 
-    await this.userService.createUser(req.body)
+    await this.usersService.createUser(req.body)
     res.status(201).send()
   }
 
@@ -52,14 +52,14 @@ export default class UserController {
    */
   update = async (req: Request, res: Response, next: NextFunction) => {
     const id = parseInt(req.params.id)
-    const user = await this.userService.getUser(id)
+    const user = await this.usersService.getUser(id)
 
     if (!user) {
       logger.warn(`User with id ${id} not found`)
       return next(new NotFoundError('User not found'))
     }
 
-    await this.userService.updateUser(id, req.body)
+    await this.usersService.updateUser(id, req.body)
     res.status(201).send()
   }
 
@@ -73,7 +73,7 @@ export default class UserController {
     if (!req.files || Object.keys(req.files).length === 0) {
       return next(new BadRequestError('No files were uploaded'))
     }
-    
+
     const picture = req.files.file as UploadedFile
     const allowedMimeTypes = ['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'image/svg+xml']
 
@@ -81,7 +81,7 @@ export default class UserController {
       return next(new BadRequestError('Invalid file type'))
     }
 
-    await this.userService.uploadPicture(id, picture)
+    await this.usersService.uploadPicture(id, picture)
 
     res.status(201).send()
   }
@@ -93,7 +93,7 @@ export default class UserController {
   delete = async (req: Request, res: Response, next: NextFunction) => {
     const id = parseInt(req.params.id)
 
-    this.userService
+    this.usersService
       .deleteUser(id)
       .then(() => res.status(204).send())
       .catch((err) => {

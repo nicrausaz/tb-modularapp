@@ -1,17 +1,17 @@
 import { NextFunction, Request, Response } from 'express'
-import { ScreenService } from '../services'
+import { ScreensService } from '../services'
 import { ForbiddenError, NotFoundError } from '../middlewares/HTTPError'
 import logger from '../libs/logger'
 
-export default class ScreenController {
-  constructor(private screenService: ScreenService) {}
+export default class ScreensController {
+  constructor(private screensService: ScreensService) {}
 
   /**
    * GET
    * Get all screens
    */
   index = async (req: Request, res: Response) => {
-    res.send(await this.screenService.getScreens())
+    res.send(await this.screensService.getScreens())
   }
 
   /**
@@ -20,7 +20,7 @@ export default class ScreenController {
    */
   screen = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
-    const screen = await this.screenService.getScreen(Number(id))
+    const screen = await this.screensService.getScreen(Number(id))
 
     if (!screen) {
       logger.warn(`Screen with id ${id} not found`)
@@ -43,7 +43,7 @@ export default class ScreenController {
    */
   createOrUpdate = async (req: Request, res: Response) => {
     const screen = req.body
-    const screenId = await this.screenService.createOrUpdateScreen(screen)
+    const screenId = await this.screensService.createOrUpdateScreen(screen)
 
     res.status(200).send({
       message: 'Screen updated successfully',
@@ -57,7 +57,7 @@ export default class ScreenController {
    */
   delete = async (req: Request, res: Response) => {
     const id = req.params.id
-    await this.screenService.deleteScreen(Number(id))
+    await this.screensService.deleteScreen(Number(id))
     res.status(204).send()
   }
 }

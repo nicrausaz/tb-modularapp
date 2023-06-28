@@ -7,7 +7,7 @@ import { randomUUID } from 'crypto'
 import { mkdirSync, rmSync } from 'fs'
 import AdmZip from 'adm-zip'
 
-export default class ModuleRepository {
+export default class ModulesRepository {
   constructor(private manager: ModuleDatabaseManager) {}
 
   /**

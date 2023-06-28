@@ -2,7 +2,7 @@ import { getDB } from '../../database/database'
 import { ScreenEntity } from '../models/entities/Screen'
 import { ScreenSlotEntity } from '../models/entities/ScreenSlot'
 
-export default class ScreenRepository {
+export default class ScreensRepository {
   getAll(): Promise<ScreenEntity[]> {
     const db = getDB()
     return new Promise((resolve, reject) => {

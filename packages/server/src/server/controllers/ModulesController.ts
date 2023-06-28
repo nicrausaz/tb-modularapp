@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { ModuleService } from '../services'
+import { ModulesService } from '../services'
 import type { UploadedFile } from 'express-fileupload'
 import { BadRequestError } from '../middlewares/HTTPError'
 
@@ -7,14 +7,14 @@ import { BadRequestError } from '../middlewares/HTTPError'
  * Controller for the modules routes
  */
 export default class ModulesController {
-  constructor(private moduleService: ModuleService) {}
+  constructor(private modulesService: ModulesService) {}
 
   /**
    * GET
    * Get all the modules
    */
   index = async (req: Request, res: Response) => {
-    res.send(await this.moduleService.getModules())
+    res.send(await this.modulesService.getModules())
   }
 
   /**
@@ -22,7 +22,7 @@ export default class ModulesController {
    * Get a module by its id
    */
   module = (req: Request, res: Response, next: NextFunction) => {
-    this.moduleService
+    this.modulesService
       .getModule(req.params.id)
       .then((module) => res.send(module))
       .catch(next)
@@ -34,7 +34,7 @@ export default class ModulesController {
    */
   update = (req: Request, res: Response, next: NextFunction) => {
     const moduleId = req.params.id
-    this.moduleService
+    this.modulesService
       .updateModule(moduleId, req.body)
       .then(() => res.status(204).send())
       .catch(next)
@@ -56,7 +56,7 @@ export default class ModulesController {
       res.write(`data: ${render}\n\n`)
     }
 
-    this.moduleService.subscribeToModuleEvents(moduleId, handleModuleEvent).catch(next)
+    this.modulesService.subscribeToModuleEvents(moduleId, handleModuleEvent).catch(next)
 
     // TODO: Might be good to sent to prevent timeout
     // res.write('data: Connected\n\n')
@@ -66,7 +66,7 @@ export default class ModulesController {
 
     // Handle termination of the connection (server side)
     req.on('close', () => {
-      this.moduleService.unsubscribeFromModuleEvents(moduleId, handleModuleEvent).catch(next)
+      this.modulesService.unsubscribeFromModuleEvents(moduleId, handleModuleEvent).catch(next)
     })
   }
 
@@ -75,7 +75,7 @@ export default class ModulesController {
    * Send an event to a module
    */
   sendEvent = async (req: Request, res: Response, next: NextFunction) => {
-    this.moduleService
+    this.modulesService
       .sendEventToModule(req.params.id, req.body)
       .then(() => res.status(204).send())
       .catch(next)
@@ -85,7 +85,7 @@ export default class ModulesController {
    * Get a module's configuration
    */
   moduleConfiguration = (req: Request, res: Response, next: NextFunction) => {
-    this.moduleService
+    this.modulesService
       .getModuleConfiguration(req.params.id)
       .then((config) => res.send(config))
       .catch(next)
@@ -96,7 +96,7 @@ export default class ModulesController {
    * Update a module's configuration
    */
   moduleConfigurationUpdate = (req: Request, res: Response, next: NextFunction) => {
-    this.moduleService
+    this.modulesService
       .updateModuleConfiguration(req.params.id, req.body)
       .then(() => res.status(204).send())
       .catch(next)
@@ -107,7 +107,7 @@ export default class ModulesController {
    * Reset a module's configuration to its default
    */
   moduleConfigurationResetDefault = (req: Request, res: Response, next: NextFunction) => {
-    this.moduleService
+    this.modulesService
       .resetModuleConfigurationToDefault(req.params.id)
       .then(() => res.status(204).send())
       .catch(next)
@@ -118,7 +118,7 @@ export default class ModulesController {
    * Update a module's status (enabled or disabled)
    */
   moduleStatusUpdate = async (req: Request, res: Response, next: NextFunction) => {
-    this.moduleService
+    this.modulesService
       .updateModuleEnabled(req.params.id, req.body.enabled)
       .then(() =>
         res.send({
@@ -142,7 +142,7 @@ export default class ModulesController {
       throw new BadRequestError('The file must be a zip')
     }
 
-    this.moduleService
+    this.modulesService
       .uploadModule(file)
       .then((id) => res.status(201).send({ message: 'Module uploaded and registered successfully', moduleId: id }))
       .catch((e) => next(new BadRequestError(e)))
@@ -153,7 +153,7 @@ export default class ModulesController {
    * Delete a module
    */
   delete = (req: Request, res: Response, next: NextFunction) => {
-    this.moduleService
+    this.modulesService
       .unregisterModule(req.params.id)
       .then(() => res.status(204).send())
       .catch(next)

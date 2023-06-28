@@ -5,20 +5,20 @@ import {
   ModuleRedundantStatusException,
 } from '../exceptions/Modules'
 import { ModuleConfigurationUpdateDTO, ModuleDTO, ModuleDTOWithConfig, UpdateModuleDTO } from '../models/DTO/ModuleDTO'
-import { ModuleRepository, ScreenRepository } from '../repositories'
+import { ModulesRepository, ScreensRepository } from '../repositories'
 import type { UploadedFile } from 'express-fileupload'
 
 /**
  * The module service implements the business logic for the modules
  */
-export default class ModuleService {
-  constructor(private moduleRepository: ModuleRepository, private screenRepository: ScreenRepository) {}
+export default class ModulesService {
+  constructor(private modulesRepository: ModulesRepository, private screensRepository: ScreensRepository) {}
 
   /**
    * Get all modules
    */
   getModules = async (): Promise<ModuleDTO[]> => {
-    return this.moduleRepository.getModules()
+    return this.modulesRepository.getModules()
   }
 
   /**
@@ -37,7 +37,7 @@ export default class ModuleService {
       throw new ModuleNotFoundException(id)
     }
 
-    return this.moduleRepository.updateModule(id, update)
+    return this.modulesRepository.updateModule(id, update)
   }
 
   /**
@@ -58,7 +58,7 @@ export default class ModuleService {
       throw new ModuleNotFoundException(id)
     }
 
-    return this.moduleRepository.updateModuleConfiguration(id, config)
+    return this.modulesRepository.updateModuleConfiguration(id, config)
   }
 
   /**
@@ -70,7 +70,7 @@ export default class ModuleService {
       throw new ModuleNotFoundException(id)
     }
 
-    return this.moduleRepository.resetModuleConfiguration(id)
+    return this.modulesRepository.resetModuleConfiguration(id)
   }
 
   /**
@@ -92,7 +92,7 @@ export default class ModuleService {
       throw new ModuleRedundantStatusException(id, 'disabled')
     }
 
-    if (!this.moduleRepository.updateModuleEnabled(id, enabled)) {
+    if (!this.modulesRepository.updateModuleEnabled(id, enabled)) {
       throw new ModuleActionException(id, enabled ? 'enable' : 'disable')
     }
   }
@@ -111,7 +111,7 @@ export default class ModuleService {
       throw new ModuleDisabledException(id)
     }
 
-    return this.moduleRepository.subscribeToModuleEvents(id, handler)
+    return this.modulesRepository.subscribeToModuleEvents(id, handler)
   }
 
   /**
@@ -128,7 +128,7 @@ export default class ModuleService {
       throw new ModuleDisabledException(id)
     }
 
-    return this.moduleRepository.unsubscribeFromModuleEvents(id, handler)
+    return this.modulesRepository.unsubscribeFromModuleEvents(id, handler)
   }
 
   /**
@@ -145,14 +145,14 @@ export default class ModuleService {
       throw new ModuleDisabledException(id)
     }
 
-    return this.moduleRepository.sendEventToModule(id, data)
+    return this.modulesRepository.sendEventToModule(id, data)
   }
 
   /**
    * Upload a zip file containing a module to the application.
    */
   uploadModule = (file: UploadedFile) => {
-    return this.moduleRepository.uploadModule(file)
+    return this.modulesRepository.uploadModule(file)
   }
 
   /**
@@ -167,11 +167,11 @@ export default class ModuleService {
       throw new ModuleNotFoundException(id)
     }
 
-    if (!this.moduleRepository.unregisterModule(id)) {
+    if (!this.modulesRepository.unregisterModule(id)) {
       throw new ModuleActionException(id, 'unregister')
     }
 
-    return this.screenRepository.deleteModuleScreenSlots(id)
+    return this.screensRepository.deleteModuleScreenSlots(id)
   }
 
   /**
@@ -182,7 +182,7 @@ export default class ModuleService {
    */
   private getModuleEntry = async (id: string) => {
     try {
-      return await this.moduleRepository.getModuleById(id)
+      return await this.modulesRepository.getModuleById(id)
     } catch (_) {
       throw new ModuleNotFoundException(id)
     }
