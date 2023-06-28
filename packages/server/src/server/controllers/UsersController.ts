@@ -2,8 +2,9 @@ import { NextFunction, Request, Response } from 'express'
 import { UsersService } from '../services'
 import logger from '../libs/logger'
 import { BadRequestError, NotFoundError } from '../middlewares/HTTPError'
-import { validationResult } from 'express-validator'
 import { UploadedFile } from 'express-fileupload'
+
+// TODO: refactor this like the other controllers
 
 export default class UsersController {
   constructor(private usersService: UsersService) {}
@@ -37,11 +38,6 @@ export default class UsersController {
    * Create a new user
    */
   create = async (req: Request, res: Response) => {
-    const result = validationResult(req)
-    if (!result.isEmpty()) {
-      return res.status(400).json({ errors: result.array() })
-    }
-
     await this.usersService.createUser(req.body)
     res.status(201).send()
   }
@@ -81,7 +77,7 @@ export default class UsersController {
       return next(new BadRequestError('Invalid file type'))
     }
 
-    await this.usersService.uploadPicture(id, picture)
+    await this.usersService.uploadAvatar(id, picture)
 
     res.status(201).send()
   }

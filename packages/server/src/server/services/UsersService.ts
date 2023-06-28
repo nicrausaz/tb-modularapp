@@ -3,7 +3,13 @@ import { randomUUID } from 'crypto'
 import { UsersRepository } from '../repositories'
 import { CreateUserDTO, LoginUserDTO, UpdateUserDTO } from '../models/DTO/UserDTO'
 import { generateToken } from '../libs/jwt'
-import { ForbiddenError, NotFoundError } from '../middlewares/HTTPError'
+import { verifyString } from '../libs/security'
+import {
+  UserAuthentificationFailedException,
+  UserDeletionNotAllowedException,
+  UserNotFoundException,
+  UserUploadAvatarException,
+} from '../exceptions/Users'
 
 /**
  * The users service implements the business logic for the users
@@ -11,64 +17,112 @@ import { ForbiddenError, NotFoundError } from '../middlewares/HTTPError'
 export default class UsersService {
   constructor(private usersRepository: UsersRepository) {}
 
+  /**
+   * Perform user authentication
+   * @param loginUser the user credentials
+   * @returns a JWT token if the user authentication is successful
+   *
+   * @throws UserAuthentificationFailedException if the user authentication failed
+   */
   authenticateUser = async (loginUser: LoginUserDTO) => {
-    return this.usersRepository
-      .userAuthentification(loginUser)
-      .then((user) => {
-        // Generate auth token
-        const token = generateToken({
+    return this.usersRepository.getByUsername(loginUser.username).then(async (user) => {
+      // Verify password
+      if (await verifyString(user.password, loginUser.password)) {
+        return generateToken({
           id: user.id,
           username: user.username,
           avatar: user.avatar,
         })
-
-        return token
-      })
-      .catch(() => {
-        return null
-      })
+      } else {
+        throw new UserAuthentificationFailedException(loginUser.username)
+      }
+    })
   }
 
+  /**
+   * Get all users
+   */
   getUsers = async () => {
     return this.usersRepository.getUsers()
   }
 
+  /**
+   * Get a user by its id
+   *
+   * @throws UserNotFoundException if the user does not exist
+   */
   getUser = async (id: number) => {
-    return this.usersRepository.getUser(id)
+    if (!(await this.userExists(id))) {
+      throw new UserNotFoundException(id)
+    }
+
+    return this.usersRepository.getById(id)
   }
 
-  createUser = async (user: CreateUserDTO) => {
+  /**
+   * Create a new user
+   */
+  createUser = async (user: CreateUserDTO): Promise<void> => {
     return this.usersRepository.createUser(user)
   }
 
-  updateUser = async (id: number, user: UpdateUserDTO) => {
+  /**
+   * Update an existing user
+   *
+   * @throws UserNotFoundException if the user does not exist
+   */
+  updateUser = async (id: number, user: UpdateUserDTO): Promise<void> => {
+    if (!(await this.userExists(id))) {
+      throw new UserNotFoundException(id)
+    }
+
     return this.usersRepository.updateUser(id, user)
   }
 
-  deleteUser = async (id: number) => {
-    return this.getUser(id)
-      .then((user) => {
-        if (!user) {
-          throw new NotFoundError('User not found')
-        }
+  /**
+   * Delete an existing user
+   *
+   * @throws UserNotFoundException if the user does not exist
+   * @throws UserDeletionNotAllowedException if the user is the default user
+   */
+  deleteUser = async (id: number): Promise<void> => {
+    const user = await this.getUser(id)
+    if (user.isDefault) {
+      throw new UserDeletionNotAllowedException(id)
+    }
 
-        if (user.isDefault) {
-          throw new ForbiddenError('Cannot delete the default user')
-        }
-
-        return this.usersRepository.deleteUser(id)
-      })
-      .catch((err) => {
-        throw err
-      })
+    return this.usersRepository.deleteUser(id)
   }
 
-  uploadPicture = async (id: number, file: UploadedFile) => {
+  /**
+   * Upload a user avatar and update the user
+   *
+   * @throws UserNotFoundException if the user does not exist
+   */
+  uploadAvatar = async (id: number, file: UploadedFile): Promise<void> => {
+    if (!(await this.userExists(id))) {
+      throw new UserNotFoundException(id)
+    }
+
     file.name = `${randomUUID()}.${file.name.split('.').pop()}`
 
     return this.usersRepository
-      .uploadPicture(file)
+      .uploadAvatar(file)
       .then(() => this.usersRepository.updateUserAvatar(id, file.name))
-      .catch((err) => console.log(err, 'todo'))
+      .catch(() => {
+        throw new UserUploadAvatarException(id)
+      })
+  }
+
+  /**
+   * Check if a user exists
+   * @param id id of the user
+   * @returns true if the user exists, false otherwise
+   */
+  private userExists = async (id: number) => {
+    return this.usersRepository
+      .getById(id)
+      .then(() => true)
+      .catch(() => false)
   }
 }

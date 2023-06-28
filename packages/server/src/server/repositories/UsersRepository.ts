@@ -1,43 +1,36 @@
-import { CreateUserDTO, LoginUserDTO, UpdateUserDTO } from '../models/DTO/UserDTO'
+import { CreateUserDTO, UpdateUserDTO } from '../models/DTO/UserDTO'
 import { getDB } from '../../database/database'
 import { UserEntity } from '../models/entities/User'
-import { hashString, verifyString } from '../libs/security'
+import { hashString } from '../libs/security'
 import { UploadedFile } from 'express-fileupload'
 
-export default class UsersRepository {
-  public getById(id: string) {
-    const db = getDB()
+// TODO: might want to use DTOs instead of entities as function return types
 
+export default class UsersRepository {
+  /**
+   * Get a user by its id
+   * @param id id of the user
+   * @returns the user
+   */
+  public getById(id: number): Promise<UserEntity> {
+    const db = getDB()
     return new Promise((resolve, reject) => {
       db.all('SELECT id, username, isDefault, avatar FROM Users WHERE id = ?', [id], (err, row) => {
         if (err || row.length === 0) {
           reject(err)
         }
-        resolve(row[0])
+        resolve(row[0] as UserEntity)
       })
       db.close()
     })
   }
 
-  public userAuthentification(loginUser: LoginUserDTO): Promise<UserEntity> {
-    return new Promise((resolve, reject) => {
-      this.getByUsername(loginUser.username)
-        .then(async (user) => {
-          // Verify password
-          if (await verifyString(user.password, loginUser.password)) {
-            resolve(user)
-          }
-          reject(null)
-        })
-        .catch(() => {
-          reject(null)
-        })
-    })
-  }
-
+  /**
+   * Get all users
+   * @returns all users
+   */
   public getUsers(): Promise<UserEntity[]> {
     const db = getDB()
-
     return new Promise((resolve, reject) => {
       db.all('SELECT id, username, isDefault, avatar FROM Users', (err, rows) => {
         if (err) {
@@ -49,23 +42,13 @@ export default class UsersRepository {
     })
   }
 
-  public getUser(id: number): Promise<UserEntity> {
-    const db = getDB()
-
-    return new Promise((resolve, reject) => {
-      db.all('SELECT id, username, isDefault FROM Users WHERE id = ?', [id], (err, row) => {
-        if (err || row.length === 0) {
-          reject(err)
-        }
-        resolve(row[0] as UserEntity)
-      })
-      db.close()
-    })
-  }
-
+  /**
+   * Create a new user
+   * Will hash the password before storing it in the database
+   * @param user user to create
+   */
   public async createUser(user: CreateUserDTO): Promise<void> {
     const db = getDB()
-
     const hashedPassword = await hashString(user.password)
 
     return new Promise<void>((resolve, reject) => {
@@ -79,6 +62,12 @@ export default class UsersRepository {
     })
   }
 
+  /**
+   * Update an existing user.
+   * Will hash the password before storing it in the database, if it is provided
+   * @param id id of the user to update
+   * @param user user data to update
+   */
   public async updateUser(id: number, user: UpdateUserDTO): Promise<void> {
     const db = getDB()
 
@@ -104,6 +93,11 @@ export default class UsersRepository {
     })
   }
 
+  /**
+   * Update the avatar of a user
+   * @param id user id
+   * @param avatar avatar filename
+   */
   public async updateUserAvatar(id: number, avatar: string): Promise<void> {
     const db = getDB()
 
@@ -118,9 +112,12 @@ export default class UsersRepository {
     })
   }
 
+  /**
+   * Delete a user
+   * @param id user id to delete
+   */
   public async deleteUser(id: number): Promise<void> {
     const db = getDB()
-
     return new Promise<void>((resolve, reject) => {
       db.run('DELETE FROM Users WHERE id = ?', [id], (err) => {
         if (err) {
@@ -132,9 +129,12 @@ export default class UsersRepository {
     })
   }
 
-  public uploadPicture(file: UploadedFile) {
-    console.log(file)
-    return new Promise<void>((resolve, reject) => {
+  /**
+   * Upload user avatar
+   * @param file avatar to upload
+   */
+  public uploadAvatar(file: UploadedFile): Promise<void> {
+    return new Promise((resolve, reject) => {
       file.mv(`${process.env.PUBLIC_DIR}/users/${file.name}`, async (err) => {
         if (err) {
           reject(err)
@@ -144,9 +144,13 @@ export default class UsersRepository {
     })
   }
 
-  private getByUsername(username: string): Promise<UserEntity> {
+  /**
+   * Get a user by its username
+   * @param username username of the user
+   * @returns the user
+   */
+  public getByUsername(username: string): Promise<UserEntity> {
     const db = getDB()
-
     return new Promise((resolve, reject) => {
       db.all('SELECT id, username, password FROM Users WHERE username = ?', [username], (err, row) => {
         if (err || row.length === 0) {
