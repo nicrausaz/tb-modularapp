@@ -3,6 +3,7 @@ import { getDB } from '../../database/database'
 import { ConfiguredModuleEntity, ModuleEntity } from '../models/entities/Module'
 import ModuleMapper from '../mappers/ModuleMapper'
 import { Module } from '@yalk/module'
+import logger from '../libs/logger'
 
 /**
  * Record type to represent a module in the database and in the manager
@@ -64,8 +65,11 @@ export default class ModuleDatabaseManager {
    * Set module enabled in the manager and in the database
    * @param moduleId module id
    */
-  enableModule(moduleId: string): void {
-    this.manager.enableModule(moduleId)
+  enableModule(moduleId: string): boolean {
+    if (!this.manager.enableModule(moduleId)) {
+      logger.error(`An error occurred while enabling module ${moduleId}`)
+      return false
+    }
 
     const db = getDB()
     db.run('UPDATE Modules SET enabled = 1 WHERE id = ?', [moduleId], (err) => {
@@ -74,14 +78,18 @@ export default class ModuleDatabaseManager {
       }
     })
     db.close()
+    return true
   }
 
   /**
    * Set module disabled in the manager and in the database
    * @param moduleId module id
    */
-  disableModule(moduleId: string): void {
-    this.manager.disableModule(moduleId)
+  disableModule(moduleId: string): boolean {
+    if (!this.manager.disableModule(moduleId)) {
+      logger.error(`An error occurred while disabling module ${moduleId}`)
+      return false
+    }
 
     const db = getDB()
     db.run('UPDATE Modules SET enabled = 0 WHERE id = ?', [moduleId], (err) => {
@@ -90,6 +98,7 @@ export default class ModuleDatabaseManager {
       }
     })
     db.close()
+    return true
   }
 
   /**
@@ -99,7 +108,7 @@ export default class ModuleDatabaseManager {
    */
   async registerModule(moduleId: string): Promise<boolean> {
     if (!(await this.manager.loadModule(moduleId))) {
-      console.log("Couldn't register module, because the load failed. It means the module is not correctly structured.")
+      logger.error(`An error occurred while registering module ${moduleId}`)
       return false
     }
 
@@ -133,8 +142,11 @@ export default class ModuleDatabaseManager {
    * The module will be stopped and deleted from the manager and the database
    * @param moduleId module id
    */
-  unregisterModule(moduleId: string): void {
-    this.manager.unregisterModule(moduleId)
+  unregisterModule(moduleId: string): boolean {
+    if (!this.manager.unregisterModule(moduleId)) {
+      logger.error(`An error occurred while unregistering module ${moduleId}`)
+      return false
+    }
 
     const db = getDB()
     db.run('DELETE FROM modules WHERE id = ?', [moduleId], (err) => {
@@ -142,8 +154,8 @@ export default class ModuleDatabaseManager {
         console.log(err)
       }
     })
-
     db.close()
+    return true
   }
 
   /**

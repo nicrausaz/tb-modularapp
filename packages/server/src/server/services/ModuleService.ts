@@ -1,4 +1,10 @@
-import { ModuleConfigurationUpdateDTO, ModuleDTO, ModuleDTOWithConfigs, UpdateModuleDTO } from '../models/DTO/ModuleDTO'
+import {
+  ModuleActionException,
+  ModuleDisabledException,
+  ModuleNotFoundException,
+  ModuleRedundantStatusException,
+} from '../exceptions/Modules'
+import { ModuleConfigurationUpdateDTO, ModuleDTO, ModuleDTOWithConfig, UpdateModuleDTO } from '../models/DTO/ModuleDTO'
 import { ModuleRepository, ScreenRepository } from '../repositories'
 import type { UploadedFile } from 'express-fileupload'
 
@@ -8,65 +14,188 @@ import type { UploadedFile } from 'express-fileupload'
 export default class ModuleService {
   constructor(private moduleRepository: ModuleRepository, private screenRepository: ScreenRepository) {}
 
+  /**
+   * Get all modules
+   */
   getModules = async (): Promise<ModuleDTO[]> => {
     return this.moduleRepository.getModules()
   }
 
-  getModule = async (id: string): Promise<ModuleDTOWithConfigs | null> => {
+  /**
+   * Get a module by its id
+   */
+  getModule = async (id: string): Promise<ModuleDTOWithConfig> => {
     return this.getModuleEntry(id)
   }
 
-  getModuleWithEvents = async (id: string): Promise<ModuleDTOWithConfigs | null> => {
-    const entry = await this.getModuleEntry(id)
-    return entry?.enabled ? entry : null
-  }
+  /**
+   * Update a module information if it exists
+   * @throws ModuleNotFoundException if the module does not exist
+   */
+  updateModule = async (id: string, update: UpdateModuleDTO): Promise<string> => {
+    if (!(await this.moduleExists(id))) {
+      throw new ModuleNotFoundException(id)
+    }
 
-  updateModule = (id: string, update: UpdateModuleDTO): Promise<string | null> => {
     return this.moduleRepository.updateModule(id, update)
   }
 
-  updateModuleConfiguration = (id: string, config: ModuleConfigurationUpdateDTO) => {
+  /**
+   * Get the current configuration of a module if it exists
+   * @throws ModuleNotFoundException if the module does not exist
+   */
+  getModuleConfiguration = async (id: string) => {
+    // Get the module entry or throw an exception if it does not exist
+    return (await this.getModuleEntry(id)).currentConfig
+  }
+
+  /**
+   * Update a module current configuration if it exists
+   * @throws ModuleNotFoundException if the module does not exist
+   */
+  updateModuleConfiguration = async (id: string, config: ModuleConfigurationUpdateDTO) => {
+    if (!(await this.moduleExists(id))) {
+      throw new ModuleNotFoundException(id)
+    }
+
     return this.moduleRepository.updateModuleConfiguration(id, config)
   }
 
-  resetModuleConfigurationToDefault = (id: string) => {
+  /**
+   * Reset a module current configuration to its default if it exists
+   * @throws ModuleNotFoundException if the module does not exist
+   */
+  resetModuleConfigurationToDefault = async (id: string) => {
+    if (!(await this.moduleExists(id))) {
+      throw new ModuleNotFoundException(id)
+    }
+
     return this.moduleRepository.resetModuleConfiguration(id)
   }
 
-  updateModuleEnabled = (id: string, enabled: boolean) => {
-    return this.moduleRepository.updateModuleEnabled(id, enabled)
+  /**
+   * Update a module enabled status if it exists and the status is differs from the current one
+   *
+   * @throws ModuleNotFoundException if the module does not exist
+   * @throws ModuleRedundantStatusException if the module is already enabled/disabled
+   * @throws ModuleActionException if the module could not be enabled/disabled
+   */
+  updateModuleEnabled = async (id: string, enabled: boolean) => {
+    // Get the module entry or throw an exception if it does not exist
+    const entry = (await this.getModuleEntry(id)).enabled
+
+    if (entry === enabled && enabled) {
+      throw new ModuleRedundantStatusException(id, 'enabled')
+    }
+
+    if (entry === !enabled && !enabled) {
+      throw new ModuleRedundantStatusException(id, 'disabled')
+    }
+
+    if (!this.moduleRepository.updateModuleEnabled(id, enabled)) {
+      throw new ModuleActionException(id, enabled ? 'enable' : 'disable')
+    }
   }
 
-  subscribeToModuleEvents = (id: string, handler: (render: string) => void) => {
+  /**
+   * Subscribe to a module events if it exists and is enabled
+   * Bind a callback to the module events
+   *
+   * @throws ModuleNotFoundException if the module does not exist
+   * @throws ModuleDisabledException if the module is disabled
+   */
+  subscribeToModuleEvents = async (id: string, handler: (render: string) => void) => {
+    const entry = await this.getModuleEntry(id)
+
+    if (!entry.enabled) {
+      throw new ModuleDisabledException(id)
+    }
+
     return this.moduleRepository.subscribeToModuleEvents(id, handler)
   }
 
-  unsubscribeFromModuleEvents = (id: string, handler: (render: string) => void) => {
+  /**
+   * Unsubscribe from a module events if it exists and is enabled
+   * Unbind a previously registered callback
+   *
+   * @throws ModuleNotFoundException if the module does not exist
+   * @throws ModuleDisabledException if the module is disabled
+   */
+  unsubscribeFromModuleEvents = async (id: string, handler: (render: string) => void) => {
+    const entry = await this.getModuleEntry(id)
+
+    if (!entry.enabled) {
+      throw new ModuleDisabledException(id)
+    }
+
     return this.moduleRepository.unsubscribeFromModuleEvents(id, handler)
   }
 
-  sendEventToModule = (id: string, data: unknown) => {
+  /**
+   * Send any data to a module if it exists and is enabled
+   *
+   * @throws ModuleNotFoundException if the module does not exist
+   * @throws ModuleDisabledException if the module is disabled
+   */
+  sendEventToModule = async (id: string, data: unknown) => {
+    // Get the module entry or throw an exception if it does not exist or is disabled
+    const entry = await this.getModuleEntry(id)
+
+    if (!entry.enabled) {
+      throw new ModuleDisabledException(id)
+    }
+
     return this.moduleRepository.sendEventToModule(id, data)
   }
 
-  registerModule = (id: string) => {
-    return this.moduleRepository.registerModule(id)
-  }
-
+  /**
+   * Upload a zip file containing a module to the application.
+   */
   uploadModule = (file: UploadedFile) => {
     return this.moduleRepository.uploadModule(file)
   }
 
-  unregisterModule = (id: string) => {
-    this.moduleRepository.unregisterModule(id)
+  /**
+   * Unregister a module from the application.
+   * It will be completely removed from the database and the file system.
+   * All related screens slots will be deleted.
+   * @param id module id
+   * @returns true if the module was successfully unregistered, false otherwise
+   */
+  unregisterModule = async (id: string) => {
+    if (!this.moduleExists(id)) {
+      throw new ModuleNotFoundException(id)
+    }
+
+    if (!this.moduleRepository.unregisterModule(id)) {
+      throw new ModuleActionException(id, 'unregister')
+    }
+
     return this.screenRepository.deleteModuleScreenSlots(id)
   }
 
+  /**
+   * Get a module entry from the database / manager
+   * @param id module id
+   * @returns module entry
+   * @throws ModuleNotFoundException if the module does not exist
+   */
   private getModuleEntry = async (id: string) => {
     try {
       return await this.moduleRepository.getModuleById(id)
     } catch (_) {
-      return null
+      throw new ModuleNotFoundException(id)
     }
+  }
+
+  /**
+   * Check if a module exists
+   * @param id module id
+   * @returns true if the module exists, false otherwise
+   */
+  private moduleExists = async (id: string) => {
+    return this.getModuleEntry(id)
+      .then(() => true)
+      .catch(() => false)
   }
 }

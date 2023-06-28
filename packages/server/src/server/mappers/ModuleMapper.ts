@@ -1,5 +1,5 @@
 import { SpecificConfiguration, Module, SpecificConfigurationEntry } from '@yalk/module'
-import { ModuleDTO, ModuleDTOWithConfigs } from '../models/DTO/ModuleDTO'
+import { ModuleDTO, ModuleDTOWithConfig } from '../models/DTO/ModuleDTO'
 import { ConfiguredModuleEntity, ModuleEntity } from '../models/entities/Module'
 import { ModuleDatabaseManagerRecord } from '../helpers/ModuleDatabaseManager'
 
@@ -32,7 +32,7 @@ export default class ModuleMapper {
     }
   }
 
-  static toModuleDTOWithConfigs(entry: ModuleDatabaseManagerRecord): ModuleDTOWithConfigs {
+  static toModuleDTOWithConfig(entry: ModuleDatabaseManagerRecord): ModuleDTOWithConfig {
     return {
       ...this.toModuleDTO(entry),
       currentConfig: this.toModuleConfigurationDTO(entry.module.currentConfig),

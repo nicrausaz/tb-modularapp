@@ -32,6 +32,9 @@ export default class Manager {
 
   constructor(private readonly modulesPath: string) {}
 
+  /**
+   * Read the manager directory to find modules and load them
+   */
   async loadModulesFromPath(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       readdir(this.modulesPath, async (err, files) => {
@@ -53,13 +56,21 @@ export default class Manager {
   /**
    * Register a new module to the manager
    * The module will be initialized first
+   * @param id module id
+   * @param module module instance
+   * @returns true if the module was registered, false otherwise (error occurred)
    */
-  registerModule(id: ModuleId, module: Module): void {
-    module.init()
-    this.modules.set(id, {
-      module,
-      enabled: false,
-    })
+  registerModule(id: ModuleId, module: Module): boolean {
+    try {
+      module.init()
+      this.modules.set(id, {
+        module,
+        enabled: false,
+      })
+      return true
+    } catch (_) {
+      return false
+    }
   }
 
   /**
@@ -67,16 +78,22 @@ export default class Manager {
    * The module will be stopped if it is running and removed from the manager
    * @param id module id
    * @throws ModuleNotFoundError if the module is not registered
+   * @returns true if the module was unregistered, false otherwise (error occurred)
    */
-  unregisterModule(id: ModuleId): void {
+  unregisterModule(id: ModuleId): boolean {
     const entry = this.getEntryOrThrow(id)
 
-    if (entry.enabled) {
-      this.disableModule(id)
+    if (entry.enabled && !this.disableModule(id)) {
+      return false
     }
 
-    this.modules.delete(id)
-    this.deleteModule(id)
+    try {
+      this.modules.delete(id)
+      this.deleteModule(id)
+      return true
+    } catch (_) {
+      return false
+    }
   }
 
   /**
@@ -85,12 +102,19 @@ export default class Manager {
    * @param id module id
    * @throws ModuleNotFoundError if the module is not registered
    */
-  enableModule(id: ModuleId): void {
+  enableModule(id: ModuleId): boolean {
     const entry = this.getEntryOrThrow(id)
 
-    if (!entry.enabled) {
-      entry.enabled = true
+    if (entry.enabled) {
+      return false
+    }
+
+    try {
       entry.module.start()
+      entry.enabled = true
+      return true
+    } catch (_) {
+      return false
     }
   }
 
@@ -100,12 +124,19 @@ export default class Manager {
    * @param id module id
    * @throws ModuleNotFoundError if the module is not registered
    */
-  disableModule(id: ModuleId): void {
+  disableModule(id: ModuleId): boolean {
     const entry = this.getEntryOrThrow(id)
 
-    if (entry.enabled) {
-      entry.enabled = false
+    if (!entry.enabled) {
+      return false
+    }
+
+    try {
       entry.module.stop()
+      entry.enabled = false
+      return true
+    } catch (_) {
+      return false
     }
   }
 

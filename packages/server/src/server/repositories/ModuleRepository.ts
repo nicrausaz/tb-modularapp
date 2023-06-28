@@ -1,7 +1,7 @@
 import { getDB } from '../../database/database'
 import ModuleDatabaseManager from '../helpers/ModuleDatabaseManager'
 import ModuleMapper from '../mappers/ModuleMapper'
-import { ModuleConfigurationUpdateDTO, ModuleDTO, ModuleDTOWithConfigs, UpdateModuleDTO } from '../models/DTO/ModuleDTO'
+import { ModuleConfigurationUpdateDTO, ModuleDTO, ModuleDTOWithConfig, UpdateModuleDTO } from '../models/DTO/ModuleDTO'
 import type { UploadedFile } from 'express-fileupload'
 import { randomUUID } from 'crypto'
 import { mkdirSync, rmSync } from 'fs'
@@ -25,19 +25,17 @@ export default class ModuleRepository {
    * @param id module id
    * @returns module
    */
-  async getModuleById(id: string): Promise<ModuleDTOWithConfigs> {
+  async getModuleById(id: string): Promise<ModuleDTOWithConfig> {
     const module = await this.manager.getModule(id)
-
-    return ModuleMapper.toModuleDTOWithConfigs(module)
+    return ModuleMapper.toModuleDTOWithConfig(module)
   }
 
-  async updateModule(id: string, update: UpdateModuleDTO): Promise<string | null> {
-    const entry = await this.manager.getModule(id)
-
-    if (!entry) {
-      return null
-    }
-
+  /**
+   * Update a module information
+   * @param id module id
+   * @param update module information
+   */
+  async updateModule(id: string, update: UpdateModuleDTO): Promise<string> {
     const db = getDB()
     return new Promise((resolve, reject) => {
       db.all('UPDATE Modules SET nickname = ? WHERE id = ? RETURNING id', [update.nickname, id], (err, rows) => {
@@ -51,86 +49,101 @@ export default class ModuleRepository {
     })
   }
 
-  async updateModuleConfiguration(id: string, config: ModuleConfigurationUpdateDTO): Promise<string | null> {
+  /**
+   * Update a module current configuration
+   * @param id module id
+   * @param config module new configuration
+   */
+  async updateModuleConfiguration(id: string, config: ModuleConfigurationUpdateDTO): Promise<void> {
     const entry = await this.manager.getModule(id)
-
-    if (!entry) {
-      return null
-    }
-
     entry.module.setConfiguration(config.fields)
     const moduleEntity = ModuleMapper.DBManagerEntrytoModuleEntity(entry)
 
     const db = getDB()
     return new Promise((resolve, reject) => {
-      db.all(
-        'UPDATE Modules SET configuration = ? WHERE id = ? RETURNING id',
-        [moduleEntity.configuration, id],
-        (err, rows) => {
-          if (err) {
-            reject(err)
-          }
-
-          resolve(rows[0] as string)
-        },
-      )
+      db.run('UPDATE Modules SET configuration = ? WHERE id = ?', [moduleEntity.configuration, id], (err) => {
+        if (err) {
+          reject(err)
+        }
+        resolve()
+      })
       db.close()
     })
   }
 
-  async resetModuleConfiguration(id: string): Promise<string | null> {
+  /**
+   * Reset a module current configuration to its default
+   * @param id module id to reset
+   */
+  async resetModuleConfiguration(id: string): Promise<void> {
     const entry = await this.manager.getModule(id)
-
-    if (!entry) {
-      return null
-    }
-
     entry.module.resetConfiguration()
     const moduleEntity = ModuleMapper.DBManagerEntrytoModuleEntity(entry)
 
     const db = getDB()
     return new Promise((resolve, reject) => {
-      db.all(
-        'UPDATE Modules SET configuration = ? WHERE id = ? RETURNING id',
-        [moduleEntity.configuration, id],
-        (err, rows) => {
-          if (err) {
-            reject(err)
-          }
-
-          resolve(rows[0] as string)
-        },
-      )
+      db.run('UPDATE Modules SET configuration = ? WHERE id = ?', [moduleEntity.configuration, id], (err) => {
+        if (err) {
+          reject(err)
+        }
+        resolve()
+      })
       db.close()
     })
   }
-  updateModuleEnabled(id: string, enabled: boolean) {
-    enabled ? this.manager.enableModule(id) : this.manager.disableModule(id)
-    return id
+
+  /**
+   * Update a module status (enabled or disabled)
+   * @param id module id
+   * @param enabled module status
+   * @returns true if the module was enabled, false otherwise (module internal error)
+   */
+  updateModuleEnabled(id: string, enabled: boolean): boolean {
+    return enabled ? this.manager.enableModule(id) : this.manager.disableModule(id)
   }
 
-  subscribeToModuleEvents(id: string, handler: (render: string) => void) {
-    this.manager.subscribeTo(id, handler)
-  }
-
-  sendEventToModule(id: string, data: unknown) {
+  /**
+   * Send any data to a module
+   * @param id module id
+   * @param data data to send
+   */
+  sendEventToModule(id: string, data: unknown): void {
     this.manager.sendDataTo(id, data)
   }
 
-  unsubscribeFromModuleEvents(id: string, handler: (render: string) => void) {
+  /**
+   * Subscribe to a module events
+   * @param id module id
+   * @param handler callback to call when an event is received
+   */
+  subscribeToModuleEvents(id: string, handler: (render: string) => void): void {
+    this.manager.subscribeTo(id, handler)
+  }
+
+  /**
+   * Unsubscribe from a module events
+   * @param id module id
+   * @param handler callback to remove from the event listeners
+   */
+  unsubscribeFromModuleEvents(id: string, handler: (render: string) => void): void {
     this.manager.unsubscribeFrom(id, handler)
   }
 
-  registerModule(id: string) {
-    return this.manager.registerModule(id)
-  }
-
-  unregisterModule(id: string) {
+  /**
+   * Unregister a module
+   * @param id module id
+   * @returns true if the module was unregistered, false otherwise (module internal error)
+   */
+  unregisterModule(id: string): boolean {
     return this.manager.unregisterModule(id)
   }
 
-  async uploadModule(file: UploadedFile) {
-    // const copyFiles = ['config.json', 'index.js', 'app.js'] // TODO: Make this configurable or get it from module system
+  /**
+   * Upload, extract the module zip file and register it
+   * @param file zip file to upload
+   * @returns id of the new registered module
+   */
+  async uploadModule(file: UploadedFile): Promise<string> {
     const moduleId = randomUUID()
     // Create the module directory
     mkdirSync(`${process.env.MODULES_DIR}/${moduleId}`)
@@ -145,6 +158,7 @@ export default class ModuleRepository {
         // Unzip the module
         const zip = new AdmZip(`${process.env.MODULES_DIR}/${moduleId}/${file.name}`)
         const zipEntries = zip.getEntries().filter((entry) => {
+          // TODO: might find a better way to do this (maybe with a regex to ignore potential harmful files)
           if (entry.entryName.startsWith('__MACOSX') || entry.entryName.startsWith('.')) {
             return false
           }

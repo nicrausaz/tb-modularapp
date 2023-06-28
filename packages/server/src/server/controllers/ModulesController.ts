@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
-import { ModuleService, ScreenService } from '../services'
+import { ModuleService } from '../services'
 import type { UploadedFile } from 'express-fileupload'
-import { BadRequestError, ForbiddenError, NotFoundError } from '../middlewares/HTTPError'
-import logger from '../libs/logger'
+import { BadRequestError } from '../middlewares/HTTPError'
 
 /**
  * Controller for the modules routes
@@ -22,30 +21,23 @@ export default class ModulesController {
    * GET
    * Get a module by its id
    */
-  module = async (req: Request, res: Response, next: NextFunction) => {
-    const moduleId = req.params.id
-    const module = await this.moduleService.getModule(moduleId)
-
-    if (!module) {
-      logger.warn(`Module with id ${moduleId} not found`)
-      return next(new NotFoundError('Module not found'))
-    }
-
-    res.send(module)
+  module = (req: Request, res: Response, next: NextFunction) => {
+    this.moduleService
+      .getModule(req.params.id)
+      .then((module) => res.send(module))
+      .catch(next)
   }
 
-  update = async (req: Request, res: Response) => {
-    const updatedId = await this.moduleService.updateModule(req.params.id, req.body)
-
-    if (!updatedId) {
-      logger.warn(`Module with id ${req.params.id} not found`)
-      throw new NotFoundError('Module not found')
-    }
-
-    res.status(200).send({
-      message: 'Screen updated successfully',
-      updatedId,
-    })
+  /**
+   * PATCH
+   * Update a module information
+   */
+  update = (req: Request, res: Response, next: NextFunction) => {
+    const moduleId = req.params.id
+    this.moduleService
+      .updateModule(moduleId, req.body)
+      .then(() => res.status(204).send())
+      .catch(next)
   }
 
   /**
@@ -53,33 +45,20 @@ export default class ModulesController {
    * Register to a module's events & render trough SSE
    */
   moduleEvents = async (req: Request, res: Response, next: NextFunction) => {
-    // Get the module
     const moduleId = req.params.id
 
-    // todo: rename this function
-    const entry = await this.moduleService.getModuleWithEvents(moduleId)
-
-    if (!entry) {
-      logger.warn(`Module with id ${moduleId} not found`)
-      return next(new NotFoundError('Module not found'))
-    }
-
-    if (!entry.enabled) {
-      logger.warn(`Module with id ${moduleId} not enabled`)
-      return next(new ForbiddenError('Module not enabled'))
-    }
+    // Configure the SSE response headers
+    res.setHeader('Content-Type', 'text/event-stream')
+    res.setHeader('Cache-Control', 'no-cache')
+    res.setHeader('Connection', 'keep-alive')
 
     const handleModuleEvent = (render: string) => {
       res.write(`data: ${render}\n\n`)
     }
 
-    // Configure the SSE
-    res.setHeader('Content-Type', 'text/event-stream')
-    res.setHeader('Cache-Control', 'no-cache')
-    res.setHeader('Connection', 'keep-alive')
+    this.moduleService.subscribeToModuleEvents(moduleId, handleModuleEvent).catch(next)
 
-    this.moduleService.subscribeToModuleEvents(moduleId, handleModuleEvent)
-
+    // TODO: Might be good to sent to prevent timeout
     // res.write('data: Connected\n\n')
 
     // TODO: Find a way to unregister from module events when the client disconnects.
@@ -87,8 +66,7 @@ export default class ModulesController {
 
     // Handle termination of the connection (server side)
     req.on('close', () => {
-      console.log('SSE Connection closed')
-      this.moduleService.unsubscribeFromModuleEvents(moduleId, handleModuleEvent)
+      this.moduleService.unsubscribeFromModuleEvents(moduleId, handleModuleEvent).catch(next)
     })
   }
 
@@ -97,95 +75,57 @@ export default class ModulesController {
    * Send an event to a module
    */
   sendEvent = async (req: Request, res: Response, next: NextFunction) => {
-    const moduleId = req.params.id
-
-    // todo: rename this function
-    const entry = await this.moduleService.getModuleWithEvents(moduleId)
-
-    if (!entry) {
-      logger.warn(`Module with id ${moduleId} not found`)
-      return next(new NotFoundError('Module not found'))
-    }
-
-    if (!entry.enabled) {
-      logger.warn(`Module with id ${moduleId} not enabled`)
-      return next(new ForbiddenError('Module not enabled'))
-    }
-
-    this.moduleService.sendEventToModule(moduleId, req.body)
-
-    res.status(204).send()
+    this.moduleService
+      .sendEventToModule(req.params.id, req.body)
+      .then(() => res.status(204).send())
+      .catch(next)
   }
-
   /**
    * GET
    * Get a module's configuration
    */
-  moduleConfiguration = async (req: Request, res: Response, next: NextFunction) => {
-    const moduleId = req.params.id
-    const module = await this.moduleService.getModule(moduleId)
-
-    if (!module) {
-      logger.warn(`Module with id ${moduleId} not found`)
-      return next(new NotFoundError('Module not found'))
-    }
-
-    res.send(module.currentConfig)
+  moduleConfiguration = (req: Request, res: Response, next: NextFunction) => {
+    this.moduleService
+      .getModuleConfiguration(req.params.id)
+      .then((config) => res.send(config))
+      .catch(next)
   }
 
   /**
    * PUT
    * Update a module's configuration
    */
-  moduleConfigurationUpdate = (req: Request, res: Response) => {
-    const updatedId = this.moduleService.updateModuleConfiguration(req.params.id, req.body)
-
-    if (!updatedId) {
-      logger.warn(`Module with id ${req.params.id} not found`)
-      throw new NotFoundError('Module not found')
-    }
-
-    res.status(200).send({
-      message: 'Module configuration updated successfully',
-      moduleId: updatedId,
-    })
+  moduleConfigurationUpdate = (req: Request, res: Response, next: NextFunction) => {
+    this.moduleService
+      .updateModuleConfiguration(req.params.id, req.body)
+      .then(() => res.status(204).send())
+      .catch(next)
   }
 
   /**
    * POST
    * Reset a module's configuration to its default
    */
-  moduleConfigurationResetDefault = (req: Request, res: Response) => {
-    const updatedId = this.moduleService.resetModuleConfigurationToDefault(req.params.id)
-
-    if (!updatedId) {
-      logger.warn(`Module with id ${req.params.id} not found`)
-      throw new NotFoundError('Module not found')
-    }
-
-    res.status(200).send({
-      message: 'Module configuration reset to default successfully',
-      moduleId: updatedId,
-    })
+  moduleConfigurationResetDefault = (req: Request, res: Response, next: NextFunction) => {
+    this.moduleService
+      .resetModuleConfigurationToDefault(req.params.id)
+      .then(() => res.status(204).send())
+      .catch(next)
   }
 
   /**
    * POST
    * Update a module's status (enabled or disabled)
    */
-  moduleStatusUpdate = (req: Request, res: Response) => {
-    const updatedId = this.moduleService.updateModuleEnabled(req.params.id, req.body.enabled)
-
-    if (!updatedId) {
-      logger.warn(`Module with id ${req.params.id} not found`)
-      throw new NotFoundError('Module not found')
-    }
-
-    const message = req.body.enabled ? 'Module enabled successfully' : 'Module disabled successfully'
-    res.status(200).send({
-      message,
-      moduleId: updatedId,
-    })
+  moduleStatusUpdate = async (req: Request, res: Response, next: NextFunction) => {
+    this.moduleService
+      .updateModuleEnabled(req.params.id, req.body.enabled)
+      .then(() =>
+        res.send({
+          message: req.body.enabled ? 'Module enabled successfully' : 'Module disabled successfully',
+        }),
+      )
+      .catch((e) => next(e))
   }
 
   /**
@@ -198,7 +138,6 @@ export default class ModulesController {
     }
 
     const file = req.files.file as UploadedFile
-
     if (file.mimetype !== 'application/zip') {
       throw new BadRequestError('The file must be a zip')
     }
@@ -206,15 +145,17 @@ export default class ModulesController {
     this.moduleService
       .uploadModule(file)
       .then((id) => res.status(201).send({ message: 'Module uploaded and registered successfully', moduleId: id }))
-      .catch(() => next(new BadRequestError('The module could not be uploaded. Please check its configuration')))
+      .catch((e) => next(new BadRequestError(e)))
   }
 
   /**
    * DELETE
    * Delete a module
    */
-  delete = (req: Request, res: Response) => {
-    this.moduleService.unregisterModule(req.params.id)
-    res.status(204).send()
+  delete = (req: Request, res: Response, next: NextFunction) => {
+    this.moduleService
+      .unregisterModule(req.params.id)
+      .then(() => res.status(204).send())
+      .catch(next)
   }
 }

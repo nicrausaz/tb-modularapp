@@ -32,7 +32,6 @@ const create = async () => {
 
 /**
  * Seed the database with initial data
- *
  */
 const seed = async () => {
   const db = getDB()
