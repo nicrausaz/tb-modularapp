@@ -89,7 +89,7 @@ export default function ChoseModulesModal({ isOpen, onClose, onConfirm }: Confir
       isOpen={isOpen}
       title="Select a module to add to the screen"
       onConfirm={() => onConfirm(selectedModules)}
-      onClose={onClose}
+      onCancel={onClose}
       confirmEnabled={selectedModules.length > 0}
     >
       <div className="modal-body">

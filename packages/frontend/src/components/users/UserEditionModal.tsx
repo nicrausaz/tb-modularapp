@@ -22,7 +22,7 @@ export default function UserEditionModal({ isOpen, user, onClose, onConfirm }: U
   const mode = user ? 'update' : 'create'
   const title = user ? 'Edit user' : 'Create user'
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<{ username: string; password: string; avatar: File | null }>({
     username: user?.username ?? '',
     password: '',
     avatar: null,

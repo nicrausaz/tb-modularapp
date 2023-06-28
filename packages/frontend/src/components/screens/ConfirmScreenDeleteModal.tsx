@@ -23,7 +23,7 @@ export default function ConfirmScreenDeleteModal({
       isOpen={isOpen}
       title="Confirm deletion"
       onConfirm={() => onConfirm(screen.id)}
-      onClose={onClose}
+      onCancel={onClose}
       confirmColor="btn-error"
     >
       <div className="modal-body">

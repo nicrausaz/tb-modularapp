@@ -53,7 +53,7 @@ export default function UploadModal({ open, onClose, onUpload, allowedFormats }:
     <Modal
       isOpen={open}
       title="Add a new module from archive"
-      onClose={close}
+      onCancel={close}
       confirmEnabled={file != null}
       onConfirm={submit}
     >

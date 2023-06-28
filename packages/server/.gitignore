@@ -2,3 +2,4 @@ db.sqlite
 logs
 public/*
 !public/logo.svg
+modules

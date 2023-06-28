@@ -12,7 +12,7 @@ export default function ConfirmConfigResetModal({ isOpen, onClose, onConfirm }: 
       isOpen={isOpen}
       title="Confirm configuration reset"
       onConfirm={onConfirm}
-      onClose={onClose}
+      onCancel={onClose}
       confirmColor="btn-error"
     >
       <div className="modal-body">

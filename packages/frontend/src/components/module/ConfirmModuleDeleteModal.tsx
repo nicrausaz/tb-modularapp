@@ -23,7 +23,7 @@ export default function ConfirmModuleDeleteModal({
       isOpen={isOpen}
       title="Confirm deletion"
       onConfirm={() => onConfirm(module.id)}
-      onClose={onClose}
+      onCancel={onClose}
       confirmColor="btn-error"
     >
       <div className="modal-body">
