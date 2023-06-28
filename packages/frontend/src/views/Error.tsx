@@ -21,7 +21,8 @@ export default function ErrorPage() {
             <span className="text-error">Oops !</span>
           </h6>
           {error ? (
-            <p className="mb-8 text-center text-neutral md:text-lg">{error.message}</p>
+            <p className="mb-8 text-center text-neutral md:text-lg">error</p>
+            // todo: error message
           ) : (
             <p className="mb-8 text-center text-neutral md:text-lg">{t('errors.not_found.subtitle')}</p>
           )}

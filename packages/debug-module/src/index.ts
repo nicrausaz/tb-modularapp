@@ -40,4 +40,8 @@ export default class HelloModule extends Module {
     console.log('The module hello received', data)
     this.lastReceivedData = data.message
   }
+
+  onNewSubscriber(): void {
+    // Nothing to do here
+  }
 }
