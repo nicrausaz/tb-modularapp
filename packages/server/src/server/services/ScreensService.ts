@@ -1,4 +1,5 @@
 import { ScreenDisabledException, ScreenNotFoundException } from '../exceptions/Screens'
+import ScreenLiveUpdater from '../helpers/ScreenLiveUpdater'
 import ScreenMapper from '../mappers/ScreenMapper'
 import { ScreenDTO, UpdateScreenDTO } from '../models/DTO/ScreenDTO'
 import { ScreensRepository } from '../repositories'
@@ -7,7 +8,7 @@ import { ScreensRepository } from '../repositories'
  * The screens service implements the business logic for the screens
  */
 export default class ScreensService {
-  constructor(private screensRepository: ScreensRepository) {}
+  constructor(private screensRepository: ScreensRepository, private screenUpdater: ScreenLiveUpdater) {}
 
   /**
    * Get all screens

@@ -15,6 +15,7 @@ import {
   userUpdateRules,
 } from './models/validators'
 import Validator from './middlewares/ValidationMiddleware'
+import ScreenLiveUpdater from './helpers/ScreenLiveUpdater'
 
 /**
  * Define all the routes for the application
@@ -22,6 +23,9 @@ import Validator from './middlewares/ValidationMiddleware'
  * @param app The express application
  */
 const configureRoutes = (app: express.Application, manager: ModuleDatabaseManager) => {
+  // Intialize specific dependencies
+  const screenUpdater = new ScreenLiveUpdater()
+
   // Create the repositories
   const userRepository = new UsersRepository()
   const modulesRepository = new ModulesRepository(manager)
@@ -31,13 +35,13 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
   // Create the services
   const usersService = new UsersService(userRepository)
   const modulesService = new ModulesService(modulesRepository, screensRepository)
-  const screensService = new ScreensService(screensRepository)
+  const screensService = new ScreensService(screensRepository, screenUpdater)
   const boxService = new BoxService(boxRepository)
 
   // Create the controllers
   const authController = new AuthController(usersService)
   const modulesController = new ModulesController(modulesService)
-  const screensController = new ScreensController(screensService)
+  const screensController = new ScreensController(screensService, screenUpdater)
   const boxController = new BoxController(boxService)
   const usersController = new UsersController(usersService)
 
@@ -420,6 +424,8 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
   app.get('/api/screens', JwtAuthMiddleware, screensController.index)
 
   app.get('/api/screens/:id', screensController.screen)
+
+  app.get('/api/screens/:id/events', screensController.screenEvents)
 
   app.put('/api/screens/:id', Validator(screenUpdateRules), JwtAuthMiddleware, screensController.createOrUpdate)
 

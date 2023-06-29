@@ -1,12 +1,13 @@
 import ScreenEditor from '@/components/screens/ScreenEditor'
 import { useFetchAuth } from '@/hooks/useFetch'
 import { Screen } from '@/models/Screen'
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 // import { fullscreen, closeFullscreen } from '@/helpers'
 
 export default function Visualize() {
   const { screenId } = useParams()
-  const { data: screen, error, loading } = useFetchAuth<Screen>(`/api/screens/${screenId}`)
+  // const { data: screen, error, loading } = useFetchAuth<Screen>(`/api/screens/${screenId}`)
   // const container = useRef<HTMLDivElement>(null)
   // const toggler = useRef<HTMLButtonElement>(null)
 
@@ -22,13 +23,31 @@ export default function Visualize() {
   //   // return () => closeFullscreen()
   // }, [])
 
-  if (loading) {
-    return <div>Loading...</div>
-  }
+  const [screen, setScreen] = useState<Screen>()
 
-  if (error) {
-    throw error
-  }
+  useEffect(() => {
+    const source = new EventSource(`/api/screens/${screenId}/events`)
+
+    source.onmessage = (e) => {
+      setScreen(JSON.parse(e.data))
+    }
+
+    source.onopen = () => {
+      // setLoading(false)
+      // setStatus('active')
+    }
+
+    source.onerror = () => {
+      // TODO
+      // setLoading(false)
+      // setStatus('error')
+    }
+
+    return () => {
+      console.log('close on client')
+      source.close()
+    }
+  }, [screenId])
 
   if (!screen) {
     return null

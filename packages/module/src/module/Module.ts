@@ -9,12 +9,11 @@ export interface ModuleProps {
   [key: string]: unknown
 }
 
-export default abstract class Module extends EventEmitter {
+export default abstract class Module {
+  private readonly emitter = new EventEmitter()
   private static readonly UPDATE_STATE_KEY = 'update'
 
-  public constructor(private readonly _configuration: Configuration, private readonly _renderer?: ModuleRenderer) {
-    super()
-  }
+  public constructor(private readonly _configuration: Configuration, private readonly _renderer?: ModuleRenderer) {}
 
   /**
    * Initialize the module
@@ -35,7 +34,7 @@ export default abstract class Module extends EventEmitter {
    * Stop the module
    */
   public stop(): void {
-    this.removeAllListeners()
+    this.emitter.removeAllListeners()
   }
 
   /**
@@ -60,7 +59,7 @@ export default abstract class Module extends EventEmitter {
    * When the module updates, the callback will be called with the new rendered HTML
    */
   public registerToUpdates(callback: (render: string) => void): void {
-    this.on(Module.UPDATE_STATE_KEY, callback)
+    this.emitter.on(Module.UPDATE_STATE_KEY, callback)
     this.onNewSubscriber()
   }
 
@@ -68,7 +67,7 @@ export default abstract class Module extends EventEmitter {
    * Unregister from the module updates
    */
   public unregisterFromUpdates(callback: (render: string) => void): void {
-    this.off(Module.UPDATE_STATE_KEY, callback)
+    this.emitter.off(Module.UPDATE_STATE_KEY, callback)
   }
 
   /**
@@ -131,7 +130,7 @@ export default abstract class Module extends EventEmitter {
   protected notify<T extends ModuleProps>(data: T): void {
     // Render the module to HTML and emit the result
     if (this._renderer) {
-      this.emit(Module.UPDATE_STATE_KEY, renderToStaticMarkup(this._renderer.render(data)))
+      this.emitter.emit(Module.UPDATE_STATE_KEY, renderToStaticMarkup(this._renderer.render(data)))
     }
   }
 
