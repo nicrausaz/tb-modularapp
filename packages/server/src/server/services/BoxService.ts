@@ -6,15 +6,23 @@ import { BoxRepository } from '../repositories'
 export default class BoxService {
   constructor(private boxRepository: BoxRepository) {}
 
+  /**
+   * Get the box information
+   */
   async getBox(): Promise<BoxDTO> {
-    const box = await this.boxRepository.get()
-    return BoxMapper.toDTO(box)
+    return BoxMapper.toDTO(await this.boxRepository.get())
   }
 
+  /**
+   * Update the box information
+   */
   async updateBox(box: BoxDTO): Promise<BoxDTO> {
     throw new Error('Not implemented')
   }
 
+  /**
+   * Update the box icon
+   */
   async updateIcon(file: UploadedFile): Promise<string> {
     // Remove the old icon
     const box = await this.boxRepository.get()

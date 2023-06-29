@@ -1,7 +1,7 @@
 import { UploadedFile } from 'express-fileupload'
 import { randomUUID } from 'crypto'
 import { UsersRepository } from '../repositories'
-import { CreateUserDTO, LoginUserDTO, UpdateUserDTO } from '../models/DTO/UserDTO'
+import { CreateUserDTO, LoginUserDTO, UpdateUserDTO, UserDTO } from '../models/DTO/UserDTO'
 import { generateToken } from '../libs/jwt'
 import { verifyString } from '../libs/security'
 import {
@@ -10,6 +10,7 @@ import {
   UserNotFoundException,
   UserUploadAvatarException,
 } from '../exceptions/Users'
+import UserMapper from '../mappers/UserMapper'
 
 /**
  * The users service implements the business logic for the users
@@ -24,7 +25,7 @@ export default class UsersService {
    *
    * @throws UserAuthentificationFailedException if the user authentication failed
    */
-  authenticateUser = async (loginUser: LoginUserDTO) => {
+  authenticateUser = async (loginUser: LoginUserDTO): Promise<string> => {
     return this.usersRepository.getByUsername(loginUser.username).then(async (user) => {
       // Verify password
       if (await verifyString(user.password, loginUser.password)) {
@@ -42,8 +43,8 @@ export default class UsersService {
   /**
    * Get all users
    */
-  getUsers = async () => {
-    return this.usersRepository.getUsers()
+  getUsers = async (): Promise<UserDTO[]> => {
+    return (await this.usersRepository.getUsers()).map(UserMapper.toDTO)
   }
 
   /**
@@ -51,7 +52,7 @@ export default class UsersService {
    *
    * @throws UserNotFoundException if the user does not exist
    */
-  getUser = async (id: number) => {
+  getUser = async (id: number): Promise<UserDTO> => {
     if (!(await this.userExists(id))) {
       throw new UserNotFoundException(id)
     }
@@ -119,7 +120,7 @@ export default class UsersService {
    * @param id id of the user
    * @returns true if the user exists, false otherwise
    */
-  private userExists = async (id: number) => {
+  private userExists = async (id: number): Promise<boolean> => {
     return this.usersRepository
       .getById(id)
       .then(() => true)

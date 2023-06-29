@@ -120,11 +120,7 @@ export default class ModulesController {
   moduleStatusUpdate = async (req: Request, res: Response, next: NextFunction) => {
     this.modulesService
       .updateModuleEnabled(req.params.id, req.body.enabled)
-      .then(() =>
-        res.send({
-          message: req.body.enabled ? 'Module enabled successfully' : 'Module disabled successfully',
-        }),
-      )
+      .then(() => res.status(204).send())
       .catch((e) => next(e))
   }
 

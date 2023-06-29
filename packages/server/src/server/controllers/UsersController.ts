@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from 'express'
 import { UsersService } from '../services'
-import logger from '../libs/logger'
-import { BadRequestError, NotFoundError } from '../middlewares/HTTPError'
+import { BadRequestError } from '../middlewares/HTTPError'
 import { UploadedFile } from 'express-fileupload'
 
-// TODO: refactor this like the other controllers
-
+/**
+ * Controller for the users routes
+ */
 export default class UsersController {
   constructor(private usersService: UsersService) {}
 
@@ -14,8 +14,7 @@ export default class UsersController {
    * Get all users
    */
   index = async (req: Request, res: Response) => {
-    const users = await this.usersService.getUsers()
-    res.send(users)
+    res.send(await this.usersService.getUsers())
   }
 
   /**
@@ -23,23 +22,21 @@ export default class UsersController {
    * Get a user by its id
    */
   user = async (req: Request, res: Response, next: NextFunction) => {
-    const id = parseInt(req.params.id)
-    const user = await this.usersService.getUser(id)
-
-    if (!user) {
-      logger.warn(`User with id ${id} not found`)
-      return next(new NotFoundError('User not found'))
-    }
-    res.send(user)
+    this.usersService
+      .getUser(parseInt(req.params.id))
+      .then((user) => res.send(user))
+      .catch(next)
   }
 
   /**
    * POST
    * Create a new user
    */
-  create = async (req: Request, res: Response) => {
-    await this.usersService.createUser(req.body)
-    res.status(201).send()
+  create = async (req: Request, res: Response, next: NextFunction) => {
+    this.usersService
+      .createUser(req.body)
+      .then(() => res.status(204).send())
+      .catch(next)
   }
 
   /**
@@ -47,16 +44,10 @@ export default class UsersController {
    * Update an existing user
    */
   update = async (req: Request, res: Response, next: NextFunction) => {
-    const id = parseInt(req.params.id)
-    const user = await this.usersService.getUser(id)
-
-    if (!user) {
-      logger.warn(`User with id ${id} not found`)
-      return next(new NotFoundError('User not found'))
-    }
-
-    await this.usersService.updateUser(id, req.body)
-    res.status(201).send()
+    this.usersService
+      .updateUser(parseInt(req.params.id), req.body)
+      .then(() => res.status(204).send())
+      .catch(next)
   }
 
   /**
@@ -77,9 +68,10 @@ export default class UsersController {
       return next(new BadRequestError('Invalid file type'))
     }
 
-    await this.usersService.uploadAvatar(id, picture)
-
-    res.status(201).send()
+    this.usersService
+      .uploadAvatar(id, picture)
+      .then(() => res.status(204).send())
+      .catch(next)
   }
 
   /**
@@ -87,14 +79,9 @@ export default class UsersController {
    * Delete an existing user
    */
   delete = async (req: Request, res: Response, next: NextFunction) => {
-    const id = parseInt(req.params.id)
-
     this.usersService
-      .deleteUser(id)
+      .deleteUser(parseInt(req.params.id))
       .then(() => res.status(204).send())
-      .catch((err) => {
-        logger.error(err)
-        next(err)
-      })
+      .catch(next)
   }
 }

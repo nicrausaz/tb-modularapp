@@ -3,7 +3,13 @@ import { getDB } from '../../database/database'
 import { Box } from '../models/entities/Box'
 import { unlinkSync } from 'fs'
 
+/**
+ * Handle the database operations for the box
+ */
 export default class BoxRepository {
+  /**
+   * Get the box
+   */
   public get(): Promise<Box> {
     const db = getDB()
     return new Promise((resolve, reject) => {
@@ -17,6 +23,10 @@ export default class BoxRepository {
     })
   }
 
+  /**
+   * Update the box information
+   * @param box new box information
+   */
   public update(box: Box) {}
 
   /**
@@ -38,18 +48,21 @@ export default class BoxRepository {
     db.close()
   }
 
-  public uploadIcon(file: UploadedFile) {
-    return new Promise<void>((resolve, reject) => {
+  /**
+   * Upload a new icon for the box to the public directory
+   * @param file filename of the icon
+   */
+  public uploadIcon(file: UploadedFile): Promise<void> {
+    return new Promise((resolve, reject) => {
       file.mv(`${process.env.PUBLIC_DIR}/${file.name}`, async (err) => {
         if (err) {
           reject(err)
         }
-        console.log('File uploaded', `${process.env.PUBLIC_DIR}/${file.name}`)
         resolve()
       })
     })
   }
-  
+
   /**
    * Delete the icon from the public directory
    * @param icon filename of the icon

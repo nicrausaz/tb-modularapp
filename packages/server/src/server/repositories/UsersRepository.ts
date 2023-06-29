@@ -4,8 +4,6 @@ import { UserEntity } from '../models/entities/User'
 import { hashString } from '../libs/security'
 import { UploadedFile } from 'express-fileupload'
 
-// TODO: might want to use DTOs instead of entities as function return types
-
 export default class UsersRepository {
   /**
    * Get a user by its id

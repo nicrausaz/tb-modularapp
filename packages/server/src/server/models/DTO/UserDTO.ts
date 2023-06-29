@@ -1,3 +1,10 @@
+export type UserDTO = {
+  id: number
+  username: string
+  avatar?: string
+  isDefault: boolean
+}
+
 export type LoginUserDTO = {
   username: string
   password: string
