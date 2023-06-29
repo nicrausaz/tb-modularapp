@@ -10,7 +10,7 @@ export default class ScreensRepository {
     const db = getDB()
     return new Promise((resolve, reject) => {
       db.all(
-        'SELECT s.id AS screenId, s.name, s.enabled, sl.id, sl.moduleId, sl.width, sl.height, sl.x, sl.y FROM Screens AS s LEFT JOIN ScreenSlots as sl ON s.id = sl.screenId WHERE sl.id IS NOT NULL',
+        'SELECT s.id AS screenId, s.name, s.enabled, sl.id, sl.moduleId, sl.width, sl.height, sl.x, sl.y FROM Screens AS s LEFT JOIN ScreenSlots as sl ON s.id = sl.screenId',
         (err, rows) => {
           if (err) {
             reject(err)
@@ -39,7 +39,9 @@ export default class ScreensRepository {
               }
             }
 
-            screens[screenId].slots.push(slot)
+            if (row.id) {
+              screens[screenId].slots.push(slot)
+            }
           })
 
           resolve(Object.values(screens))
@@ -58,7 +60,7 @@ export default class ScreensRepository {
     const db = getDB()
     return new Promise((resolve, reject) => {
       db.all(
-        'SELECT s.id AS screenId, s.name, s.enabled, sl.id, sl.moduleId, sl.width, sl.height, sl.x, sl.y FROM Screens AS s LEFT JOIN ScreenSlots as sl ON s.id = sl.screenId WHERE s.id = ? AND sl.id IS NOT NULL',
+        'SELECT s.id AS screenId, s.name, s.enabled, sl.id, sl.moduleId, sl.width, sl.height, sl.x, sl.y FROM Screens AS s LEFT JOIN ScreenSlots as sl ON s.id = sl.screenId WHERE s.id = ?',
         [id],
         (err, rows: any) => {
           if (err) {
@@ -73,15 +75,17 @@ export default class ScreensRepository {
           }
 
           rows.forEach((row: any) => {
-            screen.slots.push({
-              id: row.id,
-              moduleId: row.moduleId,
-              screenId: row.screenId,
-              width: row.width,
-              height: row.height,
-              x: row.x,
-              y: row.y,
-            })
+            if (row.id) {
+              screen.slots.push({
+                id: row.id,
+                moduleId: row.moduleId,
+                screenId: row.screenId,
+                width: row.width,
+                height: row.height,
+                x: row.x,
+                y: row.y,
+              })
+            }
           })
 
           resolve(screen)

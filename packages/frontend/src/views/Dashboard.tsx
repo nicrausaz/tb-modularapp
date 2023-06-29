@@ -91,7 +91,6 @@ export default function Dashboard() {
   }
 
   const handleLayoutChange = (slots: ScreenSlot[]) => {
-    console.log('handleLayoutChange on parent', slots)
     setScreen({
       ...screen,
       slots,
@@ -145,7 +144,13 @@ export default function Dashboard() {
             <p className="text-gray-500">No module added to this screen yet</p>
           </div>
         ) : (
-          <ScreenEditor slots={screen.slots} onChange={handleLayoutChange} />
+          <div style={{ height: 'calc(100vh - 220px)' }}>
+          <ScreenEditor
+            slots={screen.slots}
+            onChange={handleLayoutChange}
+            containerClassName="border rounded-lg w-full h-full"
+          />
+          </div>
         )}
       </div>
       <ChoseModulesModal

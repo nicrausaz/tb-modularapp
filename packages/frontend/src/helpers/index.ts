@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid/non-secure'
+import { fullscreen, closeFullscreen } from './fullscreen'
 
 /**
  * Generates an unique indentifier
@@ -7,6 +8,8 @@ import { nanoid } from 'nanoid/non-secure'
  * @param length length of the unique identifier, default is 6
  * @returns unique identifier
  */
-export const uuid = (length = 6): string => {
+const uuid = (length = 6): string => {
   return nanoid(length)
 }
+
+export { fullscreen, closeFullscreen, uuid }

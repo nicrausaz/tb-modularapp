@@ -5,3 +5,8 @@ export type UserEntity = {
   isDefault: boolean
   avatar: string
 }
+
+export type ReqUser = {
+  id?: string
+  username: string
+}

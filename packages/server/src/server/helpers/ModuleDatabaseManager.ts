@@ -74,7 +74,7 @@ export default class ModuleDatabaseManager {
     const db = getDB()
     db.run('UPDATE Modules SET enabled = 1 WHERE id = ?', [moduleId], (err) => {
       if (err) {
-        console.log(err)
+        logger.error(`An error occurred while enabling module ${moduleId} %s`, err.message)
       }
     })
     db.close()
@@ -94,7 +94,7 @@ export default class ModuleDatabaseManager {
     const db = getDB()
     db.run('UPDATE Modules SET enabled = 0 WHERE id = ?', [moduleId], (err) => {
       if (err) {
-        console.log(err)
+        logger.error(`An error occurred while disabling module ${moduleId} %s`, err.message)
       }
     })
     db.close()
@@ -129,7 +129,7 @@ export default class ModuleDatabaseManager {
       ],
       (err) => {
         if (err) {
-          console.log(err)
+          logger.error(`An error occurred while registering module ${moduleId} %s`, err.message)
         }
       },
     )
@@ -151,7 +151,7 @@ export default class ModuleDatabaseManager {
     const db = getDB()
     db.run('DELETE FROM modules WHERE id = ?', [moduleId], (err) => {
       if (err) {
-        console.log(err)
+        logger.error(`An error occurred while unregistering module ${moduleId} %s`, err.message)
       }
     })
     db.close()

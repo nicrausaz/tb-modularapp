@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { verifyAndDecodeToken } from '../libs/jwt'
-import { User } from '../models/entities/User'
+import { ReqUser } from '../models/entities/User'
 import logger from '../libs/logger'
 import { UnauthorizedError } from './HTTPError'
 
@@ -15,7 +15,7 @@ const JwtAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
 
   verifyAndDecodeToken(token)
     .then((decoded) => {
-      req.user = decoded as User
+      req.user = decoded as ReqUser
       next()
     })
     .catch(() => {

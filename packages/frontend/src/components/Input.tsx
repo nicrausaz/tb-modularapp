@@ -9,6 +9,7 @@ type InputProps = {
   disabled?: boolean
   className?: string
   props?: React.InputHTMLAttributes<HTMLInputElement>
+  displayErrorLabel?: boolean
 }
 
 /**
@@ -26,6 +27,7 @@ export default function Input({
   disabled,
   className,
   props,
+  displayErrorLabel = true,
 }: InputProps) {
   const labelClasses = `label-text ${error ? 'text-error' : ''}`
   const inputClasses = `input input-bordered ${className} ${error ? 'border border-error text-error' : ''}`
@@ -46,9 +48,11 @@ export default function Input({
         onChange={(e) => onChange(e.target.value)}
         {...props}
       />
-      <label className="label">
-        <span className="label-text-alt text-error">{error}</span>
-      </label>
+      {displayErrorLabel && (
+        <label className="label">
+          <span className="label-text-alt text-error">{error}</span>
+        </label>
+      )}
     </>
   )
 }

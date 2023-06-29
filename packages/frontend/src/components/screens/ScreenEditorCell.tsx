@@ -1,6 +1,7 @@
 import { ScreenSlot } from '@/models/Screen'
 import ModuleRender from '../module/ModuleRender'
 import { CrossIcon } from '@/assets/icons'
+import { useState } from 'react'
 
 type ScreenEditorCellProps = {
   slot: ScreenSlot
@@ -10,13 +11,22 @@ type ScreenEditorCellProps = {
 }
 
 export default function ScreenEditorCell({ slot, onDelete, readonly = false }: ScreenEditorCellProps) {
-
+  const [hover, setHover] = useState(false)
   if (!slot.module) {
     return null
   }
 
   return (
-    <div className="bg-base-300 w-full h-full relative rounded">
+    <div
+      className="bg-base-300 w-full h-full relative rounded"
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+    >
+      {hover && (
+        <span className="absolute backdrop-blur-2xl bg-white/10 w-full py-1 px-3 italic font-bold text-neutral">
+          {slot.module.nickname ? `${slot.module.nickname} (${slot.module.name})` : slot.module.name}
+        </span>
+      )}
       <ModuleRender id={slot.module.id} />
 
       {!readonly && (

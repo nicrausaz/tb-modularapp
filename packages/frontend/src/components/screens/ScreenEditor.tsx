@@ -11,6 +11,7 @@ type ScreenEditorProps = {
   slots: ScreenSlot[]
   onChange?: (slots: ScreenSlot[]) => void
   readonly?: boolean
+  containerClassName?: string
 }
 
 type AugmentedLayout = GridLayout.Layout & {
@@ -42,7 +43,7 @@ const layoutToScreenSlot = (layout: AugmentedLayout): ScreenSlot => {
   }
 }
 
-export default function ScreenEditor({ slots, onChange, readonly = false }: ScreenEditorProps) {
+export default function ScreenEditor({ slots, onChange, containerClassName, readonly = false }: ScreenEditorProps) {
   const [layout, setLayout] = useState<AugmentedLayout[]>([])
   const container = useRef<HTMLDivElement>(null)
 
@@ -87,8 +88,8 @@ export default function ScreenEditor({ slots, onChange, readonly = false }: Scre
   const editorProps: GridLayout.ReactGridLayoutProps = {
     isDraggable: !readonly,
     isResizable: !readonly,
-    cols: 12,
-    rowHeight: 150,
+    cols: 10,
+    rowHeight: (container.current?.clientHeight || 0) / 5,
     maxRows: 5,
     width: container.current?.clientWidth || 0,
     resizeHandles: ['se'],
@@ -96,7 +97,7 @@ export default function ScreenEditor({ slots, onChange, readonly = false }: Scre
   }
 
   return (
-    <div className="border rounded-lg h-screen w-screen" ref={container}>
+    <div className={containerClassName} ref={container}>
       <GridLayout {...editorProps} layout={layout} onDragStop={onLayoutChange} onResizeStop={onLayoutChange}>
         {slots.map((slot) => (
           <div key={slot.id}>

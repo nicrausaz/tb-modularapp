@@ -5,6 +5,7 @@ import { CreateUserDTO, LoginUserDTO, UpdateUserDTO, UserDTO } from '../models/D
 import { generateToken } from '../libs/jwt'
 import { verifyString } from '../libs/security'
 import {
+  UserAlreadyExistsException,
   UserAuthentificationFailedException,
   UserDeletionNotAllowedException,
   UserNotFoundException,
@@ -62,8 +63,14 @@ export default class UsersService {
 
   /**
    * Create a new user
+   * 
+   * @throws UserAlreadyExistsException if the user already exists
    */
   createUser = async (user: CreateUserDTO): Promise<void> => {
+    if ((await this.usersRepository.getByUsername(user.username)).id) {
+      throw new UserAlreadyExistsException(user.username)
+    }
+
     return this.usersRepository.createUser(user)
   }
 

@@ -49,7 +49,6 @@ export default function FilePreviewerInput({
       }
       setError('')
       setFile(file)
-      console.log(file)
       onUpload(file)
     }
   }

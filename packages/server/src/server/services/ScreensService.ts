@@ -30,8 +30,6 @@ export default class ScreensService {
 
     const screen = await this.screensRepository.getById(id)
 
-    console.log(screen)
-
     if (!screen.enabled) {
       throw new ScreenDisabledException(id)
     }

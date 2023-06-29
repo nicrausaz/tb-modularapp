@@ -1,8 +1,8 @@
 import { AddSquareIcon, ArrowDownIcon, NewScreenIcon, OpenNewTabIcon, SaveIcon, TrashIcon } from '@/assets/icons'
 import { Screen } from '@/models/Screen'
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 import IconButton from '@/components/IconButton'
+import Input from '@/components/Input'
 
 type ScreenToolbarProps = {
   currentScreen: Screen
@@ -28,6 +28,7 @@ export default function ScreenToolbar({
   onToggleEnabled,
 }: ScreenToolbarProps) {
   const [screenName, setScreenName] = useState('')
+  const [screenNameError, setScreenNameError] = useState<string>('')
 
   useEffect(() => {
     if (currentScreen) {
@@ -36,10 +37,6 @@ export default function ScreenToolbar({
   }, [currentScreen])
 
   const otherScreens = screens.filter((screen) => screen.name !== currentScreen.name)
-
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onNameChange(e.target.value)
-  }
 
   const handleAddScreen = () => {
     const id = screens.reduce((biggest, screen) => (screen.id >= biggest ? screen.id + 1 : biggest), 1)
@@ -50,6 +47,12 @@ export default function ScreenToolbar({
   }
 
   const handleSaveScreen = () => {
+    if (currentScreen.name.trim() === '') {
+      setScreenNameError('Screen name is required')
+      return
+    }
+
+    setScreenNameError('')
     onSave(currentScreen)
   }
 
@@ -64,12 +67,15 @@ export default function ScreenToolbar({
   return (
     <div className="flex justify-between items-center border w-full rounded-lg shadow bg-base-200 p-2 mb-4">
       <div>
-        <input
+        <Input
           type="text"
-          className="w-full px-4 py-2 rounded-lg input-md"
+          name={'screenName'}
+          value={screenName}
+          onChange={(value) => onNameChange(value)}
           placeholder="Screen name..."
-          onChange={handleNameChange}
-          defaultValue={screenName}
+          className="input-md"
+          error={screenNameError}
+          displayErrorLabel={false}
         />
       </div>
       <div className="flex items-center">
