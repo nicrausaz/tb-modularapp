@@ -82,13 +82,13 @@ export default class ModulesService {
    */
   updateModuleEnabled = async (id: string, enabled: boolean) => {
     // Get the module entry or throw an exception if it does not exist
-    const entry = (await this.getModuleEntry(id)).enabled
+    const current = (await this.getModuleEntry(id)).enabled
 
-    if (entry === enabled && enabled) {
+    if (current && enabled) {
       throw new ModuleRedundantStatusException(id, 'enabled')
     }
 
-    if (entry === !enabled && !enabled) {
+    if (!current && !enabled) {
       throw new ModuleRedundantStatusException(id, 'disabled')
     }
 

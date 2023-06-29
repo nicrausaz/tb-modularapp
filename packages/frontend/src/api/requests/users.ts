@@ -25,7 +25,7 @@ export const create = async (user: UserCreate) => {
  * @param user The user to update
  */
 export const update = async (user: UserUpdate) => {
-  return await fetcher(`/api/users/${user.id}`, {
+  return fetcher(`/api/users/${user.id}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',

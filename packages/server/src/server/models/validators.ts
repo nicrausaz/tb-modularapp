@@ -74,7 +74,7 @@ export const userUpdateRules = [
  * Validation rule for module update
  * @see UpdateModuleDTO
  */
-export const moduleUpdateRules = [body('nickname').trim().escape().notEmpty().withMessage('Nickname is required')]
+export const moduleUpdateRules = []
 
 /**
  * Validation rule for module configuration update

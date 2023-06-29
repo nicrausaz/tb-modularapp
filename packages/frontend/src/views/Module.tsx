@@ -1,4 +1,5 @@
 import fetcher from '@/api/fetcher'
+import { disable, enable, save } from '@/api/requests/module'
 import { CopyIcon, DeveloperIcon, PlayIcon, SaveIcon, StopIcon, TimeIcon, TrashIcon, VersionIcon } from '@/assets/icons'
 import IconButton from '@/components/IconButton'
 import Image from '@/components/Image'
@@ -43,32 +44,20 @@ export default function Module() {
   const handleChangeStatus = async (action: string) => {
     const enabled = action === 'enable'
 
-    await fetcher(`/api/modules/${module.id}/status`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        enabled: enabled,
-      }),
-    })
+    const req = enabled ? enable(module.id) : disable(module.id)
 
-    setModule({
-      ...module,
-      enabled: enabled,
-    })
+    req
+      .then(() => {
+        setModule({
+          ...module,
+          enabled: enabled,
+        })
+      })
+      .catch((err) => tError('Error', err.message))
   }
 
   const handleSaveModule = async () => {
-    fetcher(`/api/modules/${module.id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        nickname: module.nickname,
-      }),
-    })
+    await save(module)
     tSuccess('Module saved', 'The module has been saved successfully')
   }
 
@@ -265,11 +254,7 @@ export default function Module() {
         </div>
       </div>
 
-      <ConfirmConfigResetModal
-        isOpen={confirmReset}
-        onClose={() => setConfirmReset(false)}
-        onConfirm={handleReset}
-      />
+      <ConfirmConfigResetModal isOpen={confirmReset} onClose={() => setConfirmReset(false)} onConfirm={handleReset} />
 
       <ConfirmModuleDeleteModal
         isOpen={confirmDelete}

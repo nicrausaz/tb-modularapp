@@ -10,10 +10,12 @@ import ConfirmScreenDeleteModal from '@/components/screens/ConfirmScreenDeleteMo
 import { Module } from '@/models/Module'
 import { useToast } from '@/contexts/ToastContext'
 import { uuid } from '@/helpers'
+import { createOrSave, remove } from '@/api/requests/screens'
 
 export default function Dashboard() {
-  const { data: screens, error, loading } = useFetchAuth<Screen[]>('/api/screens')
+  const { data, error, loading } = useFetchAuth<Screen[]>('/api/screens')
 
+  const [screens, setScreens] = useState<Screen[]>([])
   const [screen, setScreen] = useState<Screen | null>(null)
   const [modulesModalOpen, setModulesModalOpen] = useState<boolean>(false)
   const [deleteScreenModalOpen, setDeleteScreenModalOpen] = useState<boolean>(false)
@@ -21,10 +23,11 @@ export default function Dashboard() {
   const { tSuccess } = useToast()
 
   useEffect(() => {
-    if (screens) {
-      setScreen(screens[0])
+    if (data) {
+      setScreens(data)
+      setScreen(data[0])
     }
-  }, [screens])
+  }, [data])
 
   if (loading) {
     return <LoadingTopBar />
@@ -43,24 +46,17 @@ export default function Dashboard() {
   }
 
   const createScreen = async ({ id, name }: { id: number; name: string }) => {
-    await fetcher(`/api/screens/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        id: id,
-        name,
-        enabled: true,
-        slots: [],
-      }),
-    })
-
-    setScreen({
-      id: id,
+    const newScreen = {
+      id,
       name,
       enabled: true,
       slots: [],
-    })
+    }
 
+    await createOrSave(newScreen)
+
+    setScreens([...screens, newScreen])
+    setScreen(newScreen)
     tSuccess('Success', 'Screen created')
   }
 
@@ -81,12 +77,9 @@ export default function Dashboard() {
       module: slot.module,
     }))
 
-    await fetcher(`/api/screens/${screen.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(screen),
-    })
+    await createOrSave(screen)
 
+    setScreens(screens.map((s) => (s.id === screen.id ? screen : s)))
     tSuccess('Success', 'Screen saved')
   }
 
@@ -100,6 +93,7 @@ export default function Dashboard() {
   const addModulesToScreen = (modules: Module[]) => {
     setModulesModalOpen(false)
 
+    // TODO: place module in the first available slot
     const newSlots: ScreenSlot[] = modules.map((module) => ({
       id: uuid(),
       moduleId: module.id,
@@ -119,9 +113,8 @@ export default function Dashboard() {
 
   const deleteScreen = async (screenId: number) => {
     setDeleteScreenModalOpen(false)
-    await fetcher(`/api/screens/${screenId}`, {
-      method: 'DELETE',
-    })
+    await remove(screenId)
+    setScreens(screens.filter((screen) => screen.id !== screenId))
     setScreen(screens[0])
   }
 
@@ -145,11 +138,11 @@ export default function Dashboard() {
           </div>
         ) : (
           <div style={{ height: 'calc(100vh - 220px)' }}>
-          <ScreenEditor
-            slots={screen.slots}
-            onChange={handleLayoutChange}
-            containerClassName="border rounded-lg w-full h-full"
-          />
+            <ScreenEditor
+              slots={screen.slots}
+              onChange={handleLayoutChange}
+              containerClassName="border rounded-lg w-full h-full"
+            />
           </div>
         )}
       </div>

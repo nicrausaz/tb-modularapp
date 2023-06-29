@@ -17,7 +17,7 @@ export class ModuleNotFoundException extends NotFoundError {
  */
 export class ModuleActionException extends InternalServerError {
   constructor(id: string, action: string) {
-    super(`Module with id ${id} had an internal error during ${action}`)
+    super(`Module had an internal error during ${action}`)
     logger.error(`Module with id ${id} had an internal error during ${action}`)
   }
 }
