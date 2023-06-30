@@ -124,9 +124,9 @@ export default class ModulesService {
   unsubscribeFromModuleEvents = async (id: string, handler: (render: string) => void) => {
     const entry = await this.getModuleEntry(id)
 
-    if (!entry.enabled) {
-      throw new ModuleDisabledException(id)
-    }
+    // if (!entry.enabled) {
+    //   throw new ModuleDisabledException(id)
+    // }
 
     return this.modulesRepository.unsubscribeFromModuleEvents(id, handler)
   }

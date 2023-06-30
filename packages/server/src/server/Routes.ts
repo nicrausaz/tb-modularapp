@@ -16,13 +16,15 @@ import {
 } from './models/validators'
 import Validator from './middlewares/ValidationMiddleware'
 import ScreenLiveUpdater from './helpers/ScreenLiveUpdater'
+import WebSocket from 'ws'
+import logger from './libs/logger'
 
 /**
  * Define all the routes for the application
  *
  * @param app The express application
  */
-const configureRoutes = (app: express.Application, manager: ModuleDatabaseManager) => {
+const configureRoutes = (app: express.Application, manager: ModuleDatabaseManager, wss: WebSocket.Server) => {
   // Intialize specific dependencies
   const screenUpdater = new ScreenLiveUpdater()
 
@@ -458,6 +460,51 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
   app.put('/api/users/:id/avatar', JwtAuthMiddleware, usersController.updatePicture)
 
   app.delete('/api/users/:id', JwtAuthMiddleware, usersController.delete)
+
+  // Bind the WebSocket handler (act as a router)
+  // TODO: move this in routes
+  wss.on('connection', (ws) => {
+    logger.info('Client connected')
+
+    // Ensure the callback is defined for the connection
+    // const render = (render: string) => {
+    //   ws.send(render)
+    // }
+
+    ws.on('message', (message) => {
+      const data = JSON.parse(message.toString())
+
+      if (data.type === 'module') {
+        const moduleId = data.id
+
+        // const render = (render: string) => {
+        //   ws.send(JSON.stringify({
+        //     id: moduleId,
+        //     render,
+        //   }))
+        // }
+
+        if (data.action === 'subscribe') {
+          console.log('subscribe', moduleId)
+          modulesService.subscribeToModuleEvents(moduleId, (render) => {
+            ws.send(JSON.stringify({
+              id: moduleId,
+              render,
+            }))
+          })
+        } else {
+          console.log('unsubscribe', moduleId)
+          modulesService.unsubscribeFromModuleEvents(moduleId, () => {})
+        }
+      }
+    })
+
+    ws.on('close', () => {
+      logger.info('Client disconnected')
+      // TODO: Clean up the subscriptions
+      // modulesService.unsubscribeFromAllModulesEvents(render)
+    })
+  })
 }
 
 export default configureRoutes

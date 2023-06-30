@@ -1,33 +1,71 @@
 import { ErrorIcon } from '@/assets/icons'
+import { useLiveModules } from '@/contexts/LiveModules'
 import { useEffect, useState } from 'react'
 
 export default function ModuleRender({ id }: { id: string }) {
   const [loading, setLoading] = useState<boolean>(true)
   const [render, setRender] = useState<string>('')
   const [status, setStatus] = useState<string>('')
+  const { source } = useLiveModules()
+
+  if (!source) {
+    return null
+  }
 
   useEffect(() => {
-    const source = new EventSource(`/api/modules/${id}/events`)
-
-    source.onmessage = (e) => {
-      setRender(e.data)
-    }
-
-    source.onopen = () => {
+    const callback = (render: string) => {
       setLoading(false)
       setStatus('active')
+      setRender(render)
     }
 
-    source.onerror = () => {
-      setLoading(false)
-      setStatus('error')
-    }
+    source?.get(id, callback)
 
     return () => {
-      console.log('close on client')
-      source.close()
+      source?.release(id, callback)
     }
-  }, [id])
+  }, [])
+
+  //
+
+  // useEffect(() => {
+  //   // TODO: create a custom hook for this (context) ?
+  //   // const source = new ModulesEventManager('ws://localhost:3000/events', 'modules')
+  //   const source = new ModulesEventManager()
+  //     .acquire()
+  //     .then((s) => s)
+  //     .catch(() => null)
+
+  //   if (source === null) {
+  //     // toast error
+  //     return
+  //   }
+
+  //   // const source = new EventSource(`/api/modules/${id}/events`)
+
+  //   // source.onmessage = (e) => {
+  //   //   setRender(e.data)
+  //   // }
+
+  //   // source.onopen = () => {
+  //   //   setLoading(false)
+  //   //   setStatus('active')
+  //   // }
+
+  //   // source.onerror = () => {
+  //   //   setLoading(false)
+  //   //   setStatus('error')
+  //   // }
+
+  //   // return () => {
+  //   //   console.log('close on client')
+  //   //   source.close()
+  //   // }
+  //   return () => {
+  //     console.log('close on client')
+  //     source.then((s) => s?.release(id))
+  //   }
+  // }, [id])
 
   if (loading) {
     return (

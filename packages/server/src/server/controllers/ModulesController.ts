@@ -9,6 +9,9 @@ import { BadRequestError } from '../middlewares/HTTPError'
 export default class ModulesController {
   constructor(private modulesService: ModulesService) {}
 
+  // Store connected SSE clients
+  // private clients: Record<string, Response> = {}
+
   /**
    * GET
    * Get all the modules
@@ -58,14 +61,36 @@ export default class ModulesController {
 
     this.modulesService.subscribeToModuleEvents(moduleId, handleModuleEvent).catch(next)
 
+    // Store the client
+    // this.clients[moduleId] = res
+
+    // // Check if the client is still connected
+    // this.clients[moduleId].on('close', () => {
+    //   console.log('Client disconnected')
+    //   this.modulesService.unsubscribeFromModuleEvents(moduleId, handleModuleEvent).catch(next)
+    // })
+
     // TODO: Might be good to sent to prevent timeout
     // res.write('data: Connected\n\n')
 
     // TODO: Find a way to unregister from module events when the client disconnects.
     // With SSE, it seems that it is not possible to detect when the client disconnects.
 
+    const timeout = setTimeout(() => {
+      clearInterval(timeout);
+      console.log('timeout')
+      res.end();
+    }, 30000);
+
     // Handle termination of the connection (server side)
     req.on('close', () => {
+      console.log('closed connection')
+      this.modulesService.unsubscribeFromModuleEvents(moduleId, handleModuleEvent).catch(next)
+    })
+
+    // Handle termination of the connection (client side)
+    req.on('end', () => {
+      console.log('Client disconnected')
       this.modulesService.unsubscribeFromModuleEvents(moduleId, handleModuleEvent).catch(next)
     })
   }

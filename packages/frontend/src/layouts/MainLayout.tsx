@@ -5,6 +5,7 @@ import { BoxProvider } from '@/contexts/BoxContext'
 import AuthenticatedRoute from '@/router/AuthenticatedRoute'
 import { useTranslation } from 'react-i18next'
 import { Outlet, useLocation } from 'react-router-dom'
+import { LiveModulesProvider } from '@/contexts/LiveModules'
 
 /**
  * Layout for the main pages, should be authenticated
@@ -35,12 +36,14 @@ export default function MainLayout() {
     <AuthenticatedRoute>
       <div className="min-h-screen">
         <BoxProvider>
-          <ToastContainer />
-          <Navbar />
-          <div>
-            <Outlet />
-          </div>
-          <FooterNav links={links} active={active} />
+          <LiveModulesProvider>
+            <ToastContainer />
+            <Navbar />
+            <div>
+              <Outlet />
+            </div>
+            <FooterNav links={links} active={active} />
+          </LiveModulesProvider>
         </BoxProvider>
       </div>
     </AuthenticatedRoute>

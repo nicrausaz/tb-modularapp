@@ -68,6 +68,7 @@ export default abstract class Module {
    */
   public unregisterFromUpdates(callback: (render: string) => void): void {
     this.emitter.off(Module.UPDATE_STATE_KEY, callback)
+    console.log('unregister, has', this.emitter.listenerCount(Module.UPDATE_STATE_KEY), 'listeners')
   }
 
   /**
@@ -144,5 +145,7 @@ export default abstract class Module {
    * Called when a new subscriber is registered
    * This method is useful to send the current or initial state to the new subscriber
    */
-  protected abstract onNewSubscriber(): void
+  protected onNewSubscriber() {
+    console.log(this.emitter.listenerCount(Module.UPDATE_STATE_KEY))
+  }
 }

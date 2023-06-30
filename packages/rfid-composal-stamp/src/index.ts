@@ -48,6 +48,7 @@ export default class ComposalStampRFID extends Module {
   }
 
   onNewSubscriber(): void {
+    super.onNewSubscriber()
     this.notify({
       status: 'idle',
       data: null,
