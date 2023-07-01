@@ -16,11 +16,18 @@ export default function ScreenEditorCell({ slot, onDelete, readonly = false }: S
     return null
   }
 
+  const handleMouse = (enter: boolean) => {
+    if (readonly) {
+      return
+    }
+    setHover(enter)
+  }
+
   return (
     <div
       className="bg-base-300 w-full h-full relative rounded"
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
+      onMouseEnter={() => handleMouse(true)}
+      onMouseLeave={() => handleMouse(false)}
     >
       {hover && (
         <span className="absolute backdrop-blur-2xl bg-white/10 w-full py-1 px-3 italic font-bold text-neutral">

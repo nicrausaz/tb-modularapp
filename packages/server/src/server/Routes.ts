@@ -18,6 +18,7 @@ import Validator from './middlewares/ValidationMiddleware'
 import ScreenLiveUpdater from './helpers/ScreenLiveUpdater'
 import WebSocket from 'ws'
 import logger from './libs/logger'
+import EventsController from './controllers/EventsController'
 
 /**
  * Define all the routes for the application
@@ -46,6 +47,7 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
   const screensController = new ScreensController(screensService, screenUpdater)
   const boxController = new BoxController(boxService)
   const usersController = new UsersController(usersService)
+  const eventsController = new EventsController(modulesService)
 
   // Defines the routes used by the application
   app.get('/', (req: Request, res: Response) => {
@@ -475,7 +477,7 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
       const data = JSON.parse(message.toString())
 
       if (data.type === 'module') {
-        const moduleId = data.id
+        eventsController.handle(ws, data)
 
         // const render = (render: string) => {
         //   ws.send(JSON.stringify({
@@ -484,18 +486,18 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
         //   }))
         // }
 
-        if (data.action === 'subscribe') {
-          console.log('subscribe', moduleId)
-          modulesService.subscribeToModuleEvents(moduleId, (render) => {
-            ws.send(JSON.stringify({
-              id: moduleId,
-              render,
-            }))
-          })
-        } else {
-          console.log('unsubscribe', moduleId)
-          modulesService.unsubscribeFromModuleEvents(moduleId, () => {})
-        }
+        // if (data.action === 'subscribe') {
+        //   console.log('subscribe', moduleId)
+        //   modulesService.subscribeToModuleEvents(moduleId, (render) => {
+        //     ws.send(JSON.stringify({
+        //       id: moduleId,
+        //       render,
+        //     }))
+        //   })
+        // } else {
+        //   console.log('unsubscribe', moduleId)
+        //   modulesService.unsubscribeFromModuleEvents(moduleId, () => {})
+        // }
       }
     })
 

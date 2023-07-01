@@ -30,6 +30,16 @@
       "stop": "Stop",
       "edit": "Edit",
       "delete": "Delete"
+    },
+    "feedbacks": {
+      "enabled_ok": "Module enabled successfully",
+      "disabled_ok": "Module disabled successfully",
+      "deleted_ok": "Module deleted successfully",
+      "uploaded_ok": "Module uploaded successfully",
+      "saved_ok": "Module saved successfully",
+      "config_save_ok": "Module configuration saved successfully",
+      "config_reset_ok": "Module configuration reset successfully",
+      "config_reset_error": "An error occurred while reseting the module configuration"
     }
   },
   "settings": {
@@ -50,5 +60,10 @@
       "subtitle": "The page you are looking for does not exist.",
       "button": "Go home"
     }
+  },
+  "status": {
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning"
   }
 }

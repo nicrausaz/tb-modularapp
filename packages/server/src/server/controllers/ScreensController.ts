@@ -55,6 +55,7 @@ export default class ScreensController {
 
     // Unsubscribe from the screen events when the client disconnects
     req.on('close', () => {
+      console.log('Client disconnected')
       this.screenUpdater.unsubscribe(screenId, handleScreenEvent)
     })
   }

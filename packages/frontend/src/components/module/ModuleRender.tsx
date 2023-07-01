@@ -6,6 +6,7 @@ export default function ModuleRender({ id }: { id: string }) {
   const [loading, setLoading] = useState<boolean>(true)
   const [render, setRender] = useState<string>('')
   const [status, setStatus] = useState<string>('')
+  const [error, setError] = useState<string>('')
   const { source } = useLiveModules()
 
   if (!source) {
@@ -13,16 +14,25 @@ export default function ModuleRender({ id }: { id: string }) {
   }
 
   useEffect(() => {
-    const callback = (render: string) => {
+    const callback = (data: { render?: string; error?: string }) => {
       setLoading(false)
-      setStatus('active')
-      setRender(render)
+
+      if (data.error) {
+        setStatus('error')
+        setError(data.error)
+        return
+      }
+
+      if (data.render) {
+        setStatus('active')
+        setRender(data.render)
+      }
     }
 
-    source?.get(id, callback)
+    source.get(id, callback)
 
     return () => {
-      source?.release(id, callback)
+      source.release(id, callback)
     }
   }, [])
 
@@ -80,7 +90,7 @@ export default function ModuleRender({ id }: { id: string }) {
       <div className="w-full h-full bg-error">
         <div className="flex flex-col items-center justify-center h-full">
           <ErrorIcon />
-          <span>Module disabled or fatal error</span>
+          <span>{error}</span>
         </div>
       </div>
     )

@@ -1,5 +1,12 @@
-import fetcher from '@/api/fetcher'
-import { disable, enable, save } from '@/api/requests/module'
+import {
+  configuration,
+  disable,
+  enable,
+  remove,
+  resetConfiguration,
+  save,
+  saveConfiguration,
+} from '@/api/requests/module'
 import { CopyIcon, DeveloperIcon, PlayIcon, SaveIcon, StopIcon, TimeIcon, TrashIcon, VersionIcon } from '@/assets/icons'
 import IconButton from '@/components/IconButton'
 import Image from '@/components/Image'
@@ -13,12 +20,14 @@ import { useFetchAuth } from '@/hooks/useFetch'
 import { Configuration } from '@/models/Configuration'
 import type { Module } from 'models/Module'
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 
 export default function Module() {
   const { moduleId } = useParams()
   const { tSuccess, tError } = useToast()
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   const { data, error, loading } = useFetchAuth<Module>(`/api/modules/${moduleId}`)
   const [module, setModule] = useState(data)
@@ -43,7 +52,6 @@ export default function Module() {
 
   const handleChangeStatus = async (action: string) => {
     const enabled = action === 'enable'
-
     const req = enabled ? enable(module.id) : disable(module.id)
 
     req
@@ -53,61 +61,43 @@ export default function Module() {
           enabled: enabled,
         })
       })
-      .catch((err) => tError('Error', err.message))
+      .catch((err) => tError(t('status.error'), err.message))
   }
 
   const handleSaveModule = async () => {
     await save(module)
-    tSuccess('Module saved', 'The module has been saved successfully')
+    tSuccess(t('status.success'), t('module.feedbacks.saved_ok'))
   }
 
-  const saveConfiguration = async (configuration: Configuration) => {
-    fetcher(`/api/modules/${module.id}/configuration`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        fields: configuration,
-      }),
-    })
+  const saveConfig = async (configuration: Configuration) => {
+    saveConfiguration(module.id, configuration)
       .then(() => {
-        tSuccess('Configuration saved', 'The configuration has been saved successfully')
+        tSuccess(t('status.success'), t('module.feedbacks.config_saved_ok'))
       })
       .catch((err) => {
-        tError('Error', err.message)
+        tError(t('status.error'), err.message)
       })
   }
 
   const handleDelete = async () => {
     setConfirmDelete(false)
-    await fetcher(`/api/modules/${module.id}`, {
-      method: 'DELETE',
-    })
-
+    await remove(module.id)
     navigate('/modules')
   }
 
   const handleReset = async () => {
     setConfirmReset(false)
-    try {
-      await fetcher(`/api/modules/${module.id}/configuration/default`, {
-        method: 'POST',
+    resetConfiguration(module.id)
+      .then(async () => {
+        setModule({
+          ...module,
+          currentConfig: await configuration(module.id),
+        })
+        tSuccess(t('status.success'), t('module.feedbacks.config_reset_ok'))
       })
-
-      const config = await fetcher<Configuration>(`/api/modules/${module.id}/configuration`, {
-        method: 'GET',
+      .catch(() => {
+        tError(t('status.error'), t('module.feedbacks.config_reset_error'))
       })
-
-      setModule({
-        ...module,
-        currentConfig: config,
-      })
-
-      tSuccess('Configuration reset', 'The configuration has been reset successfully')
-    } catch (err) {
-      tError('Error', 'Failed to reset configuration')
-    }
   }
 
   const copyId = () => {
@@ -248,7 +238,7 @@ export default function Module() {
         <div className="bg-base-100 shadow rounded-box w-full md:w-3/4 p-4">
           <ConfigurationEditor
             configuration={module.currentConfig}
-            onSave={saveConfiguration}
+            onSave={saveConfig}
             onReset={() => setConfirmReset(true)}
           />
         </div>

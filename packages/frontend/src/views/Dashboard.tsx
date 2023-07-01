@@ -116,6 +116,7 @@ export default function Dashboard() {
     await remove(screenId)
     setScreens(screens.filter((screen) => screen.id !== screenId))
     setScreen(screens[0])
+    tSuccess('Success', 'Screen deleted')
   }
 
   return (

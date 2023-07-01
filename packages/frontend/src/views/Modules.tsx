@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import IconButton from '@/components/IconButton'
 import ModulesTable from '@/components/module/ModulesTable'
+import { disable, enable, remove, upload } from '@/api/requests/module'
 
 export default function Modules() {
   const { data, error, loading } = useFetchAuth<Module[]>('/api/modules')
@@ -21,6 +22,7 @@ export default function Modules() {
   const navigate = useNavigate()
 
   const [preferedLayout, setPreferedLayout, _] = useLocalStorage('modules-layout', 'grid')
+  const [selectedLayout, setSelectedLayout] = useState<string>(preferedLayout)
 
   const [confirmDelete, setConfirmDelete] = useState<boolean>(false)
   const [moduleToDelete, setModuleToDelete] = useState<Module | null>(null)
@@ -28,7 +30,6 @@ export default function Modules() {
 
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [searchFilter, setSearchFilter] = useState<string>('All')
-  const [selectedLayout, setSelectedLayout] = useState<string>(preferedLayout)
 
   const { t } = useTranslation()
   const { tSuccess, tError } = useToast()
@@ -45,6 +46,14 @@ export default function Modules() {
     }
   }, [searchQuery, searchFilter])
 
+  if (loading) {
+    return <LoadingTopBar />
+  }
+
+  if (error) {
+    throw error
+  }
+
   const applySearchAndFilter = (modules: Module[]) => {
     let filteredModules = modules
 
@@ -59,14 +68,6 @@ export default function Modules() {
     }
 
     setModules(filteredModules)
-  }
-
-  if (loading) {
-    return <LoadingTopBar />
-  }
-
-  if (error) {
-    throw error
   }
 
   const searchFilters = ['All', 'Enabled', 'Disabled']
@@ -105,42 +106,29 @@ export default function Modules() {
   }
 
   const handleStatusChange = async (id: string, enabled: boolean) => {
-    await fetcher(`/api/modules/${id}/status`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        enabled,
-      }),
-    })
-    changeModuleStatus(id, enabled)
+    const req = enabled ? enable(id) : disable(id)
+    req
+      .then(() => {
+        changeModuleStatus(id, enabled)
+        tSuccess(t('status.success'), enabled ? t('module.feedbacks.enabled_ok') : t('module.feedbacks.disabled_ok'))
+      })
+      .catch((err) => tError('Error', err.message))
   }
 
   const handleDelete = async (id: string) => {
     setConfirmDelete(false)
-    await fetcher(`/api/modules/${id}`, {
-      method: 'DELETE',
-    })
-
+    await remove(id)
     setModules(modules.filter((module) => module.id !== id))
+    tSuccess(t('status.success'), t('module.feedbacks.deleted_ok'))
   }
 
   const handleUpload = async (file: File) => {
-    const formData = new FormData()
-    formData.append('file', file)
-
-    fetcher<{ moduleId: string }>('/api/modules', {
-      method: 'POST',
-      body: formData,
-    })
-      .then((res) => {
-        tSuccess('Success', 'Module uploaded successfully', `/modules/${res.moduleId}`)
+    upload(file)
+      .then(({ moduleId }) => {
+        tSuccess(t('status.success'), t('module.feedbacks.uploaded_ok'), `/modules/${moduleId}`)
         fetcher<Module[]>(`/api/modules`).then((res) => setModules(res || []))
       })
-      .catch((err) => {
-        tError('Error', err.message)
-      })
+      .catch((err) => tError(t('status.error'), err.message))
       .finally(() => {
         setUploadModalOpen(false)
       })

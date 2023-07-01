@@ -2,7 +2,7 @@ import { Module } from '@/models/Module'
 import ConfirmModal from '../ConfirmModal'
 import ModuleSelectRow from './ModuleSelectRow'
 import { useFetchAuth } from '@/hooks/useFetch'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import SearchBar from '../SearchBar'
 
 type ConfirmModuleDeleteModalProps = {
@@ -17,6 +17,7 @@ export default function ChoseModulesModal({ isOpen, onClose, onConfirm }: Confir
   const [selectedModules, setSelectedModules] = useState<Module[]>([])
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [searchFilter, setSearchFilter] = useState<string>('All')
+  const selectAll = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (data) {
@@ -30,6 +31,11 @@ export default function ChoseModulesModal({ isOpen, onClose, onConfirm }: Confir
     }
   }, [searchQuery, searchFilter])
 
+  useEffect(() => {
+    if (selectAll.current) {
+      selectAll.current.indeterminate = !isAllChecked && selectedModules.length > 0
+    }
+  })
 
   if (!isOpen) {
     return null
@@ -81,6 +87,15 @@ export default function ChoseModulesModal({ isOpen, onClose, onConfirm }: Confir
     }
   }
 
+  const confirm = () => {
+    onConfirm(selectedModules)
+    setSelectedModules([])
+  }
+
+  const handleClose = () => {
+    setSelectedModules([])
+    onClose()
+  }
 
   const searchFilters = ['All', 'Enabled', 'Disabled']
 
@@ -88,8 +103,8 @@ export default function ChoseModulesModal({ isOpen, onClose, onConfirm }: Confir
     <ConfirmModal
       isOpen={isOpen}
       title="Select a module to add to the screen"
-      onConfirm={() => onConfirm(selectedModules)}
-      onCancel={onClose}
+      onConfirm={confirm}
+      onCancel={handleClose}
       confirmEnabled={selectedModules.length > 0}
     >
       <div className="modal-body">
@@ -109,7 +124,7 @@ export default function ChoseModulesModal({ isOpen, onClose, onConfirm }: Confir
               <tr>
                 <th>
                   <label>
-                    <input type="checkbox" className="checkbox" checked={isAllChecked} onChange={toggleSelectAll} />
+                    <input type="checkbox" className="checkbox" checked={isAllChecked} onChange={toggleSelectAll} ref={selectAll} />
                   </label>
                 </th>
                 <th>Name</th>
