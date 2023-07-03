@@ -45,9 +45,11 @@ export default class ScreensService {
     const screenEntity = ScreenMapper.screenUpdatetoEntity(screen)
 
     if (await this.screensRepository.exists(screen.id)) {
-      return await this.screensRepository.update(screenEntity)
+      await this.screensRepository.update(screenEntity)
+    } else {
+      await this.screensRepository.create(screenEntity)
     }
-    return await this.screensRepository.create(screenEntity)
+    this.screenUpdater.notifyChange(screen.id)
   }
 
   /**
@@ -59,6 +61,25 @@ export default class ScreensService {
     if (!(await this.screensRepository.exists(id))) {
       throw new ScreenNotFoundException(id)
     }
-    return await this.screensRepository.delete(id)
+    await this.screensRepository.delete(id)
+    this.screenUpdater.notifyChange(id)
+  }
+
+  /**
+   * Subscribe to screen updates
+   * @param screenId id of the screen to subscribe to
+   * @param callback callback to call when the screen is updated
+   */
+  subscribeToScreen(screenId: number, callback: () => void) {
+    this.screenUpdater.subscribe(screenId, callback)
+  }
+
+  /**
+   * Unsubscribe from screen updates
+   * @param screenId id of the screen to unsubscribe from
+   * @param callback callback to remove from the listeners
+   */
+  unsubscribeFromScreen(screenId: number, callback: () => void) {
+    this.screenUpdater.unsubscribe(screenId, callback)
   }
 }

@@ -1,59 +1,70 @@
+import LoadingTopBar from '@/components/LoadingTopBar'
 import ScreenEditor from '@/components/screens/ScreenEditor'
-import { useFetchAuth } from '@/hooks/useFetch'
+import { useLiveEvents } from '@/contexts/LiveEvents'
 import { Screen } from '@/models/Screen'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-// import { fullscreen, closeFullscreen } from '@/helpers'
 
+/**
+ * Screen visualization page
+ */
 export default function Visualize() {
   const { screenId } = useParams()
-  // const { data: screen, error, loading } = useFetchAuth<Screen>(`/api/screens/${screenId}`)
-  // const container = useRef<HTMLDivElement>(null)
-  // const toggler = useRef<HTMLButtonElement>(null)
-
-  // useEffect(() => {
-  //   // fullscreen()
-  //   // console.log(toggler.current)
-  //   // console.log(container.current)
-  //   // if (toggler.current) {
-  //   //   console.log('clicking')
-  //   //   toggler.current.click()
-  //   // }
-
-  //   // return () => closeFullscreen()
-  // }, [])
-
   const [screen, setScreen] = useState<Screen>()
+  const [loading, setLoading] = useState<boolean>(true)
+  const [error, setError] = useState<string>('')
+  const { source } = useLiveEvents()
 
   useEffect(() => {
-    const source = new EventSource(`/api/screens/${screenId}/events`)
-
-    source.onmessage = (e) => {
-      setScreen(JSON.parse(e.data))
+    if (!source || !screenId) {
+      return
     }
 
-    source.onopen = () => {
-      // setLoading(false)
-      // setStatus('active')
+    const clear = () => {
+      source.releaseScreen(parseInt(screenId), callback)
+    }
+    window.addEventListener('beforeunload', clear)
+
+    const callback = (data: { data: Screen; error: string; id: string }) => {
+      setError('')
+      setLoading(false)
+
+      if (data.error) {
+        setError(data.error)
+        return
+      }
+      setScreen(data.data)
     }
 
-    source.onerror = () => {
-      // TODO
-      // setLoading(false)
-      // setStatus('error')
-    }
+    source.getScreen(parseInt(screenId), callback)
 
     return () => {
-      console.log('close on client')
-      source.close()
+      source.releaseScreen(parseInt(screenId), callback)
+      window.removeEventListener('beforeunload', clear)
     }
-  }, [screenId])
+  }, [screenId, source])
+
+  if (loading) {
+    <LoadingTopBar />
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center w-screen h-screen bg-gradient-to-r from-primary to-accent">
+        <div className="px-40 py-20 bg-white rounded-md shadow-xl">
+          <div className="flex flex-col items-center">
+            <h6 className="mb-2 text-2xl font-bold text-center text-neutral md:text-3xl">
+              <span className="text-error">{error}</span>
+            </h6>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   if (!screen) {
     return null
   }
-  // {/* <button hidden={false} onClick={() => fullscreen()} ref={toggler}></button> */}
-  // ref={container}
 
   return (
     <div className="h-screen w-screen">

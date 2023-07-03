@@ -68,7 +68,6 @@ export default abstract class Module {
    */
   public unregisterFromUpdates(callback: (render: string) => void): void {
     this.emitter.off(Module.UPDATE_STATE_KEY, callback)
-    console.log('unregister, has', this.emitter.listenerCount(Module.UPDATE_STATE_KEY), 'listeners')
   }
 
   /**

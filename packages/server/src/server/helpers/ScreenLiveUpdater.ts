@@ -1,44 +1,39 @@
 import EventEmitter from 'events'
+import logger from '../libs/logger'
 
 /**
  * Allows to handle live updates for screens visualizations
  */
 export default class ScreenLiveUpdater {
   private emitter = new EventEmitter()
-  private static readonly UPDATE_STATE_KEY = 'update'
-  // private registeredScreens: Map<number, number> = new Map()
 
+  /**
+   * Notify a screen update
+   * @param screenId the screen id to notify
+   */
   public notifyChange(screenId: number) {
-    // if (!this.registeredScreens.has(screenId)) {
-    //   return
-    // }
-    // Notifiy a change to all subscribers
-    console.log('notifyChange', screenId)
     this.emitter.emit(screenId.toString())
   }
 
   /**
-   *
-   * @param screenId
-   * @param callback
+   * Subscribe to screen updates
+   * @param screenId the screen id
+   * @param callback the callback to call when the screen is updated
    */
   public subscribe(screenId: number, callback: () => void) {
-    // const count = this.registeredScreens.get(screenId)
-    // if (!count) {
-    //   this.registeredScreens.set(screenId, 1)
-    // } else {
-    //   this.registeredScreens.set(screenId, count + 1)
-    // }
-
-    console.log('subscribe', screenId)
     this.emitter.on(screenId.toString(), callback)
+    logger.info(`Subscribed to screen ${screenId}, ${this.emitter.listenerCount(screenId.toString())} listeners`)
   }
 
+  /**
+   * Unsubscribe from screen updates
+   * @param screenId the screen id
+   * @param callback the callback to remove from the listeners
+   */
   public unsubscribe(screenId: number, callback: () => void) {
-    // if (!this.registeredScreens.has(screenId)) {
-    //   return
-    // }
-    console.log('unsubscribe', screenId)
     this.emitter.off(screenId.toString(), callback)
+    logger.info(
+      `Unsubscribed from screen ${screenId}, ${this.emitter.listenerCount(screenId.toString())} listeners left`,
+    )
   }
 }

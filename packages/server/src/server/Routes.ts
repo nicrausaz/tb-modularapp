@@ -44,10 +44,10 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
   // Create the controllers
   const authController = new AuthController(usersService)
   const modulesController = new ModulesController(modulesService)
-  const screensController = new ScreensController(screensService, screenUpdater)
+  const screensController = new ScreensController(screensService)
   const boxController = new BoxController(boxService)
   const usersController = new UsersController(usersService)
-  const eventsController = new EventsController(modulesService)
+  const eventsController = new EventsController(modulesService, screensService)
 
   // Defines the routes used by the application
   app.get('/', (req: Request, res: Response) => {
@@ -317,7 +317,7 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
 
   app.patch('/api/modules/:id', Validator(moduleUpdateRules), JwtAuthMiddleware, modulesController.update)
 
-  app.get('/api/modules/:id/events', modulesController.moduleEvents)
+  // app.get('/api/modules/:id/events', modulesController.moduleEvents)
 
   app.post('/api/modules/:id/events', JwtAuthMiddleware, modulesController.sendEvent)
 
@@ -429,7 +429,7 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
 
   app.get('/api/screens/:id', screensController.screen)
 
-  app.get('/api/screens/:id/events', screensController.screenEvents)
+  // app.get('/api/screens/:id/events', screensController.screenEvents)
 
   app.put('/api/screens/:id', Validator(screenUpdateRules), JwtAuthMiddleware, screensController.createOrUpdate)
 
@@ -464,47 +464,21 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
   app.delete('/api/users/:id', JwtAuthMiddleware, usersController.delete)
 
   // Bind the WebSocket handler (act as a router)
-  // TODO: move this in routes
   wss.on('connection', (ws) => {
-    logger.info('Client connected')
-
-    // Ensure the callback is defined for the connection
-    // const render = (render: string) => {
-    //   ws.send(render)
-    // }
+    logger.info('[WS] Client connected')
 
     ws.on('message', (message) => {
       const data = JSON.parse(message.toString())
 
       if (data.type === 'module') {
-        eventsController.handle(ws, data)
-
-        // const render = (render: string) => {
-        //   ws.send(JSON.stringify({
-        //     id: moduleId,
-        //     render,
-        //   }))
-        // }
-
-        // if (data.action === 'subscribe') {
-        //   console.log('subscribe', moduleId)
-        //   modulesService.subscribeToModuleEvents(moduleId, (render) => {
-        //     ws.send(JSON.stringify({
-        //       id: moduleId,
-        //       render,
-        //     }))
-        //   })
-        // } else {
-        //   console.log('unsubscribe', moduleId)
-        //   modulesService.unsubscribeFromModuleEvents(moduleId, () => {})
-        // }
+        eventsController.handleModule(ws, data)
+      } else if (data.type === 'screen') {
+        eventsController.handleScreen(ws, data)
       }
     })
 
     ws.on('close', () => {
-      logger.info('Client disconnected')
-      // TODO: Clean up the subscriptions
-      // modulesService.unsubscribeFromAllModulesEvents(render)
+      logger.info('[WS] Client disconnected')
     })
   })
 }

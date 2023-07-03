@@ -1,5 +1,5 @@
 import { BoxProvider } from '@/contexts/BoxContext'
-import { LiveModulesProvider } from '@/contexts/LiveModules'
+import { LiveEventsProvider } from '@/contexts/LiveEvents'
 import { PropsWithChildren } from 'react'
 
 /**
@@ -8,7 +8,7 @@ import { PropsWithChildren } from 'react'
 export default function UnrestrictedLayout({ children }: PropsWithChildren) {
   return (
     <BoxProvider>
-      <LiveModulesProvider>{children}</LiveModulesProvider>
+      <LiveEventsProvider>{children}</LiveEventsProvider>
     </BoxProvider>
   )
 }

@@ -1,5 +1,5 @@
 import { ErrorIcon } from '@/assets/icons'
-import { useLiveModules } from '@/contexts/LiveModules'
+import { useLiveEvents } from '@/contexts/LiveEvents'
 import { useEffect, useState } from 'react'
 
 export default function ModuleRender({ id }: { id: string }) {
@@ -7,13 +7,18 @@ export default function ModuleRender({ id }: { id: string }) {
   const [render, setRender] = useState<string>('')
   const [status, setStatus] = useState<string>('')
   const [error, setError] = useState<string>('')
-  const { source } = useLiveModules()
+  const { source } = useLiveEvents()
 
   if (!source) {
     return null
   }
 
   useEffect(() => {
+    const clear = () => {
+      source.releaseModule(id, callback)
+    }
+    window.addEventListener('beforeunload', clear)
+
     const callback = (data: { render?: string; error?: string }) => {
       setLoading(false)
 
@@ -29,13 +34,13 @@ export default function ModuleRender({ id }: { id: string }) {
       }
     }
 
-    source.get(id, callback)
+    source.getModule(id, callback)
 
     return () => {
-      source.release(id, callback)
+      source.releaseModule(id, callback)
+      window.removeEventListener('beforeunload', clear)
     }
   }, [])
-
   //
 
   // useEffect(() => {

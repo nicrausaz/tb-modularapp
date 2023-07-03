@@ -12,7 +12,7 @@ export default function ErrorPage() {
   // TODO: match on types of errors to display different messages
 
   return (
-    <div className="flex items-center justify-center w-screen h-screen  bg-gradient-to-r from-primary to-accent">
+    <div className="flex items-center justify-center w-screen h-screen bg-gradient-to-r from-primary to-accent">
       <div className="px-40 py-20 bg-white rounded-md shadow-xl">
         <div className="flex flex-col items-center">
           <h1 className="font-bold text-primary text-9xl">{error ? 403 : 404}</h1>
