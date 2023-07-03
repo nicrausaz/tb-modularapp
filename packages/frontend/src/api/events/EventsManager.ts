@@ -89,10 +89,7 @@ export default class EventsManager {
       const observerCallbacks = this.modulesObservers.get(rec.id)
       if (observerCallbacks) {
         observerCallbacks.forEach((callback) => {
-          callback({
-            render: rec.render,
-            error: rec.error,
-          })
+          callback(rec)
         })
       }
     } else if (rec.type === 'screen') {

@@ -26,7 +26,6 @@ export default class EventsController {
     if (data.action === 'subscribe') {
       this.subscribeToModule(conn, moduleId)
     } else if (data.action === 'unsubscribe') {
-      console.log('Unsubscribe from module', moduleId)
       this.unsubscribeFromModule(conn, moduleId)
     }
   }
@@ -42,7 +41,7 @@ export default class EventsController {
   }
 
   private subscribeToModule(conn: WebSocket, moduleId: string) {
-    const callback = (render: string) => {
+    const renderCallback = (render: string) => {
       conn.send(
         JSON.stringify({
           type: 'module',
@@ -63,21 +62,45 @@ export default class EventsController {
       clientCallbacks = new Set()
       moduleSubscribers.set(conn, clientCallbacks)
     }
-    clientCallbacks.add(callback)
+    clientCallbacks.add(renderCallback)
 
-    this.modulesService.subscribeToModuleEvents(moduleId, callback).catch(() => {
+    this.modulesService.moduleUpdater.subscribe(moduleId, () => {
+      console.log('received info that module has been updated')
+
+      this.modulesService
+        .getModule(moduleId)
+        .then((module) => {
+          conn.send(
+            JSON.stringify({
+              type: 'module',
+              subtype: 'status',
+              id: moduleId,
+              enabled: module.enabled,
+            }),
+          )
+        })
+        .catch((err) => {
+          console.log('error is: ', err, 'disabled ?')
+        })
+    })
+
+    this.modulesService.subscribeToModuleEvents(moduleId, renderCallback).catch(() => {
       conn.send(
         JSON.stringify({
           type: 'module',
+          subtype: 'render',
           id: moduleId,
           error: 'Module is disabled',
         }),
       )
-      clientCallbacks?.delete(callback)
+      clientCallbacks?.delete(renderCallback)
     })
+
+    // this.modulesService.moduleUpdater.subscribe(moduleId, callback)
   }
 
   private unsubscribeFromModule(conn: WebSocket, moduleId: string) {
+    console.log('unsubscribeFromModule', moduleId)
     const moduleSubscribers = this.modulesSubscribers.get(moduleId)
     if (!moduleSubscribers) {
       return
@@ -89,6 +112,7 @@ export default class EventsController {
     }
 
     clientCallbacks.forEach((callback) => {
+      // this.modulesService.moduleUpdater.unsubscribe(moduleId, callback)
       this.modulesService.unsubscribeFromModuleEvents(moduleId, callback)
     })
     clientCallbacks.clear()

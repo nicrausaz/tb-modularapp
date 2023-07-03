@@ -1,11 +1,11 @@
 import { AddUserIcon, SettingsIcon, TrashIcon } from '@/assets/icons'
-import { User, UserCreate } from '@/models/User'
+import { User } from '@/models/User'
 import { useState } from 'react'
-import fetcher from '@/api/fetcher'
 import { useToast } from '@/contexts/ToastContext'
 import ConfirmUserDeleteModal from '@/components/users/ConfirmUserDeleteModal'
 import UserEditionModal from '@/components/users/UserEditionModal'
 import Image from '@/components/Image'
+import { remove } from '@/api/requests/users'
 
 type UserRowProps = {
   user: User
@@ -80,9 +80,7 @@ export default function UsersList({ users, onUpdated }: UsersListProps) {
 
   const handleDelete = async (userId: number) => {
     setUserDeletionModalOpen(false)
-    await fetcher(`/api/users/${userId}`, {
-      method: 'DELETE',
-    })
+    await remove(userId)
     tSuccess('Success', 'User deleted')
     onUpdated()
   }

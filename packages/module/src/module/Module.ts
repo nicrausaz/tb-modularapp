@@ -18,12 +18,14 @@ export default abstract class Module {
   /**
    * Initialize the module
    */
-  public abstract init(): void
+  public init(): void {}
 
   /**
    * Clear the module
    */
-  public abstract destroy(): void
+  public destroy(): void {
+    this.emitter.removeAllListeners()
+  }
 
   /**
    * Start the module
@@ -33,9 +35,7 @@ export default abstract class Module {
   /**
    * Stop the module
    */
-  public stop(): void {
-    this.emitter.removeAllListeners()
-  }
+  public stop(): void {}
 
   /**
    * Apply configuration changes to the module, only existing fiels will be updated, others will be ignored
@@ -144,7 +144,5 @@ export default abstract class Module {
    * Called when a new subscriber is registered
    * This method is useful to send the current or initial state to the new subscriber
    */
-  protected onNewSubscriber() {
-    console.log(this.emitter.listenerCount(Module.UPDATE_STATE_KEY))
-  }
+  protected abstract onNewSubscriber(): void
 }

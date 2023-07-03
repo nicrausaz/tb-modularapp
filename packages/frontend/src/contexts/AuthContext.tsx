@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from 'react'
 import { useLocalStorage } from '@/hooks/useLocalStorage'
 import { User } from '@/models/User'
-import * as Api from '@/api/requests/api'
+import { authenticate } from '@/api/requests/auth'
 
 type AuthContextType = {
   token: string
@@ -19,7 +19,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = async (username: string, password: string) => {
     return new Promise<void>((resolve, reject) => {
-      Api.authenticate(username, password)
+      authenticate(username, password)
         .then((t) => {
           setToken(t)
           resolve()

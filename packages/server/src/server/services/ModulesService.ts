@@ -4,6 +4,7 @@ import {
   ModuleNotFoundException,
   ModuleRedundantStatusException,
 } from '../exceptions/Modules'
+import ModuleLiveUpdater from '../helpers/ModuleLiveUpdater'
 import { ModuleConfigurationUpdateDTO, ModuleDTO, ModuleDTOWithConfig, UpdateModuleDTO } from '../models/DTO/ModuleDTO'
 import { ModulesRepository, ScreensRepository } from '../repositories'
 import type { UploadedFile } from 'express-fileupload'
@@ -12,7 +13,11 @@ import type { UploadedFile } from 'express-fileupload'
  * The module service implements the business logic for the modules
  */
 export default class ModulesService {
-  constructor(private modulesRepository: ModulesRepository, private screensRepository: ScreensRepository) {}
+  constructor(
+    private modulesRepository: ModulesRepository,
+    private screensRepository: ScreensRepository,
+    public moduleUpdater: ModuleLiveUpdater, // todo: change this to private
+  ) {}
 
   /**
    * Get all modules
@@ -95,6 +100,8 @@ export default class ModulesService {
     if (!this.modulesRepository.updateModuleEnabled(id, enabled)) {
       throw new ModuleActionException(id, enabled ? 'enable' : 'disable')
     }
+
+    this.moduleUpdater.notifyChange(id)
   }
 
   /**
@@ -105,13 +112,17 @@ export default class ModulesService {
    * @throws ModuleDisabledException if the module is disabled
    */
   subscribeToModuleEvents = async (id: string, handler: (render: string) => void) => {
+    // todo: move in live updater
     const entry = await this.getModuleEntry(id)
 
+    
     if (!entry.enabled) {
       throw new ModuleDisabledException(id)
     }
+    // this.moduleUpdater.subscribe(id, handler)
 
-    return this.modulesRepository.subscribeToModuleEvents(id, handler)
+    console.log('subscribeToModuleEvents bind')
+    this.modulesRepository.subscribeToModuleEvents(id, handler)
   }
 
   /**
@@ -122,13 +133,17 @@ export default class ModulesService {
    * @throws ModuleDisabledException if the module is disabled
    */
   unsubscribeFromModuleEvents = async (id: string, handler: (render: string) => void) => {
+    // todo: move in live updater
     const entry = await this.getModuleEntry(id)
+
+    
 
     // if (!entry.enabled) {
     //   throw new ModuleDisabledException(id)
     // }
 
-    return this.modulesRepository.unsubscribeFromModuleEvents(id, handler)
+    // this.moduleUpdater.unsubscribe(id, handler)
+    // this.modulesRepository.unsubscribeFromModuleEvents(id, handler)
   }
 
   /**

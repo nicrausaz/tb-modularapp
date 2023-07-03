@@ -53,4 +53,8 @@ export const updateAvatar = async (userId: number, avatar: File) => {
  * Delete a user
  * @param userId The id of the user
  */
-export const remove = async (userId: number) => {}
+export const remove = async (userId: number) => {
+  return await fetcher(`/api/users/${userId}`, {
+    method: 'DELETE',
+  })
+}

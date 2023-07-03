@@ -24,8 +24,6 @@ export default class HourModule extends Module {
   }
 
   stop(): void {
-    super.stop()
-    console.log('Stop from the HelloModule!')
     clearInterval(this.interval)
   }
 

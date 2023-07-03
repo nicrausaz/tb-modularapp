@@ -19,8 +19,16 @@ export default function ModuleRender({ id }: { id: string }) {
     }
     window.addEventListener('beforeunload', clear)
 
-    const callback = (data: { render?: string; error?: string }) => {
+    const callback = (data: { render?: string; error?: string; subtype?: string; enabled?: boolean }) => {
+      if (data.subtype === 'status') {
+        setStatus(data.enabled ? 'active' : 'error')
+        setError(data.enabled ? '' : 'Module disabled')
+        setLoading(data.enabled ?? false)
+        return
+      }
+
       setLoading(false)
+      setError('')
 
       if (data.error) {
         setStatus('error')
@@ -40,47 +48,7 @@ export default function ModuleRender({ id }: { id: string }) {
       source.releaseModule(id, callback)
       window.removeEventListener('beforeunload', clear)
     }
-  }, [])
-  //
-
-  // useEffect(() => {
-  //   // TODO: create a custom hook for this (context) ?
-  //   // const source = new ModulesEventManager('ws://localhost:3000/events', 'modules')
-  //   const source = new ModulesEventManager()
-  //     .acquire()
-  //     .then((s) => s)
-  //     .catch(() => null)
-
-  //   if (source === null) {
-  //     // toast error
-  //     return
-  //   }
-
-  //   // const source = new EventSource(`/api/modules/${id}/events`)
-
-  //   // source.onmessage = (e) => {
-  //   //   setRender(e.data)
-  //   // }
-
-  //   // source.onopen = () => {
-  //   //   setLoading(false)
-  //   //   setStatus('active')
-  //   // }
-
-  //   // source.onerror = () => {
-  //   //   setLoading(false)
-  //   //   setStatus('error')
-  //   // }
-
-  //   // return () => {
-  //   //   console.log('close on client')
-  //   //   source.close()
-  //   // }
-  //   return () => {
-  //     console.log('close on client')
-  //     source.then((s) => s?.release(id))
-  //   }
-  // }, [id])
+  }, [id])
 
   if (loading) {
     return (

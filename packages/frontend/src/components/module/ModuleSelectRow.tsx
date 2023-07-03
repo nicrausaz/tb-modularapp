@@ -29,7 +29,7 @@ export default function ModuleSelectRow({ module, selected = false, onSelect }: 
             </div>
           </div>
           <div>
-            <div className="font-bold">{module.name}</div>
+            <div className="font-bold">{module.nickname ? `${module.nickname} (${module.name})` : module.name}</div>
             <div className="text-sm opacity-50">{module.author}</div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import fetcher from '@/api/fetcher'
+import { iconUpdate } from '@/api/requests/box'
 import LoadingTopBar from '@/components/LoadingTopBar'
 import { useFetch } from '@/hooks/useFetch'
 import { Box } from '@/models/Box'
@@ -40,17 +40,8 @@ const BoxProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   const updateIcon = async (file: File) => {
-    const formData = new FormData()
-    formData.append('file', file)
-
-    const data = await fetcher<{ filename: string }>('/api/box/icon', {
-      method: 'PUT',
-      body: formData,
-    })
-
-    console.log(data)
-
-    setBox({ ...box, icon: data.filename })
+    const filename = await iconUpdate(file)
+    setBox({ ...box, icon: filename })
   }
 
   return <BoxContext.Provider value={{ box, updateIcon }}>{children}</BoxContext.Provider>

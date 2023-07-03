@@ -19,6 +19,7 @@ import ScreenLiveUpdater from './helpers/ScreenLiveUpdater'
 import WebSocket from 'ws'
 import logger from './libs/logger'
 import EventsController from './controllers/EventsController'
+import ModuleLiveUpdater from './helpers/ModuleLiveUpdater'
 
 /**
  * Define all the routes for the application
@@ -27,6 +28,7 @@ import EventsController from './controllers/EventsController'
  */
 const configureRoutes = (app: express.Application, manager: ModuleDatabaseManager, wss: WebSocket.Server) => {
   // Intialize specific dependencies
+  const moduleUpdater = new ModuleLiveUpdater()
   const screenUpdater = new ScreenLiveUpdater()
 
   // Create the repositories
@@ -37,7 +39,7 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
 
   // Create the services
   const usersService = new UsersService(userRepository)
-  const modulesService = new ModulesService(modulesRepository, screensRepository)
+  const modulesService = new ModulesService(modulesRepository, screensRepository, moduleUpdater)
   const screensService = new ScreensService(screensRepository, screenUpdater)
   const boxService = new BoxService(boxRepository)
 
