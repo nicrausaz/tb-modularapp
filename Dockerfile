@@ -7,7 +7,7 @@ COPY --chown=node:node ./packages/server/.env.production /app/packages/server/.e
 
 RUN npm install
 # ENV NODE_ENV=production
-RUN npm run build
+RUN npm run build --workspaces
 
 VOLUME /var/modapp/database
 VOLUME /var/modapp/modules
@@ -18,8 +18,6 @@ COPY --chown=node:node ./packages/frontend/dist /app/packages/server/build/publi
 COPY --chown=node:node ./packages/server/src/database/model.sql /var/modapp/database/model.sql
 COPY --chown=node:node ./packages/server/src/database/seed.sql /var/modapp/database/seed.sql
 
-
-EXPOSE 3000
 
 USER node
 
