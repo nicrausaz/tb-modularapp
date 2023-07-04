@@ -26,4 +26,4 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/tb-modular-app:latest
-          platforms: linux/amd64,linux/arm/v8
+          platforms: linux/amd64,linux/arm64
