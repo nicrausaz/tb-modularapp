@@ -1,13 +1,11 @@
 FROM node:18-alpine
 
-WORKDIR /app
-
 COPY --chown=node:node . /app
 
+WORKDIR /app
 RUN npm ci
 RUN npm run build --workspaces
 
-ENV NODE_ENV=production
 
 RUN rm -rf node_modules
 RUN npm install --omit=dev

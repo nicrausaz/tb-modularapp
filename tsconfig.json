@@ -15,13 +15,13 @@
   "files": [],
   "references": [
     {
+      "path": "./packages/module"
+    },
+    {
       "path": "./packages/module-manager"
     },
     {
       "path": "./packages/server"
-    },
-    {
-      "path": "./packages/module"
     },
     {
       "path": "./packages/debug-module"
