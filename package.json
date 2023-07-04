@@ -11,13 +11,7 @@
   "author": "nicrausaz",
   "license": "MIT",
   "workspaces": [
-    "packages/module",
-    "packages/module-manager",
-    "packages/debug-module",
-    "packages/hour-module",
-    "packages/rfid-composal-stamp",
-    "packages/server",
-    "packages/frontend"
+    "packages/*"
   ],
   "devDependencies": {
     "@jest/globals": "^29.5.0",
