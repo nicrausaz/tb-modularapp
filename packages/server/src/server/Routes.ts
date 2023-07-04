@@ -22,6 +22,8 @@ import logger from './libs/logger'
 import EventsController from './controllers/EventsController'
 import ModuleLiveUpdater from './helpers/ModuleLiveUpdater'
 
+// TODO: Add validation errors to the swagger documentation
+
 /**
  * Define all the routes for the application
  *
@@ -318,10 +320,86 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    */
   app.delete('/api/modules/:id', JwtAuthMiddleware, modulesController.delete)
 
+  /**
+   * @swagger
+   * /api/modules/{id}:
+   *   patch:
+   *     summary: Update a module
+   *     description: Update a module information
+   *     tags: [Modules]
+   *     security:
+   *       - bearer: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: The module id
+   *     requestBody:
+   *        required: true
+   *        content:
+   *          application/json:
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  nickname:
+   *                    type: string
+   *     responses:
+   *       204:
+   *         description: Module updated
+   *       404:
+   *         description: The module does not exist
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *             example: {
+   *                          "message": "Module not found",
+   *                       }
+   */
   app.patch('/api/modules/:id', Validator(moduleUpdateRules), JwtAuthMiddleware, modulesController.update)
 
-  // app.get('/api/modules/:id/events', modulesController.moduleEvents)
-
+  // TODO: add security (API key)
+  /**
+   * @swagger
+   * /api/modules/{id}/events:
+   *   post:
+   *     summary: Send an event to a module
+   *     description: Send an event to a module
+   *     tags: [Modules]
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: The module id
+   *     requestBody:
+   *        required: true
+   *        content:
+   *          application/json:
+   *              schema:
+   *                type: object
+   *     responses:
+   *       204:
+   *         description: Event sent
+   *       404:
+   *         description: The module does not exist
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *             example: {
+   *                          "message": "Module not found",
+   *                       }
+   */
   app.post('/api/modules/:id/events', JwtAuthMiddleware, modulesController.sendEvent)
 
   /**
@@ -370,6 +448,54 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    */
   app.get('/api/modules/:id/configuration', JwtAuthMiddleware, modulesController.moduleConfiguration)
 
+  /**
+   * @swagger
+   * /api/modules/{id}/configuration:
+   *   put:
+   *     summary: Update the configuration of a module
+   *     description: Update the configuration of a module
+   *     tags: [Modules]
+   *     security:
+   *     - bearer: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: The module id
+   *     requestBody:
+   *        required: true
+   *        content:
+   *          application/json:
+   *             schema:
+   *               type: array
+   *             example:
+   *                 [
+   *                   {
+   *                     'name': 'refreshRate',
+   *                     'type': 'number',
+   *                     'label': 'Refresh rate',
+   *                     'description': 'The refresh rate in ms',
+   *                     'value': 1000,
+   *                   },
+   *                 ]
+   *     responses:
+   *       204:
+   *         description: Module configuration updated
+   *       404:
+   *         description: The module does not exist
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *             example: {
+   *                          "message": "Module not found",
+   *                       }
+   */
   app.put(
     '/api/modules/:id/configuration',
     Validator(moduleConfigurationUpdateRules),
@@ -377,6 +503,38 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
     modulesController.moduleConfigurationUpdate,
   )
 
+  /**
+   * @swagger
+   * /api/modules/{id}/configuration/default:
+   *   post:
+   *     summary: Reset the configuration of a module to default
+   *     description: Reset the configuration of a module to default
+   *     tags: [Modules]
+   *     security:
+   *     - bearer: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: The module id
+   *     responses:
+   *       204:
+   *         description: Module configuration updated
+   *       404:
+   *         description: The module does not exist
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *             example: {
+   *                          "message": "Module not found",
+   *                       }
+   */
   app.post(
     '/api/modules/:id/configuration/default',
     JwtAuthMiddleware,
@@ -399,22 +557,21 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *           type: string
    *         required: true
    *         description: The module id
-   *     responses:
-   *       200:
-   *         description: Module enabled or disabled
-   *         content:
-   *           application/json:
+   *     requestBody:
+   *        required: true
+   *        content:
+   *          application/json:
    *             schema:
    *               type: object
    *               properties:
-   *                 message:
-   *                   type: string
-   *                 moduleId:
-   *                   type: string
+   *                 enabled:
+   *                   type: boolean
    *             example: {
-   *                          "message": "Module enabled successfully",
-   *                          "moduleId": "1344ca73-5bd2-472e-a75d-45d2c6c5f7a0"
-   *                       }
+   *                     'enabled': true,
+   *                   }
+   *     responses:
+   *       204:
+   *         description: Module status updated
    *       400:
    *         description: Invalid status value. The status must be a boolean
    */
@@ -428,14 +585,161 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
   /**
    * Screens routes
    */
+
+  /**
+   * @swagger
+   * /api/screens:
+   *   get:
+   *     summary: Get all screens
+   *     description: Get all screens
+   *     tags: [Screens]
+   *     security:
+   *       - bearer: []
+   *     responses:
+   *       200:
+   *         description: Return all screens
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: array
+   *             example:
+   *                   [
+   *                     {
+   *                       'id': 1,
+   *                       'name': 'screen 1',
+   *                       'enabled': true,
+   *                       'slots': []
+   *                     },
+   *                   ]
+   */
   app.get('/api/screens', JwtAuthMiddleware, screensController.index)
 
+  /**
+   * @swagger
+   * /api/screens/{id}:
+   *   get:
+   *     summary: Get a screen
+   *     description: Get a screen
+   *     tags: [Screens]
+   *     security:
+   *       - bearer: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: The screen id
+   *     responses:
+   *       200:
+   *         description: Screen exists
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *             example:
+   *                     {
+   *                       'id': 1,
+   *                       'name': 'screen 1',
+   *                       'enabled': true,
+   *                       'slots': []
+   *                     }
+   *       404:
+   *         description: The screen does not exist
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *             example: {
+   *                          "message": "Screen not found",
+   *                       }
+   */
   app.get('/api/screens/:id', screensController.screen)
 
-  // app.get('/api/screens/:id/events', screensController.screenEvents)
-
+  /**
+   * @swagger
+   * /api/screens:
+   *   put:
+   *     summary: Create or update a screen
+   *     description: Create or update a screen
+   *     tags: [Screens]
+   *     security:
+   *       - bearer: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: The screen id
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               id:
+   *                 type: integer
+   *               name:
+   *                 type: string
+   *               enabled:
+   *                 type: boolean
+   *               slots:
+   *                 type: array
+   *     responses:
+   *       204:
+   *         description: Screen updated
+   *       404:
+   *         description: The screen does not exist
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *             example: {
+   *                          "message": "Screen not found",
+   *                       }
+   */
   app.put('/api/screens/:id', Validator(screenUpdateRules), JwtAuthMiddleware, screensController.createOrUpdate)
 
+  /**
+   * @swagger
+   * /api/screens/{id}:
+   *   delete:
+   *     summary: Delete a screen
+   *     description: Delete a screen
+   *     tags: [Screens]
+   *     security:
+   *       - bearer: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: The screen id 
+   *     responses:
+   *       204:
+   *         description: Screen deleted
+   *       404:
+   *         description: The screen does not exist
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *             example: {
+   *                          "message": "Screen not found",
+   *                       }
+   */
   app.delete('/api/screens/:id', JwtAuthMiddleware, screensController.delete)
 
   /**

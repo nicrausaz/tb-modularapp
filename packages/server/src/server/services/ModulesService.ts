@@ -112,16 +112,13 @@ export default class ModulesService {
    * @throws ModuleDisabledException if the module is disabled
    */
   subscribeToModuleEvents = async (id: string, handler: (render: string) => void) => {
-    // todo: move in live updater
     const entry = await this.getModuleEntry(id)
 
-    
     if (!entry.enabled) {
       throw new ModuleDisabledException(id)
     }
     // this.moduleUpdater.subscribe(id, handler)
 
-    console.log('subscribeToModuleEvents bind')
     this.modulesRepository.subscribeToModuleEvents(id, handler)
   }
 
@@ -135,8 +132,6 @@ export default class ModulesService {
   unsubscribeFromModuleEvents = async (id: string, handler: (render: string) => void) => {
     // todo: move in live updater
     const entry = await this.getModuleEntry(id)
-
-    
 
     // if (!entry.enabled) {
     //   throw new ModuleDisabledException(id)

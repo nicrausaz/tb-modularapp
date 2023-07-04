@@ -66,7 +66,7 @@ export default function Settings() {
   return (
     <div className="flex flex-col w-full items-center pb-20">
       <div className="hero bg-gradient-to-r from-primary to-accent p-10 ">
-        <div className="hero-content flex-col lg:flex-row justify-between backdrop-blur-xl bg-white/30 shadow-xl rounded-xl">
+        <div className="hero-content flex-col lg:flex-row justify-between backdrop-blur-xl bg-white/30 shadow-xl rounded-xl min-w-full lg:min-w-fit">
           <Image
             src={`/api/box/static/${box.icon}`}
             alt="Box icon"
