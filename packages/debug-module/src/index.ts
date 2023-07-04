@@ -33,7 +33,6 @@ export default class HelloModule extends Module {
 
   stop(): void {
     console.log('Debug module stopped')
-    this.removeAllListeners()
   }
 
   onReceive(data: HelloModuleReceiveProps): void {
