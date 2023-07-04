@@ -2,6 +2,7 @@ import { ScreenSlot } from '@/models/Screen'
 import ModuleRender from '../module/ModuleRender'
 import { CrossIcon } from '@/assets/icons'
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 
 type ScreenEditorCellProps = {
   slot: ScreenSlot
@@ -30,9 +31,13 @@ export default function ScreenEditorCell({ slot, onDelete, readonly = false }: S
       onMouseLeave={() => handleMouse(false)}
     >
       {hover && (
-        <span className="absolute backdrop-blur-2xl bg-white/10 w-full py-1 px-3 italic font-bold text-neutral">
+        <Link
+          className="absolute backdrop-blur-2xl bg-white/10 w-full py-1 px-3 italic font-bold text-neutral underline"
+          to={`/modules/${slot.module.id}`}
+          target="_blank"
+        >
           {slot.module.nickname ? `${slot.module.nickname} (${slot.module.name})` : slot.module.name}
-        </span>
+        </Link>
       )}
       <ModuleRender id={slot.module.id} />
 

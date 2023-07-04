@@ -6,6 +6,7 @@ import Input from '@/components/Input'
 import { useToast } from '@/contexts/ToastContext'
 import { create, update, updateAvatar } from '@/api/requests/users'
 import { ValidationError } from '@/api/requests/errors'
+import { useTranslation } from 'react-i18next'
 
 type UserEditionModalProps = {
   isOpen: boolean
@@ -15,12 +16,14 @@ type UserEditionModalProps = {
 }
 
 export default function UserEditionModal({ isOpen, user, onClose, onConfirm }: UserEditionModalProps) {
+  const { t } = useTranslation()
+
   if (!isOpen) {
     return null
   }
 
   const mode = user ? 'update' : 'create'
-  const title = user ? 'Edit user' : 'Create user'
+  const title = user ? t('users.edit') : t('users.create')
 
   const [form, setForm] = useState<{ username: string; password: string; avatar: File | null }>({
     username: user?.username ?? '',

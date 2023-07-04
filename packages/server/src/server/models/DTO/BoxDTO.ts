@@ -3,3 +3,7 @@ export type BoxDTO = {
   readonly version: string
   readonly icon?: string
 }
+
+export type UpdateBoxDTO = {
+  readonly name: string
+}

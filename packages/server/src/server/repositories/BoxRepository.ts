@@ -2,6 +2,7 @@ import { UploadedFile } from 'express-fileupload'
 import { getDB } from '../../database/database'
 import { Box } from '../models/entities/Box'
 import { unlinkSync } from 'fs'
+import { UpdateBoxDTO } from '../models/DTO/BoxDTO'
 
 /**
  * Handle the database operations for the box
@@ -27,7 +28,11 @@ export default class BoxRepository {
    * Update the box information
    * @param box new box information
    */
-  public update(box: Box) {}
+  public update(box: UpdateBoxDTO) {
+    const db = getDB()
+    db.run('UPDATE Box SET name = ?', [box.name])
+    db.close()
+  }
 
   /**
    * Update the icon of the box

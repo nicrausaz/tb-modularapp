@@ -107,3 +107,9 @@ export const screenUpdateRules = [
   body('slots.*.x').notEmpty().isInt().withMessage('x must be an integer'),
   body('slots.*.y').notEmpty().isInt().withMessage('y must be an integer'),
 ]
+
+/**
+ * Validation rule for box update
+ * @see UpdateBoxDTO
+ */
+export const boxUpdateRules = [body('name').trim().escape().notEmpty().withMessage('Name is required')]

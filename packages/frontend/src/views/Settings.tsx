@@ -1,4 +1,3 @@
-import fetcher from '@/api/fetcher'
 import FilePreviewerInput from '@/components/FilePreviewerInput'
 import Input from '@/components/Input'
 import LoadingTopBar from '@/components/LoadingTopBar'
@@ -14,15 +13,20 @@ import Image from '@/components/Image'
 import { useBox } from '@/contexts/BoxContext'
 import { getAll } from '@/api/requests/users'
 import IconButton from '@/components/IconButton'
-import { DocsIcon, GitHubIcon, WebIcon } from '@/assets/icons'
+import { DocsIcon, GitHubIcon, SaveIcon, WebIcon } from '@/assets/icons'
 
 export default function Settings() {
   const { data, loading, error } = useFetchAuth<User[]>('/api/users')
-  const { box, updateIcon } = useBox()
+  const { box, updateIcon, updateBox } = useBox()
 
   const [users, setUsers] = useState<User[]>([])
   const { t } = useTranslation()
   const { tSuccess } = useToast()
+
+  const [editingBox, setEditingBox] = useState({
+    name: box?.name || '',
+  })
+
 
   useEffect(() => {
     if (data) {
@@ -51,7 +55,12 @@ export default function Settings() {
 
   const uploadBoxIcon = async (file: File) => {
     updateIcon(file)
-    tSuccess('Success', 'Icon changed successfully')
+    tSuccess(t('status.success'), t('settings.feedbacks.icon_saved_ok'))
+  }
+
+  const update = async () => {
+    await updateBox(editingBox.name)
+    tSuccess(t('status.success'), t('settings.feedbacks.box_saved_ok'))
   }
 
   return (
@@ -77,33 +86,33 @@ export default function Settings() {
       </div>
 
       <div className="flex flex-col w-full items-center">
-        <div className="divider text-2xl text-neutral font-bold my-6">Your preferences</div>
+        <div className="divider text-2xl text-neutral font-bold my-6">{t('settings.preferences.title')}</div>
         <div className="bg-base-100 shadow rounded-box w-full md:w-3/4 p-4">
           <label className="label">
-            <span className="label-text">Theme</span>
+            <span className="label-text">{t('settings.preferences.theme')}</span>
           </label>
           <ThemePicker />
 
           <label className="label">
-            <span className="label-text">Language</span>
+            <span className="label-text">{t('settings.preferences.language')}</span>
           </label>
           <LanguagePicker />
         </div>
       </div>
 
       <div className="flex flex-col w-full items-center">
-        <div className="divider text-2xl text-neutral font-bold my-6">Box configuration</div>
+        <div className="divider text-2xl text-neutral font-bold my-6">{t('settings.configuration.title')}</div>
         <div className="bg-base-100 shadow rounded-box w-full md:w-3/4 p-4">
           <Input
-            label="Box name"
+            label={t('settings.configuration.name')}
             placeholder="My box"
-            onChange={(value) => console.log(value)}
+            onChange={(value) => setEditingBox({ ...editingBox, name: value })}
             name="boxname"
-            value={box.name}
+            value={editingBox.name}
           />
 
           <label className="label">
-            <span className="label-text">Box image</span>
+            <span className="label-text">{t('settings.configuration.image')}</span>
           </label>
           <FilePreviewerInput
             onUpload={uploadBoxIcon}
@@ -112,6 +121,17 @@ export default function Settings() {
             rounded={false}
             className="h-20 w-20"
           />
+
+          <div className="flex items-center justify-end gap-2 mt-2">
+            <IconButton
+              onClick={update}
+              icon={<SaveIcon className="w-4 h-4" />}
+              position="left"
+              label={t('settings.configuration.save')}
+              className="btn-primary"
+              keepLabel={true}
+            />
+          </div>
 
           <div className="divider"></div>
 
@@ -153,7 +173,7 @@ export default function Settings() {
           />
 
           <IconButton
-            icon={<img src="/assets/logo.svg" className="w-6 h-6"/>}
+            icon={<img src="/assets/logo.svg" className="w-6 h-6" />}
             asLink={true}
             to="/about"
             className="btn-link"

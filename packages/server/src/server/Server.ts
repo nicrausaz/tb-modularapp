@@ -8,6 +8,7 @@ import { ErrorMiddleware } from './middlewares/ErrorMiddleware'
 import logger from './libs/logger'
 import { swaggerSpec } from './libs/swagger/swagger'
 import swaggerUi from 'swagger-ui-express'
+import compression from 'compression'
 
 export default class Server {
   private readonly app: express.Application
@@ -18,6 +19,7 @@ export default class Server {
     this.app = express()
     this.manager = new ModuleDatabaseManager(dirModules)
 
+    this.app.use(compression())
     // Configure app
     this.app.use(express.json())
     this.app.use(uploader)

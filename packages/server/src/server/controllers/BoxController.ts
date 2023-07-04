@@ -13,7 +13,8 @@ export default class BoxController {
   }
 
   update = async (req: Request, res: Response) => {
-    // TODO: update the box values
+    this.boxService.updateBox(req.body)
+    res.status(204).send()
   }
 
   updateIcon = async (req: Request, res: Response, next: NextFunction) => {

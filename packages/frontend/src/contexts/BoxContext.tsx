@@ -1,4 +1,4 @@
-import { iconUpdate } from '@/api/requests/box'
+import { iconUpdate, update } from '@/api/requests/box'
 import LoadingTopBar from '@/components/LoadingTopBar'
 import { useFetch } from '@/hooks/useFetch'
 import { Box } from '@/models/Box'
@@ -13,6 +13,12 @@ type BoxContextType = {
    * @param file file to upload
    */
   updateIcon: (file: File) => void
+
+  /**
+   * Updates the box name
+   * @param name new name
+   */
+  updateBox: (name: string) => void
 }
 
 const BoxContext = createContext<BoxContextType>({} as BoxContextType)
@@ -44,7 +50,13 @@ const BoxProvider = ({ children }: { children: React.ReactNode }) => {
     setBox({ ...box, icon: filename })
   }
 
-  return <BoxContext.Provider value={{ box, updateIcon }}>{children}</BoxContext.Provider>
+  const updateBox = (name: string) => {
+    update(name).then(() => {
+      setBox({ ...box, name })
+    })
+  }
+
+  return <BoxContext.Provider value={{ box, updateIcon, updateBox }}>{children}</BoxContext.Provider>
 }
 
 const useBox = () => useContext(BoxContext)

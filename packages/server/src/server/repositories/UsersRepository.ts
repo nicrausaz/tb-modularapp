@@ -150,7 +150,7 @@ export default class UsersRepository {
   public getByUsername(username: string): Promise<UserEntity> {
     const db = getDB()
     return new Promise((resolve, reject) => {
-      db.all('SELECT id, username, password FROM Users WHERE username = ?', [username], (err, row) => {
+      db.all('SELECT id, username, password, avatar FROM Users WHERE username = ?', [username], (err, row) => {
         if (err || row.length === 0) {
           reject(err)
         }

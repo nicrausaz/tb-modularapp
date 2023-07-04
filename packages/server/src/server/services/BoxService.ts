@@ -16,8 +16,8 @@ export default class BoxService {
   /**
    * Update the box information
    */
-  async updateBox(box: BoxDTO): Promise<BoxDTO> {
-    throw new Error('Not implemented')
+  async updateBox(box: BoxDTO) {
+    this.boxRepository.update(box)
   }
 
   /**

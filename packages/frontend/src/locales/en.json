@@ -51,8 +51,21 @@
     },
     "configuration": {
       "title": "Configuration",
-      "users": "Users"
+      "image": "Box image",
+      "name": "Box name",
+      "save": "Save"
+    },
+    "feedbacks": {
+      "icon_saved_ok": "Icon saved successfully",
+      "box_saved_ok": "Box saved successfully"
     }
+  },
+  "users": {
+    "title": "Users",
+    "add": "Add",
+    "edit": "Edit user",
+    "update": "Update user",
+    "delete": "Delete"
   },
   "errors": {
     "not_found": {

@@ -6,6 +6,7 @@ import { JwtAuthMiddleware } from './middlewares/AuthMiddleware'
 import ModuleDatabaseManager from './helpers/ModuleDatabaseManager'
 import { join } from 'path'
 import {
+  boxUpdateRules,
   loginRules,
   moduleConfigurationUpdateRules,
   moduleStatusUpdateRules,
@@ -442,7 +443,7 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    */
   app.get('/api/box', boxController.index)
 
-  app.post('/api/box', Validator([]), JwtAuthMiddleware, boxController.update) // TODO: validator
+  app.put('/api/box', Validator(boxUpdateRules), JwtAuthMiddleware, boxController.update)
 
   app.put('/api/box/icon', JwtAuthMiddleware, boxController.updateIcon)
 

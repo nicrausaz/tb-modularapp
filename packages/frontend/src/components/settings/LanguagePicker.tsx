@@ -1,8 +1,10 @@
 import i18n from '@/libs/i18n'
 
-// TODO
+/**
+ * Input to select the UI language
+ */
 export default function LanguagePicker() {
-  const languages = i18n.languages
+  const languages = i18n.options.supportedLngs || []
   const current = i18n.language
 
   const handleThemeSelection = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -10,12 +12,10 @@ export default function LanguagePicker() {
   }
 
   return (
-    <div className="theme-picker">
-      <select onChange={handleThemeSelection} className="select select-bordered w-full max-w-xs" defaultValue={current}>
-        {languages.map((lang) => (
-          <option key={lang}>{lang}</option>
-        ))}
-      </select>
-    </div>
+    <select onChange={handleThemeSelection} className="select select-bordered w-full max-w-xs" value={current}>
+      {languages.map((lang) => (
+        <option key={lang}>{lang}</option>
+      ))}
+    </select>
   )
 }

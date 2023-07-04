@@ -48,7 +48,7 @@ function Navbar() {
       <UserEditionModal
         user={authenticatedUser}
         isOpen={isProfileModalOpen}
-        onConfirm={() => {}}
+        onConfirm={() => setIsProfileModalOpen(false)}
         onClose={() => {
           setIsProfileModalOpen(false)
         }}

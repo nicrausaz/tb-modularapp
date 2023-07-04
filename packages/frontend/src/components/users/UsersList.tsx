@@ -6,6 +6,7 @@ import ConfirmUserDeleteModal from '@/components/users/ConfirmUserDeleteModal'
 import UserEditionModal from '@/components/users/UserEditionModal'
 import Image from '@/components/Image'
 import { remove } from '@/api/requests/users'
+import { useTranslation } from 'react-i18next'
 
 type UserRowProps = {
   user: User
@@ -56,6 +57,7 @@ export default function UsersList({ users, onUpdated }: UsersListProps) {
   const [editingUser, setEditingUser] = useState<User | null>(null)
   const [deletingUser, setDeletingUser] = useState<User | null>(null)
 
+  const { t } = useTranslation()
   const { tSuccess } = useToast()
 
   const openAddUserModal = () => {
@@ -90,10 +92,10 @@ export default function UsersList({ users, onUpdated }: UsersListProps) {
       <div className="border-b py-2">
         <div className="flex items-center justify-between">
           <label className="label">
-            <span className="label-text">Users</span>
+            <span className="label-text">{t('users.title')}</span>
           </label>
           <button className="btn btn-sm mr-2" onClick={openAddUserModal}>
-            add
+            {t('users.add')}
             <AddUserIcon className="w-4 h-4" />
           </button>
         </div>

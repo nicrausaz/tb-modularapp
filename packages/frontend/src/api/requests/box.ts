@@ -1,7 +1,13 @@
 import fetcher from '../fetcher'
 
-export const update = () => {
-  // TODO
+export const update = (name: string) => {
+  return fetcher('/api/box', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ name }),
+  })
 }
 
 export const iconUpdate = async (file: File): Promise<string> => {
