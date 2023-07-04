@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express'
+import express, { NextFunction, Request, Response } from 'express'
 import { AuthController, BoxController, ModulesController, ScreensController, UsersController } from './controllers'
 import { BoxService, ModulesService, ScreensService, UsersService } from './services'
 import { UsersRepository, ModulesRepository, ScreensRepository, BoxRepository } from './repositories'
@@ -21,6 +21,7 @@ import WebSocket from 'ws'
 import logger from './libs/logger'
 import EventsController from './controllers/EventsController'
 import ModuleLiveUpdater from './helpers/ModuleLiveUpdater'
+import { NotFoundError } from './middlewares/HTTPError'
 
 // TODO: Add validation errors to the swagger documentation
 
@@ -53,15 +54,6 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
   const boxController = new BoxController(boxService)
   const usersController = new UsersController(usersService)
   const eventsController = new EventsController(modulesService, screensService)
-
-  // Defines the routes used by the application
-  app.get('/', (req: Request, res: Response) => {
-    if (process.env.NODE_ENV === 'production') {
-      res.sendFile(join(__dirname, '../public', 'index.html'))
-    } else {
-      res.send('The app is running in development mode')
-    }
-  })
 
   /**
    * Auth routes
@@ -723,7 +715,7 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *         schema:
    *           type: string
    *         required: true
-   *         description: The screen id 
+   *         description: The screen id
    *     responses:
    *       204:
    *         description: Screen deleted
@@ -787,6 +779,20 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
     ws.on('close', () => {
       logger.info('[WS] Client disconnected')
     })
+  })
+
+  // Defines the routes used by the application
+  // Enable the client routing in production
+  app.get('*', (req: Request, res: Response, next: NextFunction) => {
+    if (process.env.NODE_ENV === 'production') {
+      res.sendFile(join(process.env.PUBLIC_DIR ?? '', 'index.html'), (err) => {
+        if (err) {
+          next(new NotFoundError(err.message))
+        }
+      })
+    } else {
+      res.send('The app is running in development mode, use the vite dev server instead.')
+    }
   })
 }
 

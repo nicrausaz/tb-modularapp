@@ -61,7 +61,7 @@ const buildDB = async () => {
       })
       .then(() => resolve())
       .catch((err) => {
-        logger.emerg('Fatal error during database initialization: %s', err)
+        logger.error('Fatal error during database initialization: %s', err)
         reject(err)
       })
   })

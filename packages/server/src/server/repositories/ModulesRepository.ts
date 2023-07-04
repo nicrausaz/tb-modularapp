@@ -6,6 +6,7 @@ import type { UploadedFile } from 'express-fileupload'
 import { randomUUID } from 'crypto'
 import { mkdirSync, rmSync } from 'fs'
 import AdmZip from 'adm-zip'
+import { join } from 'path'
 
 export default class ModulesRepository {
   constructor(private manager: ModuleDatabaseManager) {}
@@ -146,17 +147,19 @@ export default class ModulesRepository {
   async uploadModule(file: UploadedFile): Promise<string> {
     const moduleId = randomUUID()
     // Create the module directory
-    mkdirSync(`${process.env.MODULES_DIR}/${moduleId}`)
+    const dir = join(process.env.MODULES_DIR ?? '', moduleId)
+    mkdirSync(dir)
 
     return new Promise((resolve, reject) => {
+      const filepath = join(dir, file.name)
       // Move the files to the module directory
-      file.mv(`${process.env.MODULES_DIR}/${moduleId}/${file.name}`, async (err) => {
+      file.mv(filepath, async (err) => {
         if (err) {
           reject(err)
         }
 
         // Unzip the module
-        const zip = new AdmZip(`${process.env.MODULES_DIR}/${moduleId}/${file.name}`)
+        const zip = new AdmZip(filepath)
         const zipEntries = zip.getEntries().filter((entry) => {
           // TODO: might find a better way to do this (maybe with a regex to ignore potential harmful files)
           if (entry.entryName.startsWith('__MACOSX') || entry.entryName.startsWith('.')) {
@@ -165,19 +168,17 @@ export default class ModulesRepository {
           return true
         })
 
-        zipEntries.forEach((entry) =>
-          zip.extractEntryTo(entry.entryName, `${process.env.MODULES_DIR}/${moduleId}`, false, true),
-        )
+        zipEntries.forEach((entry) => zip.extractEntryTo(entry.entryName, dir, false, true))
 
         // Remove the zip file
-        rmSync(`${process.env.MODULES_DIR}/${moduleId}/${file.name}`)
+        rmSync(filepath)
 
         // Add the module to the database
         const registered = await this.manager.registerModule(moduleId)
         if (registered) {
           resolve(moduleId)
         } else {
-          rmSync(`${process.env.MODULES_DIR}/${moduleId}`, { recursive: true })
+          rmSync(dir, { recursive: true })
           reject('The module could not be registered. Please check its configuration.')
         }
       })

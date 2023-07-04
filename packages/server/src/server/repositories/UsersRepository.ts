@@ -3,6 +3,7 @@ import { getDB } from '../../database/database'
 import { UserEntity } from '../models/entities/User'
 import { hashString } from '../libs/security'
 import { UploadedFile } from 'express-fileupload'
+import { join } from 'path'
 
 export default class UsersRepository {
   /**
@@ -133,7 +134,8 @@ export default class UsersRepository {
    */
   public uploadAvatar(file: UploadedFile): Promise<void> {
     return new Promise((resolve, reject) => {
-      file.mv(`${process.env.PUBLIC_DIR}/users/${file.name}`, async (err) => {
+      const path = join(process.env.PUBLIC_DIR ?? '', 'users', file.name)
+      file.mv(path, async (err) => {
         if (err) {
           reject(err)
         }

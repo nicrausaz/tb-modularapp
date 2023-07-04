@@ -3,6 +3,7 @@ import { getDB } from '../../database/database'
 import { Box } from '../models/entities/Box'
 import { unlinkSync } from 'fs'
 import { UpdateBoxDTO } from '../models/DTO/BoxDTO'
+import { join } from 'path'
 
 /**
  * Handle the database operations for the box
@@ -59,7 +60,8 @@ export default class BoxRepository {
    */
   public uploadIcon(file: UploadedFile): Promise<void> {
     return new Promise((resolve, reject) => {
-      file.mv(`${process.env.PUBLIC_DIR}/${file.name}`, async (err) => {
+      const path = join(process.env.PUBLIC_DIR ?? '', file.name)
+      file.mv(path, async (err) => {
         if (err) {
           reject(err)
         }
@@ -73,6 +75,6 @@ export default class BoxRepository {
    * @param icon filename of the icon
    */
   public deleteIcon(icon: string) {
-    unlinkSync(`${process.env.PUBLIC_DIR}/${icon}`)
+    unlinkSync(join(process.env.PUBLIC_DIR ?? '', icon))
   }
 }
