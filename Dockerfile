@@ -5,8 +5,8 @@ WORKDIR /app
 COPY --chown=node:node . /app
 COPY --chown=node:node ./packages/server/.env.production /app/packages/server/.env
 
-RUN npm ci
-ENV NODE_ENV=production
+RUN npm install
+# ENV NODE_ENV=production
 RUN npm run build
 
 VOLUME /var/modapp/database
