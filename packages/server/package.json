@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@yalk/module": "^1.0.0",
     "@yalk/module-manager": "^1.0.0",
     "adm-zip": "^0.5.10",
     "argon2": "^0.30.3",

@@ -1,8 +1,8 @@
+import { Module } from '@yalk/module'
 import { Manager } from '@yalk/module-manager'
 import { getDB } from '../../database/database'
 import { ConfiguredModuleEntity, ModuleEntity } from '../models/entities/Module'
 import ModuleMapper from '../mappers/ModuleMapper'
-import { Module } from '@yalk/module'
 import logger from '../libs/logger'
 
 /**
