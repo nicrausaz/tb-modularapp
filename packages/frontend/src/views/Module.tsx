@@ -22,12 +22,14 @@ import type { Module } from 'models/Module'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
+import { useLiveEvents } from '@/contexts/LiveEvents'
 
 export default function Module() {
   const { moduleId } = useParams()
   const { tSuccess, tError } = useToast()
   const navigate = useNavigate()
   const { t } = useTranslation()
+  const { source } = useLiveEvents()
 
   const { data, error, loading } = useFetchAuth<Module>(`/api/modules/${moduleId}`)
   const [module, setModule] = useState(data)
@@ -37,6 +39,29 @@ export default function Module() {
   useEffect(() => {
     setModule(data)
   }, [data])
+
+  useEffect(() => {
+    if (!source || !moduleId) {
+      return
+    }
+
+    const callback = (data: { subtype?: string; enabled?: boolean }) => {
+      if (data.subtype !== 'status') {
+        return
+      }
+
+      setModule((prev) => ({
+        ...prev!,
+        enabled: data.enabled ?? false,
+      }))
+    }
+
+    source.getModule(moduleId, callback)
+
+    return () => {
+      source.releaseModule(moduleId, callback)
+    }
+  }, [source])
 
   if (loading) {
     return <LoadingTopBar />

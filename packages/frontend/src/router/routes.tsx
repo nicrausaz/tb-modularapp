@@ -11,6 +11,7 @@ import Home from '@/views/Home'
 import Visualize from '@/views/Visualize'
 import About from '@/views/About'
 import UnrestrictedLayout from '@/layouts/UnrestrictedLayout'
+import NotFound from '@/views/NotFound'
 
 const routes: RouteObject[] = [
   {
@@ -68,7 +69,7 @@ const routes: RouteObject[] = [
   },
   {
     path: '*',
-    element: <Navigate to="/error" replace />,
+    element: <NotFound />,
   },
 ]
 

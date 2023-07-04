@@ -93,7 +93,7 @@ export default function ScreenEditor({ slots, onChange, containerClassName, read
     maxRows: 5,
     width: container.current?.clientWidth || 0,
     resizeHandles: ['se'],
-    compactType: null,
+    compactType: 'vertical',
   }
 
   return (

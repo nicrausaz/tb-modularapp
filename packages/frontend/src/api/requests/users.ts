@@ -4,7 +4,11 @@
 
 import fetcher from '@/api/fetcher'
 
-import { UserCreate, UserUpdate } from '@/models/User'
+import { User, UserCreate, UserUpdate } from '@/models/User'
+
+export const getAll = async () => {
+  return fetcher<User[]>('/api/users')
+}
 
 /**
  * Create a new user

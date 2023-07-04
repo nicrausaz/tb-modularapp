@@ -12,6 +12,9 @@ import { useTranslation } from 'react-i18next'
 import { useToast } from '@/contexts/ToastContext'
 import Image from '@/components/Image'
 import { useBox } from '@/contexts/BoxContext'
+import { getAll } from '@/api/requests/users'
+import IconButton from '@/components/IconButton'
+import { DocsIcon, GitHubIcon, WebIcon } from '@/assets/icons'
 
 export default function Settings() {
   const { data, loading, error } = useFetchAuth<User[]>('/api/users')
@@ -40,7 +43,7 @@ export default function Settings() {
   }
 
   const refreshUsers = async () => {
-    const data = await fetcher<User[]>('/api/users')
+    const data = await getAll()
     if (data) {
       setUsers(data)
     }
@@ -66,7 +69,7 @@ export default function Settings() {
             <div>
               <svg className="w-6 h-6 mr-2" viewBox="0 0 24 24" />
               <span className="font-bold float-right">
-                <div className="badge">v1.0.0</div>
+                <div className="badge">v{box.version}</div>
               </span>
             </div>
           </div>
@@ -118,13 +121,47 @@ export default function Settings() {
 
       <div className="flex flex-col w-full items-center">
         <div className="divider text-2xl text-neutral font-bold my-6">Others</div>
-        <div className="bg-base-100 shadow rounded-box w-full md:w-3/4 p-4">
-          <a className="link link-info" href="http://localhost:3000/api-docs" target="_blank">
-            API Documentation
-          </a>
-          <a className="link link-info" href="http://localhost:3000/api-docs" target="_blank">
-            API Documentation
-          </a>
+
+        <div className="bg-base-100 shadow rounded-box w-full md:w-3/4 p-4 flex items-center justify-between">
+          <IconButton
+            icon={<DocsIcon className="w-6 h-6" />}
+            asLink={true}
+            to="http://localhost:3000/api-docs"
+            className="btn-link"
+            label="API Documentation"
+            position="left"
+            target="_blank"
+          />
+          <IconButton
+            icon={<GitHubIcon className="w-6 h-6" />}
+            asLink={true}
+            to="https://github.com/nicrausaz/tb-modularapp"
+            className="btn-link"
+            label="Github"
+            position="left"
+            target="_blank"
+          />
+          <IconButton
+            icon={<WebIcon className="w-6 h-6" />}
+            asLink={true}
+            to="https://example.com"
+            className="btn-link"
+            label="Website"
+            position="left"
+            target="_blank"
+            disabled={true}
+          />
+
+          <IconButton
+            icon={<img src="/assets/logo.svg" className="w-6 h-6"/>}
+            asLink={true}
+            to="/about"
+            className="btn-link"
+            label="About"
+            position="left"
+            target="_blank"
+            disabled={true}
+          />
         </div>
       </div>
     </div>

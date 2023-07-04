@@ -15,8 +15,10 @@ export type Event = {
 export type RecEvent = {
   readonly type: string
   readonly id: string
-  readonly render: string
-  readonly error: string
+  readonly subtype?: string
+  readonly render?: string
+  readonly error?: string
+  readonly enabled?: boolean
 }
 
 export default class EventsManager {
@@ -24,7 +26,7 @@ export default class EventsManager {
   protected conn!: WebSocket
   private static URL = 'ws://localhost:3000/events'
 
-  private readonly modulesObservers: Map<string, Set<(data: { render?: string; error?: string }) => void>> = new Map()
+  private readonly modulesObservers: Map<string, Set<(data: RecEvent) => void>> = new Map()
   private readonly screensObservers: Map<number, Set<(data: any) => void>> = new Map()
 
   constructor() {
@@ -34,7 +36,7 @@ export default class EventsManager {
     }
   }
 
-  getModule(id: string, callback: (data: { render?: string; error?: string }) => void) {
+  getModule(id: string, callback: (data: RecEvent) => void) {
     let observerCallbacks = this.modulesObservers.get(id)
 
     if (!observerCallbacks) {
@@ -57,7 +59,7 @@ export default class EventsManager {
     )
   }
 
-  releaseModule(id: string, callback: (data: { render?: string; error?: string }) => void) {
+  releaseModule(id: string, callback: (data: RecEvent) => void) {
     const observerCallbacks = this.modulesObservers.get(id)
     if (!observerCallbacks) {
       return

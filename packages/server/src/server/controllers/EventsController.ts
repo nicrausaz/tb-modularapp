@@ -40,6 +40,7 @@ export default class EventsController {
     }
   }
 
+  // TODO: refactor this
   private subscribeToModule(conn: WebSocket, moduleId: string) {
     const renderCallback = (render: string) => {
       conn.send(

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { useFetchAuth } from '@/hooks/useFetch'
 import { Screen, ScreenSlot } from '@/models/Screen'
 import ScreenToolbar from '@/components/screens/ScreenToolbar'
-import fetcher from '@/api/fetcher'
 import LoadingTopBar from '@/components/LoadingTopBar'
 import ScreenEditor from '@/components/screens/ScreenEditor'
 import ChoseModulesModal from '@/components/module/ChoseModulesModal'
@@ -28,6 +27,12 @@ export default function Dashboard() {
       setScreen(data[0])
     }
   }, [data])
+
+  useEffect(() => {
+    if (screens.length > 0) {
+      setScreen(screens[0])
+    }
+  }, [screens])
 
   if (loading) {
     return <LoadingTopBar />
@@ -93,16 +98,16 @@ export default function Dashboard() {
   const addModulesToScreen = (modules: Module[]) => {
     setModulesModalOpen(false)
 
-    // TODO: place module in the first available slot
+    // TODO: maybe improve the placement
     const newSlots: ScreenSlot[] = modules.map((module) => ({
       id: uuid(),
       moduleId: module.id,
       screenId: screen?.id,
       module,
-      width: 3,
-      height: 1,
-      x: 2,
-      y: 2,
+      width: 2,
+      height: 2,
+      x: (screen.slots.length * 2) % 10,
+      y: 0,
     }))
 
     setScreen({
@@ -115,7 +120,6 @@ export default function Dashboard() {
     setDeleteScreenModalOpen(false)
     await remove(screenId)
     setScreens(screens.filter((screen) => screen.id !== screenId))
-    setScreen(screens[0])
     tSuccess('Success', 'Screen deleted')
   }
 
