@@ -1,9 +1,9 @@
 import { Module } from '@/models/Module'
-import ConfirmModal from '../ConfirmModal'
+import ConfirmModal from '@/components/ConfirmModal'
+import SearchBar from '@/components/SearchBar'
 import ModuleSelectRow from './ModuleSelectRow'
 import { useFetchAuth } from '@/hooks/useFetch'
 import { useEffect, useRef, useState } from 'react'
-import SearchBar from '../SearchBar'
 
 type ConfirmModuleDeleteModalProps = {
   isOpen: boolean
@@ -124,7 +124,13 @@ export default function ChoseModulesModal({ isOpen, onClose, onConfirm }: Confir
               <tr>
                 <th>
                   <label>
-                    <input type="checkbox" className="checkbox" checked={isAllChecked} onChange={toggleSelectAll} ref={selectAll} />
+                    <input
+                      type="checkbox"
+                      className="checkbox"
+                      checked={isAllChecked}
+                      onChange={toggleSelectAll}
+                      ref={selectAll}
+                    />
                   </label>
                 </th>
                 <th>Name</th>

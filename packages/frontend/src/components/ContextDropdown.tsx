@@ -12,7 +12,7 @@ export default function ContextDropdown({ actions, icon }: Props) {
       <label tabIndex={0} className="btn btn-xs btn-circle bg-base-100">
         {icon}
       </label>
-      <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box">
+      <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box z-10">
         {actions.map((action, i) => (
           <li key={i}>
             <a onClick={action.onClick}>{action.label}</a>

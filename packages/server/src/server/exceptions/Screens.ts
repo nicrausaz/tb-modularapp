@@ -20,3 +20,10 @@ export class ScreenDisabledException extends ForbiddenError {
     logger.warn(`Screen with id ${id} not enabled`)
   }
 }
+
+export class ScreenNotDeletableException extends ForbiddenError {
+  constructor(id: number) {
+    super('Cannot delete the last existing screen')
+    logger.warn(`Screen with id ${id} cannot be deleted as it is the last screen`)
+  }
+}

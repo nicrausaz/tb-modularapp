@@ -8,29 +8,24 @@ export default class ComposalStampRFIDRenderer extends ModuleRenderer {
 
     if (status === 'loading') {
       return (
-        <div className="w-full h-full flex justify-center">
+        <div className="w-full h-full flex items-center justify-center">
           <span className="loading loading-ring loading-lg"></span>
-          {status}
         </div>
       )
     }
 
     if (status === 'start') {
       return (
-        <div className="card bg-base-100">
-          <div className="card-body flex flex-row items-center">
-            <div className="mask mask-squircle w-28 h-28">
-              <img src={avatar} />
-            </div>
-            <div className="ml-2 w-full">
-              <h2 className="card-title text-2xl">Welcome {data.display_name} !</h2>
-
-              <p className="mb-2 flex items-center justify-between w-full">
-                <div>You just clocked in !</div>
-                <span className="text-4xl font-bold">{data.clocked_in_at}</span>
-              </p>
-
-              <div className="card-actions justify-end">{additionalMessage}</div>
+        <div className="rounded overflow-hidden shadow-lg w-full h-full">
+          <img className="h-28 object-cover md:w-28 mx-auto" src={avatar} alt="user_avatar" />
+          <div className="px-6 py-4">
+            <div className="uppercase tracking-wide text-indigo-500 font-semibold text-center text-2xl">Welcome !</div>
+            <span className="block mt-1 text-xl leading-tight font-medium text-black text-center">
+              {data.display_name}
+            </span>
+            <div className="mt-4">
+              <div className="text-xl font-bold text-center">You just clocked in at {data.clocked_in_at}.</div>
+              <div className="text-center">{additionalMessage}</div>
             </div>
           </div>
         </div>
@@ -39,16 +34,16 @@ export default class ComposalStampRFIDRenderer extends ModuleRenderer {
 
     if (status === 'end') {
       return (
-        <div className="card bg-base-100">
-          <div className="card-body flex flex-row items-center">
-            <img src={avatar} className="w-28 h-28 mask mask-squircle" />
-            <div className="ml-2 w-full">
-              <h2 className="card-title text-2xl">Goodbye {data.display_name} !</h2>
-
-              <p className="mb-2 flex items-center justify-between w-full">
-                <div>You just clocked out !</div>
-                <span className="text-4xl font-bold">17:00</span>
-              </p>
+        <div className="rounded overflow-hidden shadow-lg w-full h-full">
+          <img className="h-28 object-cover md:w-28 mx-auto" src={avatar} alt="user_avatar" />
+          <div className="px-6 py-4">
+            <div className="uppercase tracking-wide text-indigo-500 font-semibold text-center text-2xl">Goodbye !</div>
+            <span className="block mt-1 text-xl leading-tight font-medium text-black text-center">
+              {data.display_name}
+            </span>
+            <div className="mt-4">
+              <div className="text-xl font-bold text-center">You just clocked in at {data.clocked_in_at}.</div>
+              <div className="text-center">{additionalMessage}</div>
             </div>
           </div>
         </div>
@@ -65,8 +60,8 @@ export default class ComposalStampRFIDRenderer extends ModuleRenderer {
 
     // Default status is 'idle'
     return (
-      <div className="w-full h-full flex justify-center">
-        <h2 className="card-title text-2xl p-6">Please scan your card</h2>
+      <div className="w-full h-full flex items-center justify-center">
+        <span className="text-2xl font-bold">Please scan your card</span>
       </div>
     )
   }

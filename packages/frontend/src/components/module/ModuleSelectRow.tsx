@@ -12,10 +12,14 @@ export default function ModuleSelectRow({ module, selected = false, onSelect }: 
     onSelect(module, event.target.checked)
   }
 
+  const handleClick = () => {
+    onSelect(module, !selected)
+  }
+
   const iconLink = module.icon ? `/api/box/static/module/${module.id}/${module.icon}` : '/assets/module_placeholder.svg'
 
   return (
-    <tr title={module.description}>
+    <tr title={module.description} onClick={handleClick} className="cursor-pointer">
       <th>
         <label>
           <input type="checkbox" className="checkbox" checked={selected} onChange={handleSelect} />

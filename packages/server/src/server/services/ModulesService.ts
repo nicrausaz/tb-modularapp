@@ -130,15 +130,8 @@ export default class ModulesService {
    * @throws ModuleDisabledException if the module is disabled
    */
   unsubscribeFromModuleEvents = async (id: string, handler: (render: string) => void) => {
-    // todo: move in live updater
     const entry = await this.getModuleEntry(id)
-
-    // if (!entry.enabled) {
-    //   throw new ModuleDisabledException(id)
-    // }
-
-    // this.moduleUpdater.unsubscribe(id, handler)
-    // this.modulesRepository.unsubscribeFromModuleEvents(id, handler)
+    this.modulesRepository.unsubscribeFromModuleEvents(id, handler)
   }
 
   /**
@@ -176,6 +169,8 @@ export default class ModulesService {
     if (!this.moduleExists(id)) {
       throw new ModuleNotFoundException(id)
     }
+
+    this.moduleUpdater.clearModule(id)
 
     if (!this.modulesRepository.unregisterModule(id)) {
       throw new ModuleActionException(id, 'unregister')

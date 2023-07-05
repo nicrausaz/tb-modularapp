@@ -15,7 +15,8 @@ type ScreenRecEvent = {
  * Controller handling events subscriptions and unsubscriptions
  */
 export default class EventsController {
-  private readonly modulesSubscribers: Map<string, Map<WebSocket, Set<(render: string) => void>>> = new Map()
+  private readonly modulesSubscribers: Map<string, Map<WebSocket, Set<[(render: string) => void, () => void]>>> =
+    new Map()
   private readonly screensSubscribers: Map<number, Map<WebSocket, Set<() => void>>> = new Map()
 
   constructor(private modulesService: ModulesService, private screensService: ScreensService) {}
@@ -52,22 +53,7 @@ export default class EventsController {
       )
     }
 
-    let moduleSubscribers = this.modulesSubscribers.get(moduleId)
-    if (!moduleSubscribers) {
-      moduleSubscribers = new Map()
-      this.modulesSubscribers.set(moduleId, moduleSubscribers)
-    }
-
-    let clientCallbacks = moduleSubscribers.get(conn)
-    if (!clientCallbacks) {
-      clientCallbacks = new Set()
-      moduleSubscribers.set(conn, clientCallbacks)
-    }
-    clientCallbacks.add(renderCallback)
-
-    this.modulesService.moduleUpdater.subscribe(moduleId, () => {
-      console.log('received info that module has been updated')
-
+    const statusCallback = () => {
       this.modulesService
         .getModule(moduleId)
         .then((module) => {
@@ -83,8 +69,22 @@ export default class EventsController {
         .catch((err) => {
           console.log('error is: ', err, 'disabled ?')
         })
-    })
+    }
 
+    let moduleSubscribers = this.modulesSubscribers.get(moduleId)
+    if (!moduleSubscribers) {
+      moduleSubscribers = new Map()
+      this.modulesSubscribers.set(moduleId, moduleSubscribers)
+    }
+
+    let clientCallbacks = moduleSubscribers.get(conn)
+    if (!clientCallbacks) {
+      clientCallbacks = new Set()
+      moduleSubscribers.set(conn, clientCallbacks)
+    }
+    clientCallbacks.add([renderCallback, statusCallback])
+
+    this.modulesService.moduleUpdater.subscribe(moduleId, statusCallback)
     this.modulesService.subscribeToModuleEvents(moduleId, renderCallback).catch(() => {
       conn.send(
         JSON.stringify({
@@ -94,14 +94,12 @@ export default class EventsController {
           error: 'Module is disabled',
         }),
       )
-      clientCallbacks?.delete(renderCallback)
+      console.log('ON Y EST')
+      // clientCallbacks?.delete([renderCallback, statusCallback]) // TODO: check if this is necessary
     })
-
-    // this.modulesService.moduleUpdater.subscribe(moduleId, callback)
   }
 
   private unsubscribeFromModule(conn: WebSocket, moduleId: string) {
-    console.log('unsubscribeFromModule', moduleId)
     const moduleSubscribers = this.modulesSubscribers.get(moduleId)
     if (!moduleSubscribers) {
       return
@@ -113,23 +111,13 @@ export default class EventsController {
     }
 
     clientCallbacks.forEach((callback) => {
-      // this.modulesService.moduleUpdater.unsubscribe(moduleId, callback)
-      this.modulesService.unsubscribeFromModuleEvents(moduleId, callback)
+      this.modulesService.unsubscribeFromModuleEvents(moduleId, callback[0])
+      this.modulesService.moduleUpdater.unsubscribe(moduleId, callback[1])
     })
+
     clientCallbacks.clear()
     moduleSubscribers.delete(conn)
   }
-
-  // unsubscribeAll() {
-  //   for (const [moduleId, moduleSubscribers] of this.modulesSubscribers.entries()) {
-  //     moduleSubscribers.forEach((clientCallbacks) => {
-  //       clientCallbacks.forEach((callback) => {
-  //         this.modulesService.unsubscribeFromModuleEvents(moduleId, callback)
-  //       })
-  //     })
-  //   }
-  //   this.modulesSubscribers.clear()
-  // }
 
   private subscribeToScreen(conn: WebSocket, screenId: number) {
     const callback = () => {

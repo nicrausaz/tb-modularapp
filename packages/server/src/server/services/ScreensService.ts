@@ -1,4 +1,4 @@
-import { ScreenDisabledException, ScreenNotFoundException } from '../exceptions/Screens'
+import { ScreenDisabledException, ScreenNotDeletableException, ScreenNotFoundException } from '../exceptions/Screens'
 import ScreenLiveUpdater from '../helpers/ScreenLiveUpdater'
 import ScreenMapper from '../mappers/ScreenMapper'
 import { ScreenDTO, UpdateScreenDTO } from '../models/DTO/ScreenDTO'
@@ -61,6 +61,11 @@ export default class ScreensService {
     if (!(await this.screensRepository.exists(id))) {
       throw new ScreenNotFoundException(id)
     }
+
+    if ((await this.screensRepository.getScreenCount()) === 1) {
+      throw new ScreenNotDeletableException(id)
+    }
+
     await this.screensRepository.delete(id)
     this.screenUpdater.notifyChange(id)
   }

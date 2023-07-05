@@ -18,6 +18,13 @@ type UserEditionModalProps = {
 export default function UserEditionModal({ isOpen, user, onClose, onConfirm }: UserEditionModalProps) {
   const { t } = useTranslation()
 
+  const [errors, setErrors] = useState({
+    username: '',
+    password: '',
+  })
+
+  const { tSuccess, tError } = useToast()
+
   if (!isOpen) {
     return null
   }
@@ -31,12 +38,7 @@ export default function UserEditionModal({ isOpen, user, onClose, onConfirm }: U
     avatar: null,
   })
 
-  const [errors, setErrors] = useState({
-    username: '',
-    password: '',
-  })
 
-  const { tSuccess, tError } = useToast()
 
   const userCreation = async (username: string, password: string): Promise<boolean> => {
     const newUser = {

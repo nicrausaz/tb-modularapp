@@ -31,7 +31,7 @@ export default function ModuleCard({ module, onAction }: ModuleCardProps) {
   const iconLink = module.icon ? `/api/box/static/module/${module.id}/${module.icon}` : '/assets/module_placeholder.svg'
 
   return (
-    <div className="card card-side bg-base-200 hover:bg-base-300 shadow-xl ">
+    <div className="card card-side bg-base-200 hover:bg-base-300 shadow-xl max-h-36">
       <div className="absolute -translate-y-2">
         {module.enabled ? (
           <div className="badge badge-success badge-xs animate-pulse"></div>
@@ -40,7 +40,7 @@ export default function ModuleCard({ module, onAction }: ModuleCardProps) {
         )}
       </div>
       <Link className="card-body flex flex-row items-center" title={module.description} to={`/modules/${module.id}`}>
-        <Image src={iconLink} fallback="/assets/module_placeholder.svg" alt="module_icon" width={80} height={80} />
+        <Image src={iconLink} fallback="/assets/module_placeholder.svg" alt="module_icon" width={60} height={60} />
         <div className="ml-2">
           {module.nickname ? (
             <h2 className="card-title">
@@ -50,7 +50,7 @@ export default function ModuleCard({ module, onAction }: ModuleCardProps) {
             <h2 className="card-title">{module.name}</h2>
           )}
 
-          <p className="mb-2">{module.description}</p>
+          <p className="mb-2 text-sm text-ellipsis overflow-hidden line-clamp-2">{module.description}</p>
           <div className="flex items-center space-x-2 ml-2">
             <span className="text-sm">{module.author}</span>
             <span className="badge badge-sm">{module.version}</span>

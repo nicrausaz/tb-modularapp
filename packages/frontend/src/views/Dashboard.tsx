@@ -19,7 +19,7 @@ export default function Dashboard() {
   const [modulesModalOpen, setModulesModalOpen] = useState<boolean>(false)
   const [deleteScreenModalOpen, setDeleteScreenModalOpen] = useState<boolean>(false)
 
-  const { tSuccess } = useToast()
+  const { tSuccess, tError } = useToast()
 
   useEffect(() => {
     if (data) {
@@ -118,9 +118,14 @@ export default function Dashboard() {
 
   const deleteScreen = async (screenId: number) => {
     setDeleteScreenModalOpen(false)
-    await remove(screenId)
-    setScreens(screens.filter((screen) => screen.id !== screenId))
-    tSuccess('Success', 'Screen deleted')
+    remove(screenId)
+      .then(() => {
+        setScreens(screens.filter((screen) => screen.id !== screenId))
+        tSuccess('Success', 'Screen deleted')
+      })
+      .catch((error) => {
+        tError('Error', error.message)
+      })
   }
 
   return (

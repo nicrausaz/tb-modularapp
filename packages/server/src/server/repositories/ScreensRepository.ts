@@ -113,6 +113,19 @@ export default class ScreensRepository {
     await Promise.all(screen.slots.map((slot) => this.insertOrUpdateScreenSlot(screen.id, slot)))
   }
 
+  async getScreenCount(): Promise<number> {
+    const db = getDB()
+    return new Promise((resolve, reject) => {
+      db.all('SELECT COUNT(*) as nbScreens FROM Screens', (err, rows) => {
+        if (err) {
+          reject(err)
+        }
+        resolve((rows[0] as { nbScreens: number }).nbScreens)
+      })
+      db.close()
+    })
+  }
+
   /**
    * Check if a screen exists
    * @param id screen id

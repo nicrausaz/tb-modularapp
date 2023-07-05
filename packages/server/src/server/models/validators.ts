@@ -98,7 +98,12 @@ export const moduleStatusUpdateRules = [body('enabled').notEmpty().isBoolean().w
 export const screenUpdateRules = [
   body('id').trim().escape().notEmpty().withMessage('Id is required'),
   body('name').trim().escape().notEmpty().withMessage('Name is required'),
-  body('enabled').notEmpty().isBoolean().withMessage('Enabled must be a boolean'),
+  body('enabled')
+    .notEmpty()
+    .withMessage('enabled is required')
+    .bail()
+    .isBoolean()
+    .withMessage('Enabled must be a boolean'),
   body('slots').isArray().withMessage('Slots must be an array'),
   body('slots.*.id').trim().escape().notEmpty().withMessage('Slot id is required'),
   body('slots.*.moduleId').trim().escape().notEmpty().withMessage('Module id is required'),

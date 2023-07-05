@@ -12,6 +12,8 @@ export interface ComposalStampRFIDProps extends ModuleProps {
 }
 
 export default class ComposalStampRFID extends Module {
+  private interval: NodeJS.Timeout | null = null
+
   init(): void {}
 
   destroy(): void {
@@ -109,7 +111,13 @@ export default class ComposalStampRFID extends Module {
   }
 
   private resetAfter = (time: number): void => {
-    setTimeout(() => {
+    // Prevent multiple reset so time stays right
+    if (this.interval) {
+      clearTimeout(this.interval)
+      this.interval = null
+    }
+
+    this.interval = setTimeout(() => {
       this.notify({
         status: 'idle',
         data: null,

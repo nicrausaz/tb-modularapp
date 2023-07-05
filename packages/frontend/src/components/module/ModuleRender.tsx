@@ -70,8 +70,9 @@ export default function ModuleRender({ id }: { id: string }) {
   }
 
   return (
-    <div className="w-full h-full ">
-      <div dangerouslySetInnerHTML={{ __html: render }} />
-    </div>
+    <div
+      dangerouslySetInnerHTML={{ __html: render }}
+      className="w-full h-full border max-w-full max-h-full flex justify-center"
+    />
   )
 }

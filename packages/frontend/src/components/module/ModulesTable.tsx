@@ -8,7 +8,7 @@ type ModulesTableProps = {
 
 export default function ModulesTable({ modules, onAction }: ModulesTableProps) {
   return (
-    <div className=" overflow-auto">
+    <div className="overflow-none">
       <table className="table">
         <thead>
           <tr>
