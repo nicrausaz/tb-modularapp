@@ -18,5 +18,9 @@ buildDB().then(() => {
                                         |_| |_| v1.0.0
   `)
 
-  new Server(PORT, join(__dirname, '../modules')).start()
+  if (process.env.NODE_ENV === 'production') {
+    console.log('\x1b[33mProduction build\x1b[0m')
+  }
+
+  new Server(PORT, process.env.MODULES_DIR ?? '').start()
 })
