@@ -12,12 +12,10 @@ export default abstract class BaseAccessor {
       id: moduleId,
       module,
     })
-    console.log(this.registeredModules.length, 'registered modules ACK')
   }
 
   public release(moduleId: string) {
     this.registeredModules = this.registeredModules.filter((m) => m.id !== moduleId)
-    console.log(this.registeredModules.length, 'registered modules REL')
   }
 
   /**

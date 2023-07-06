@@ -122,8 +122,8 @@ export default class Manager {
 
     try {
       entry.module.start()
-      this.requireModuleAccessors(entry.module, id)
       entry.enabled = true
+      this.requireModuleAccessors(entry.module, id)
       return true
     } catch (_) {
       return false
@@ -145,8 +145,8 @@ export default class Manager {
 
     try {
       entry.module.stop()
-      this.releaseModuleAccessors(entry.module, id)
       entry.enabled = false
+      this.releaseModuleAccessors(entry.module, id)
       return true
     } catch (_) {
       return false

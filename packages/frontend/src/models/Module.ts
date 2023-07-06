@@ -11,4 +11,5 @@ export type Module = {
   enabled: boolean
   currentConfig: Configuration
   readonly importedAt: Date
+  readonly requires: string[]
 }

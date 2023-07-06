@@ -23,6 +23,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useLiveEvents } from '@/contexts/LiveEvents'
+import LazyIcon from '@/components/LazyIcon'
 
 export default function Module() {
   const { moduleId } = useParams()
@@ -197,6 +198,21 @@ export default function Module() {
               )}
             </div>
           </div>
+          <div className="divider"></div>
+          <div>
+            <label className="label">
+              <span className="label-text">Requires</span>
+            </label>
+            <div className="flex gap-2">
+              {module.requires.length === 0 && <div className="text-neutral text-sm italic ml-6">No requirements</div>}
+              {module.requires.map((require) => (
+                <div className="badge badge-neutral badge-lg gap-2" key={require}>
+                  <LazyIcon name={`${require}Icon`} /> {require}
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div className="divider"></div>
           <div className="form-control">
             <label className="label">
