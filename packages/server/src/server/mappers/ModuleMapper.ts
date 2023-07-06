@@ -15,6 +15,7 @@ export default class ModuleMapper {
       nickname: entry.nickname,
       enabled: entry.enabled,
       importedAt: entry.importedAt,
+      requires: entry.module.requires,
     }
   }
 
@@ -29,6 +30,7 @@ export default class ModuleMapper {
       nickname: entry.nickname,
       enabled: entry.enabled,
       importedAt: entry.importedAt,
+      requires: entry.module.requires,
     }
   }
 
@@ -77,8 +79,8 @@ export default class ModuleMapper {
     }
   }
 
-  // TODO: less data in slot
-  static toSlotModule(module: ModuleEntity): ModuleDTO {
+  // TODO: less data in slot (create a new DTO)
+  static toSlotModule(module: ModuleEntity): Partial<ModuleDTO> {
     return {
       id: module.id,
       name: module.name,

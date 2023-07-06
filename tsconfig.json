@@ -21,6 +21,9 @@
       "path": "./packages/module-manager"
     },
     {
+      "path": "./packages/device-accessor"
+    },
+    {
       "path": "./packages/server"
     },
     {

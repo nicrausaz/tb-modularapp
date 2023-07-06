@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "author": "Nicolas Crausaz",
   "icon": "composal.svg",
+  "requires": ["keyboard"],
   "specificConfig": {
     "authToken": {
       "type": "text",

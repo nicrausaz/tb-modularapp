@@ -27,7 +27,7 @@ export default class HourModule extends Module {
     clearInterval(this.interval)
   }
 
-  onReceive(data: ModuleProps): void {
+  onReceive(type: string, data: ModuleProps): void {
     // Nothing to do here
   }
 

@@ -72,10 +72,11 @@ export default abstract class Module {
 
   /**
    * Give data to the module
+   * @param type The type of received data (usually the key of the device accessor)
    * @param data The data to give
    */
-  public receiveData(data: ModuleProps): void {
-    this.onReceive(data)
+  public receiveData(type: string, data: ModuleProps): void {
+    this.onReceive(type, data)
   }
 
   get name(): string {
@@ -104,6 +105,10 @@ export default abstract class Module {
 
   get icon(): string {
     return this._configuration.icon
+  }
+
+  get requires(): string[] {
+    return this._configuration.requires
   }
 
   /**
@@ -136,9 +141,10 @@ export default abstract class Module {
 
   /**
    * Called when the module receives data
+   * @param type The type of received data (usually the key of the device accessor)
    * @param data The data to process
    */
-  protected abstract onReceive(data: ModuleProps): void
+  protected abstract onReceive(type: string, data: ModuleProps): void
 
   /**
    * Called when a new subscriber is registered

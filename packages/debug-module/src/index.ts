@@ -35,7 +35,7 @@ export default class HelloModule extends Module {
     console.log('Debug module stopped')
   }
 
-  onReceive(data: HelloModuleReceiveProps): void {
+  onReceive(type: string, data: HelloModuleReceiveProps): void {
     console.log('The module hello received', data)
     this.lastReceivedData = data.message
   }

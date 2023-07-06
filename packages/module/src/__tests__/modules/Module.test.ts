@@ -20,7 +20,7 @@ class TestModule extends Module {
   stop(): void {
     this.status = 'stopped'
   }
-  onReceive(data: ModuleProps): void {
+  onReceive(type: string, data: ModuleProps): void {
     this.data = data
   }
   onNewSubscriber(): void {
@@ -40,7 +40,7 @@ const specificConfig = SpecificConfiguration.fromObject({
   },
 })
 
-const config = new Configuration('test', 'test description', '0.0.0', 'test author', '', specificConfig)
+const config = new Configuration('test', 'test description', '0.0.0', 'test author', '', [], specificConfig)
 
 test('Module class should exists', () => {
   expect(Module).toBeDefined()
@@ -118,6 +118,6 @@ test('Module should have a method to receive data', () => {
   const module = new TestModule(config)
   expect(module.onReceive).toBeDefined()
   expect(module.data).toEqual({})
-  module.onReceive({ test: 'test' })
+  module.onReceive('test', { test: 'test' })
   expect(module.data).toEqual({ test: 'test' })
 })

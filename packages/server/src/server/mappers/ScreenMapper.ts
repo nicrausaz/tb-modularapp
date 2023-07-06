@@ -56,7 +56,7 @@ export default class ScreenMapper {
         if (err) {
           reject(err)
         } else {
-          resolve(ModuleMapper.toSlotModule(row as ModuleEntity))
+          resolve(ModuleMapper.toSlotModule(row as ModuleEntity) as ModuleDTO) // TODO: remove as when new DTO is created
         }
       })
     })

@@ -10,6 +10,7 @@ export type ModuleDTO = {
   readonly enabled: boolean
   readonly icon?: string
   readonly importedAt: Date
+  readonly requires: string[]
 }
 
 export type UpdateModuleDTO = {

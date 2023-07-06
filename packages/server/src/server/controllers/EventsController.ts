@@ -67,7 +67,8 @@ export default class EventsController {
           )
         })
         .catch((err) => {
-          console.log('error is: ', err, 'disabled ?')
+          // TODO:send disabled ?
+          console.log('EH HO, error is: ', err, 'disabled ?')
         })
     }
 
@@ -94,8 +95,8 @@ export default class EventsController {
           error: 'Module is disabled',
         }),
       )
-      console.log('ON Y EST')
-      // clientCallbacks?.delete([renderCallback, statusCallback]) // TODO: check if this is necessary
+      // TODO: check if this is necessary, internal error ?
+      // clientCallbacks?.delete([renderCallback, statusCallback])
     })
   }
 

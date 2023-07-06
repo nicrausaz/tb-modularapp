@@ -14,6 +14,7 @@ export class Configuration {
     private readonly _version: string,
     private readonly _author: string,
     private readonly _icon: string,
+    private readonly _requires: string[],
     private readonly _specificEntries: SpecificConfiguration,
   ) {
     // Creates a deep copy of then entries, so the default configuration can be recovered
@@ -59,6 +60,10 @@ export class Configuration {
    */
   get icon(): string {
     return this._icon
+  }
+
+  get requires(): string[] {
+    return this._requires
   }
 
   /**

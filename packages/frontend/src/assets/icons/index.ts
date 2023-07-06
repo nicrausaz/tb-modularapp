@@ -28,6 +28,10 @@ import LoginIcon from './LoginIcon'
 import CheckIcon from './CheckIcon'
 import CopyIcon from './CopyIcon'
 import DocsIcon from './DocsIcon'
+import BluetoothIcon from './BluetoothIcon'
+import KeyboardIcon from './KeyboardIcon'
+import WifiIcon from './WifiIcon'
+import UsbIcon from './UsbIcon'
 
 export {
   BoxIcon,
@@ -60,4 +64,8 @@ export {
   CheckIcon,
   CopyIcon,
   DocsIcon,
+  BluetoothIcon,
+  KeyboardIcon,
+  WifiIcon,
+  UsbIcon,
 }

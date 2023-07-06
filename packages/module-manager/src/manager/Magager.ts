@@ -5,8 +5,10 @@ import {
   SpecificConfiguration,
   SpecificConfigurationEntryTypeValue,
 } from '@yalk/module'
+import { BaseAccessor, HTTPAccessor, KeyboardAccessor } from '@yalk/device-accessor'
 import { readdir, lstatSync, existsSync, rmSync } from 'fs'
 import { join } from 'path'
+import logger from '../../../server/build/server/libs/logger/index';
 
 type ModuleId = string
 
@@ -29,8 +31,17 @@ export default class Manager {
   private static readonly MODULE_RENDERED_FILENAME = 'app.js'
 
   private modules: Map<ModuleId, ModuleEntry> = new Map()
+  private accessors: Map<string, BaseAccessor> = new Map()
 
-  constructor(private readonly modulesPath: string) {}
+  constructor(private readonly modulesPath: string) {
+    const http = new HTTPAccessor()
+    const keyb = new KeyboardAccessor()
+
+    this.accessors.set(http.type, new HTTPAccessor())
+    this.accessors.set(keyb.type, new KeyboardAccessor())
+
+    this.accessors.forEach(a => a.run())
+  }
 
   /**
    * Read the manager directory to find modules and load them
@@ -111,6 +122,7 @@ export default class Manager {
 
     try {
       entry.module.start()
+      this.requireModuleAccessors(entry.module, id)
       entry.enabled = true
       return true
     } catch (_) {
@@ -133,6 +145,7 @@ export default class Manager {
 
     try {
       entry.module.stop()
+      this.releaseModuleAccessors(entry.module, id)
       entry.enabled = false
       return true
     } catch (_) {
@@ -208,7 +221,7 @@ export default class Manager {
    * @param data data to send
    */
   sendDataTo(moduleId: ModuleId, data: unknown): void {
-    this.getModule(moduleId).module.receiveData(data as ModuleProps)
+    //this.getModule(moduleId).module.receiveData(data as ModuleProps)
   }
 
   /**
@@ -265,6 +278,7 @@ export default class Manager {
         config.version,
         config.author,
         config.icon,
+        config.requires,
         specific,
       )
 
@@ -292,6 +306,44 @@ export default class Manager {
     }
 
     rmSync(modulePath, { recursive: true })
+  }
+
+  public requireModuleAccessors(module: Module, moduleId: ModuleId) {
+    const requires = module.requires
+
+    if (!requires || requires.length === 0) {
+      return
+    }
+
+    for (const required of requires) {
+      const accessor = this.accessors.get(required)
+
+      if (!accessor) {
+        throw new Error(`Module '${module.name}' requires invalid accessor '${required}'`)
+      }
+
+      accessor.require(module, moduleId)
+      logger.info(`Module '${moduleId}' has access to '${required}'`)
+    }
+  }
+
+  public releaseModuleAccessors(module: Module, moduleId: ModuleId) {
+    const requires = module.requires
+
+    if (!requires || requires.length === 0) {
+      return
+    }
+
+    for (const required of requires) {
+      const accessor = this.accessors.get(required)
+
+      if (!accessor) {
+        throw new Error(`Module '${module.name}' requires invalid accessor '${required}'`)
+      }
+
+      accessor.release(moduleId)
+      logger.info(`Module '${moduleId}' released its access to '${required}'`)
+    }
   }
 }
 

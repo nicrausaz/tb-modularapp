@@ -16,37 +16,23 @@ export default class ComposalStampRFID extends Module {
 
   init(): void {}
 
-  destroy(): void {
-    // Nothing to do here
-  }
+  destroy(): void {}
 
-  start(): void {
-    process.stdin.on('data', (data) => {
-      const id = data.toString('utf8').trim()
+  start(): void {}
 
-      this.notify({
-        status: 'loading',
-        data: id,
-      })
+  stop(): void {}
 
-      this.toggleClocking(id)
+  onReceive(type: string, data: string): void {
+    if (type !== 'keyboard') {
+      return
+    }
+
+    this.notify({
+      status: 'loading',
+      data: data,
     })
 
-    process.stdin.on('error', (error) => {
-      console.error("Erreur d'entrée standard :", error)
-    })
-
-    process.on('exit', () => this.stop())
-
-    process.stdin.resume()
-  }
-
-  stop(): void {
-    process.stdin.pause()
-  }
-
-  onReceive(data: ModuleProps): void {
-    // Nothing to do here
+    this.toggleClocking(data)
   }
 
   onNewSubscriber(): void {
