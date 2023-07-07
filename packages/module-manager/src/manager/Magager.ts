@@ -8,7 +8,6 @@ import {
 import { BaseAccessor, HTTPAccessor, KeyboardAccessor } from '@yalk/device-accessor'
 import { readdir, lstatSync, existsSync, rmSync } from 'fs'
 import { join } from 'path'
-import logger from '../../../server/build/server/libs/logger/index';
 
 type ModuleId = string
 
@@ -40,7 +39,7 @@ export default class Manager {
     this.accessors.set(http.type, new HTTPAccessor())
     this.accessors.set(keyb.type, new KeyboardAccessor())
 
-    this.accessors.forEach(a => a.run())
+    this.accessors.forEach((a) => a.run())
   }
 
   /**
@@ -216,12 +215,19 @@ export default class Manager {
   }
 
   /**
-   * Send data to a module
+   * Send data to a module if the module has access to the http accessor
    * @param moduleId module id
    * @param data data to send
    */
   sendDataTo(moduleId: ModuleId, data: unknown): void {
-    //this.getModule(moduleId).module.receiveData(data as ModuleProps)
+    const entry = this.getModule(moduleId)
+    const accessor = this.accessors.get('http')
+
+    if (!accessor || !accessor.hasAccess(entry.id)) {
+      throw new ModuleHTTPAccessorDenied(entry.id)
+    }
+
+    accessor.sendTo(entry.id, data)
   }
 
   /**
@@ -271,6 +277,8 @@ export default class Manager {
       // Load the specific configuration
       const specific = SpecificConfiguration.fromObject(config.specificConfig)
 
+      // TODO: add stronger configuration validation
+
       // Build the module configuration
       const configuration = new Configuration(
         config.name,
@@ -308,7 +316,12 @@ export default class Manager {
     rmSync(modulePath, { recursive: true })
   }
 
-  public requireModuleAccessors(module: Module, moduleId: ModuleId) {
+  /**
+   * Acquire the required accessors for a module
+   * @param module module to acquire accessors for
+   * @param moduleId module id to acquire accessors for
+   */
+  private requireModuleAccessors(module: Module, moduleId: ModuleId): void {
     const requires = module.requires
 
     if (!requires || requires.length === 0) {
@@ -323,11 +336,15 @@ export default class Manager {
       }
 
       accessor.require(module, moduleId)
-      logger.info(`Module '${moduleId}' has access to '${required}'`)
     }
   }
 
-  public releaseModuleAccessors(module: Module, moduleId: ModuleId) {
+  /**
+   * Release the required accessors for a module
+   * @param module module to release accessors for
+   * @param moduleId module id to release accessors for
+   */
+  private releaseModuleAccessors(module: Module, moduleId: ModuleId): void {
     const requires = module.requires
 
     if (!requires || requires.length === 0) {
@@ -342,16 +359,28 @@ export default class Manager {
       }
 
       accessor.release(moduleId)
-      logger.info(`Module '${moduleId}' released its access to '${required}'`)
     }
+  }
+
+  private configValidation(config: any): boolean {
+    return true
   }
 }
 
 /**
- * Error thrown when a module is not found
+ * Error thrown when a module is not found.
  */
 export class ModuleNotFoundError extends Error {
   constructor(moduleId: ModuleId) {
     super(`Module with id '${moduleId}' not found`)
+  }
+}
+
+/**
+ * Error thrown when a module is not allowed to receive HTTP data through the API.
+ */
+export class ModuleHTTPAccessorDenied extends Error {
+  constructor(moduleId: ModuleId) {
+    super(`Module '${moduleId}' is not allowed to receive HTTP data`)
   }
 }

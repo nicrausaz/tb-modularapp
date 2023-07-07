@@ -1,3 +1,3 @@
-import Manager from './manager/Magager'
+import Manager, { ModuleHTTPAccessorDenied } from './manager/Magager'
 
-export { Manager }
+export { Manager, ModuleHTTPAccessorDenied }

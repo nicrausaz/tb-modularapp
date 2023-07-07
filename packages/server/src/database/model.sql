@@ -69,7 +69,8 @@ CREATE TABLE IF NOT EXISTS ScreenSlots (
  APIKeys represents the keys that can be used to access the API
  */
 CREATE TABLE IF NOT EXISTS APIKeys (
-  key VARCHAR(255) NOT NULL,
+  id INTEGER NOT NULL,
   name VARCHAR(255) NOT NULL,
-  PRIMARY KEY (key)
+  key VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id)
 );

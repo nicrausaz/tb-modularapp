@@ -1,8 +1,8 @@
 import BaseAccessor from './BaseAccessor'
 
 /**
- * HTTPAccessor allows to send data over HTTP.
- * It uses the fetch API.
+ * HTTPAccessor allows to send data over HTTP and receive data from the API.
+ * It uses the fetch API to make HTTP requests.
  */
 export default class HTTPAccessor extends BaseAccessor {
   constructor() {
@@ -16,5 +16,6 @@ export default class HTTPAccessor extends BaseAccessor {
   }
 
   public run(): void {}
+
   public stop(): void {}
 }

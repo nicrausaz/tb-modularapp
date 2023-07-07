@@ -28,6 +28,11 @@ function Navbar() {
     }
   }
 
+  // const handleEditionClose = () => {
+  //   setIsProfileModalOpen(false)
+  //   setEditingUser(null)
+  // }
+
   return (
     <div className="navbar bg-base-100 border">
       <div className="navbar-start">
@@ -49,7 +54,7 @@ function Navbar() {
         user={authenticatedUser}
         isOpen={isProfileModalOpen}
         onConfirm={() => setIsProfileModalOpen(false)}
-        onClose={() => {
+        onCancel={() => {
           setIsProfileModalOpen(false)
         }}
       />

@@ -79,4 +79,8 @@ export default class BoxController {
       throw new NotFoundError('The specified file does not exist')
     }
   }
+
+  APIKeys = async (req: Request, res: Response) => {
+    res.send(await this.boxService.getAPIKeys())
+  }
 }

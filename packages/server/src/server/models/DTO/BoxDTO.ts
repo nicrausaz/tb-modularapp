@@ -7,3 +7,9 @@ export type BoxDTO = {
 export type UpdateBoxDTO = {
   readonly name: string
 }
+
+export type APIKeyDTO = {
+  readonly id: string
+  readonly name: string
+  readonly key: string
+}

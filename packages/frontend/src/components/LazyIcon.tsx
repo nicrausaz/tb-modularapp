@@ -5,7 +5,7 @@ type IconProps = {
 }
 
 export default function LazyIcon({ name, ...props }: IconProps) {
-  const Icon = lazy(() => import(`../assets/icons/${name}`))
+  const Icon = lazy(() => import(/* @vite-ignore */ `../assets/icons/${name}`))
   return (
     <Suspense>
       <Icon {...props} />

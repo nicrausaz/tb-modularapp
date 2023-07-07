@@ -379,6 +379,18 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *     responses:
    *       204:
    *         description: Event sent
+   *       403:
+   *         description: The module is not enabled or not allowed to receive events
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *             example: {
+   *                          "message": "Module with id 5f68ba88-df21-4fbe-98b8-f39a6b6e469a is not allowed to receive HTTP data",
+   *                       }
    *       404:
    *         description: The module does not exist
    *         content:
@@ -748,6 +760,14 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
   app.get('/api/box/static/module/:moduleId/:filename', boxController.moduleStaticFile)
 
   app.get('/api/box/static/user/:filename', boxController.userStaticFile)
+
+  app.get('/api/box/security/keys', JwtAuthMiddleware, boxController.APIKeys)
+
+  // app.post('/api/box/security/keys', JwtAuthMiddleware, boxController.generateAPIKey)
+
+  // app.patch('/api/box/security/keys/:id', JwtAuthMiddleware, boxController.updateAPIKey)
+
+  // app.delete('/api/box/security/keys/:id', JwtAuthMiddleware, boxController.deleteAPIKey)
 
   /**
    * User routes

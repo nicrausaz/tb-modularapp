@@ -14,6 +14,7 @@ import { useBox } from '@/contexts/BoxContext'
 import { getAll } from '@/api/requests/users'
 import IconButton from '@/components/IconButton'
 import { DocsIcon, GitHubIcon, SaveIcon, WebIcon } from '@/assets/icons'
+import APIKeysList from '@/components/settings/APIKeysList'
 
 export default function Settings() {
   const { data, loading, error } = useFetchAuth<User[]>('/api/users')
@@ -26,7 +27,6 @@ export default function Settings() {
   const [editingBox, setEditingBox] = useState({
     name: box?.name || '',
   })
-
 
   useEffect(() => {
     if (data) {
@@ -136,6 +136,10 @@ export default function Settings() {
           <div className="divider"></div>
 
           <UsersList users={users} onUpdated={refreshUsers} />
+
+          <div className="divider"></div>
+
+          <APIKeysList keys={[]} onUpdated={() => {}} />
         </div>
       </div>
 

@@ -41,3 +41,13 @@ export class ModuleDisabledException extends ForbiddenError {
     logger.warn(`Module with id ${id} is disabled`)
   }
 }
+
+/**
+ * Error thrown when a module is not allowed to receive HTTP data through the API.
+ */
+export class ModuleHTTPAccessDenied extends ForbiddenError {
+  constructor(id: string) {
+    super(`Module with id ${id} is not allowed to receive HTTP data`)
+    logger.warn(`Module with id ${id} is not allowed to receive HTTP data`)
+  }
+}

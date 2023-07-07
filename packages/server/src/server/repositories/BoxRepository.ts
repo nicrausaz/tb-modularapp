@@ -4,6 +4,7 @@ import { Box } from '../models/entities/Box'
 import { unlinkSync } from 'fs'
 import { UpdateBoxDTO } from '../models/DTO/BoxDTO'
 import { join } from 'path'
+import { APIKey } from '../models/entities/APIKey'
 
 /**
  * Handle the database operations for the box
@@ -76,5 +77,21 @@ export default class BoxRepository {
    */
   public deleteIcon(icon: string) {
     unlinkSync(join(process.env.PUBLIC_DIR ?? '', icon))
+  }
+
+  /**
+   * Get all the API keys
+   */
+  public getAPIKeys(): Promise<APIKey[]> {
+    const db = getDB()
+    return new Promise((resolve, reject) => {
+      db.all('SELECT * FROM APIKeys', (err, rows) => {
+        if (err) {
+          reject(err)
+        }
+        resolve(rows as APIKey[])
+      })
+      db.close()
+    })
   }
 }

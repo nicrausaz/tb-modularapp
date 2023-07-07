@@ -1,7 +1,7 @@
 import { User, UserUpdate } from '@/models/User'
 import ConfirmModal from '@/components/ConfirmModal'
 import FilePreviewerInput from '@/components/FilePreviewerInput'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Input from '@/components/Input'
 import { useToast } from '@/contexts/ToastContext'
 import { create, update, updateAvatar } from '@/api/requests/users'
@@ -10,12 +10,12 @@ import { useTranslation } from 'react-i18next'
 
 type UserEditionModalProps = {
   isOpen: boolean
-  onClose: () => void
+  onCancel: () => void
   onConfirm(): void
   user: User | null
 }
 
-export default function UserEditionModal({ isOpen, user, onClose, onConfirm }: UserEditionModalProps) {
+export default function UserEditionModal({ isOpen, user, onCancel, onConfirm }: UserEditionModalProps) {
   const { t } = useTranslation()
 
   const [errors, setErrors] = useState({
@@ -31,10 +31,13 @@ export default function UserEditionModal({ isOpen, user, onClose, onConfirm }: U
     avatar: null,
   })
 
-
-  if (!isOpen) {
-    return null
-  }
+  useEffect(() => {
+    setForm({
+      username: user?.username ?? '',
+      password: '',
+      avatar: null,
+    })
+  }, [isOpen])
 
   const mode = user ? 'update' : 'create'
   const title = user ? t('users.edit') : t('users.create')
@@ -107,12 +110,12 @@ export default function UserEditionModal({ isOpen, user, onClose, onConfirm }: U
   }
 
   const cleanAndClose = () => {
-    setForm({
-      username: '',
-      password: '',
-      avatar: null,
-    })
-    onClose()
+    // setForm({
+    //   username: '',
+    //   password: '',
+    //   avatar: null,
+    // })
+    onCancel()
   }
 
   return (

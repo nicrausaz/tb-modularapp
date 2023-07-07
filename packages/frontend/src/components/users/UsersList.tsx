@@ -37,7 +37,7 @@ function UserRow({ user, onClickEdit, onClickDelete }: UserRowProps) {
           <SettingsIcon className="w-4 h-4" />
         </button>
         {!user.isDefault && (
-          <button className="btn btn-circle bg-base-100" onClick={() => onClickDelete(user)}>
+          <button className="btn btn-circle btn-error bg-base-100 text-error hover:text-base-100 hover:animate-shaky" onClick={() => onClickDelete(user)}>
             <TrashIcon className="w-4 h-4" />
           </button>
         )}
@@ -87,12 +87,22 @@ export default function UsersList({ users, onUpdated }: UsersListProps) {
     onUpdated()
   }
 
+  const handleEditionClose = () => {
+    setUserEditionModalOpen(false)
+    setEditingUser(null)
+  }
+
+  const handleDeletionClose = () => {
+    setUserDeletionModalOpen(false)
+    setDeletingUser(null)
+  }
+
   return (
     <div>
       <div className="border-b py-2">
         <div className="flex items-center justify-between">
           <label className="label">
-            <span className="label-text">{t('users.title')}</span>
+            <span className="label-text font-bold">{t('users.title')}</span>
           </label>
           <button className="btn btn-sm mr-2" onClick={openAddUserModal}>
             {t('users.add')}
@@ -108,13 +118,13 @@ export default function UsersList({ users, onUpdated }: UsersListProps) {
         user={editingUser}
         isOpen={userEditionModalOpen}
         onConfirm={handleConfirm}
-        onClose={() => setUserEditionModalOpen(false)}
+        onCancel={handleEditionClose}
       />
       <ConfirmUserDeleteModal
         user={deletingUser}
         isOpen={userDeletionModalOpen}
         onConfirm={handleDelete}
-        onCancel={() => setUserDeletionModalOpen(false)}
+        onCancel={handleDeletionClose}
       />
     </div>
   )

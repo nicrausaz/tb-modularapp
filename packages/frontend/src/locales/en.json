@@ -58,11 +58,21 @@
     "feedbacks": {
       "icon_saved_ok": "Icon saved successfully",
       "box_saved_ok": "Box saved successfully"
+    },
+    "api_keys": {
+      "title": "API Keys",
+      "description": "API keys allow you to connect to the API and use it in your own applications.",
+      "add": "Add",
+      "delete": "Delete",
+      "confirm_delete": "Are you sure you want to delete this key ?",
+      "show": "Show",
+      "hide": "Hide"
     }
   },
   "users": {
     "title": "Users",
     "add": "Add",
+    "create": "Create user",
     "edit": "Edit user",
     "update": "Update user",
     "delete": "Delete"

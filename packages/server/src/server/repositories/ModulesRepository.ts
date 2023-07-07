@@ -7,6 +7,8 @@ import { randomUUID } from 'crypto'
 import { mkdirSync, rmSync } from 'fs'
 import AdmZip from 'adm-zip'
 import { join } from 'path'
+import { ModuleHTTPAccessorDenied } from '@yalk/module-manager'
+import { ModuleHTTPAccessDenied } from '../exceptions/Modules'
 
 export default class ModulesRepository {
   constructor(private manager: ModuleDatabaseManager) {}
@@ -109,7 +111,13 @@ export default class ModulesRepository {
    * @param data data to send
    */
   sendEventToModule(id: string, data: unknown): void {
-    this.manager.sendDataTo(id, data)
+    try {
+      this.manager.sendDataTo(id, data)
+    } catch (e) {
+      if (e instanceof ModuleHTTPAccessorDenied) {
+        throw new ModuleHTTPAccessDenied(id)
+      }
+    }
   }
 
   /**

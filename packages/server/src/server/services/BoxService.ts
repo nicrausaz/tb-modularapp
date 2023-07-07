@@ -1,6 +1,6 @@
 import { UploadedFile } from 'express-fileupload'
 import BoxMapper from '../mappers/BoxMapper'
-import { BoxDTO } from '../models/DTO/BoxDTO'
+import { APIKeyDTO, BoxDTO } from '../models/DTO/BoxDTO'
 import { BoxRepository } from '../repositories'
 
 export default class BoxService {
@@ -37,5 +37,12 @@ export default class BoxService {
     this.boxRepository.updateIcon(file.name)
 
     return file.name
+  }
+
+  /**
+   * Get the API keys
+   */
+  async getAPIKeys(): Promise<APIKeyDTO[]> {
+    return this.boxRepository.getAPIKeys()
   }
 }

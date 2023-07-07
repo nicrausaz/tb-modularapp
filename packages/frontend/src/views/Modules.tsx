@@ -161,7 +161,7 @@ export default function Modules() {
         <IconButton
           icon={<UploadIcon className="w-5 h-5" />}
           onClick={() => setUploadModalOpen(true)}
-          className="border border-gray-300"
+          className={`btn-neutral ${modules.length ? '' : ' animate-wiggle'}`}
           label="Add"
           position={'left'}
         />
