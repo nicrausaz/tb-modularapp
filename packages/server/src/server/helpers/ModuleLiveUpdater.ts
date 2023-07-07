@@ -23,7 +23,7 @@ export default class ModuleLiveUpdater {
    */
   public subscribe(moduleId: string, callback: (render: string) => void) {
     this.emitter.on(moduleId.toString(), callback)
-    logger.info(`UPT: Subscribed to module ${moduleId}, ${this.emitter.listenerCount(moduleId.toString())} listeners`)
+    logger.info(`LiveUpdater: Subscribed to module ${moduleId}, ${this.emitter.listenerCount(moduleId.toString())} listeners`)
   }
 
   /**
@@ -34,12 +34,12 @@ export default class ModuleLiveUpdater {
   public unsubscribe(moduleId: string, callback: (render: string) => void) {
     this.emitter.off(moduleId.toString(), callback)
     logger.info(
-      `UPT: Unsubscribed from module ${moduleId}, ${this.emitter.listenerCount(moduleId.toString())} listeners left`,
+      `LiveUpdater: Unsubscribed from module ${moduleId}, ${this.emitter.listenerCount(moduleId.toString())} listeners left`,
     )
   }
 
   public clearModule(moduleId: string) {
     this.emitter.removeAllListeners(moduleId.toString())
-    logger.info(`UPT: Cleared module ${moduleId}`)
+    logger.info(`LiveUpdater: Cleared module ${moduleId}`)
   }
 }

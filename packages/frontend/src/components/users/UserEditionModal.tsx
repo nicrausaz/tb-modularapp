@@ -25,13 +25,6 @@ export default function UserEditionModal({ isOpen, user, onClose, onConfirm }: U
 
   const { tSuccess, tError } = useToast()
 
-  if (!isOpen) {
-    return null
-  }
-
-  const mode = user ? 'update' : 'create'
-  const title = user ? t('users.edit') : t('users.create')
-
   const [form, setForm] = useState<{ username: string; password: string; avatar: File | null }>({
     username: user?.username ?? '',
     password: '',
@@ -39,6 +32,12 @@ export default function UserEditionModal({ isOpen, user, onClose, onConfirm }: U
   })
 
 
+  if (!isOpen) {
+    return null
+  }
+
+  const mode = user ? 'update' : 'create'
+  const title = user ? t('users.edit') : t('users.create')
 
   const userCreation = async (username: string, password: string): Promise<boolean> => {
     const newUser = {

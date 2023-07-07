@@ -1,5 +1,5 @@
 import { SpecificConfiguration, Module, SpecificConfigurationEntry } from '@yalk/module'
-import { ModuleDTO, ModuleDTOWithConfig } from '../models/DTO/ModuleDTO'
+import { InSlotModuleDTO, ModuleDTO, ModuleDTOWithConfig } from '../models/DTO/ModuleDTO'
 import { ConfiguredModuleEntity, ModuleEntity } from '../models/entities/Module'
 import { ModuleDatabaseManagerRecord } from '../helpers/ModuleDatabaseManager'
 
@@ -79,18 +79,13 @@ export default class ModuleMapper {
     }
   }
 
-  // TODO: less data in slot (create a new DTO)
-  static toSlotModule(module: ModuleEntity): Partial<ModuleDTO> {
+  static toSlotModule(module: ModuleEntity): InSlotModuleDTO {
     return {
       id: module.id,
       name: module.name,
-      description: module.description,
-      author: module.author,
-      version: module.version,
       enabled: module.enabled,
       icon: module.icon,
       nickname: module.nickname,
-      importedAt: module.importedAt,
     }
   }
 

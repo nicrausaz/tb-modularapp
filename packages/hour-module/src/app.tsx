@@ -7,31 +7,109 @@ export default class HourModuleRenderer extends ModuleRenderer {
     const d = new Date(date)
 
     return (
-      <div className="w-full h-full text-center">
-        <div className="clock rounded-full bg-white border-4 border-white shadow-inset-2px-3px-8px">
-          <div className="wrap overflow-hidden relative w-350 h-350 rounded-full">
+      <div>
+        <style>
+          {`
+          .clock {
+            border-radius: 100%;
+            background: #ffffff;
+            font-family: "Montserrat";
+            border: 5px solid white;
+            box-shadow: inset 2px 3px 8px 0 rgba(0, 0, 0, 0.1);
+          }
+
+          .wrap {
+            overflow: hidden;
+            position: relative;
+            width: 350px;
+            height: 350px;
+            border-radius: 100%;
+          }
+
+          .minute,
+          .hour {
+            position: absolute;
+            height: 100px;
+            width: 6px;
+            margin: auto;
+            top: -27%;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: black;
+            transform-origin: bottom center;
+            transform: rotate(0deg);
+            box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
+            z-index: 1;
+          }
+
+          .minute {
+            position: absolute;
+            height: 130px;
+            width: 4px;
+            top: -38%;
+            left: 0;
+            box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
+            transform: rotate(90deg);
+          }
+
+          .second {
+            position: absolute;
+            height: 90px;
+            width: 2px;
+            margin: auto;
+            top: -26%;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            border-radius: 4px;
+            background: #FF4B3E;
+            transform-origin: bottom center;
+            transform: rotate(180deg);
+            z-index: 1;
+          }
+
+          .dot {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 12px;
+            height: 12px;
+            border-radius: 100px;
+            background: white;
+            border: 2px solid #1b1b1b;
+            border-radius: 100px;
+            margin: auto;
+            z-index: 1;
+          }
+          `}
+        </style>
+        <div className="clock">
+          <div className="wrap">
             <span
-              className="hour absolute h-100 w-6 mx-auto top--27 left-0 bottom-0 right-0 bg-black origin-bottom-center transform"
+              className="hour"
               style={{
                 transform: `rotate(${d.getHours() * 30}deg)`,
               }}
             ></span>
             <span
-              className="minute absolute h-130 w-4 top--38 left-0 bg-black origin-bottom-center transform rotate-90"
+              className="minute"
               style={{
                 transform: `rotate(${d.getMinutes() * 6}deg)`,
               }}
             ></span>
             <span
-              className="second absolute h-90 w-2 mx-auto top--26 left-0 bottom-0 right-0 bg-red-500 origin-bottom-center transform rotate-180"
+              className="second"
               style={{
                 transform: `rotate(${d.getSeconds() * 6}deg)`,
               }}
             ></span>
-            <span className="dot absolute top-0 left-0 right-0 bottom-0 w-12 h-12 rounded-full bg-white border-2 border-black mx-auto"></span>
+            <span className="dot"></span>
           </div>
         </div>
-        <span className="text-xl">{d.toString()}</span>
+        <span>{d.toLocaleDateString()}</span>
       </div>
     )
   }

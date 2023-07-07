@@ -1,5 +1,5 @@
 import { getDB } from '../../database/database'
-import { ModuleDTO } from '../models/DTO/ModuleDTO'
+import { InSlotModuleDTO } from '../models/DTO/ModuleDTO'
 import { ScreenDTO, ScreenSlotDTO, UpdateScreenDTO, UpdateScreenSlotDTO } from '../models/DTO/ScreenDTO'
 import { ModuleEntity } from '../models/entities/Module'
 import { ScreenEntity } from '../models/entities/Screen'
@@ -48,7 +48,7 @@ export default class ScreenMapper {
     }
   }
 
-  private static getSlotModuleFromId(moduleId: string): Promise<ModuleDTO> {
+  private static getSlotModuleFromId(moduleId: string): Promise<InSlotModuleDTO> {
     const db = getDB()
 
     return new Promise((resolve, reject) => {
@@ -56,7 +56,7 @@ export default class ScreenMapper {
         if (err) {
           reject(err)
         } else {
-          resolve(ModuleMapper.toSlotModule(row as ModuleEntity) as ModuleDTO) // TODO: remove as when new DTO is created
+          resolve(ModuleMapper.toSlotModule(row as ModuleEntity))
         }
       })
     })

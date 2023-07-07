@@ -34,6 +34,13 @@ export default class EventsManager {
     this.conn.onmessage = (event) => {
       this.onReceive(event)
     }
+    this.conn.onclose = () => {
+      console.log('Connection closed')
+    }
+
+    this.conn.onerror = (err) => {
+      console.error('Connection error', err)
+    }
   }
 
   getModule(id: string, callback: (data: RecEvent) => void) {

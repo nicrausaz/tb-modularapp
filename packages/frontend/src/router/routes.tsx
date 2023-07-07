@@ -1,4 +1,4 @@
-import { Navigate, RouteObject } from 'react-router-dom'
+import { RouteObject } from 'react-router-dom'
 
 import MainLayout from '@/layouts/MainLayout'
 import Login from '@/views/Login'

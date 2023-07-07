@@ -16,7 +16,7 @@ export default class ModulesService {
   constructor(
     private modulesRepository: ModulesRepository,
     private screensRepository: ScreensRepository,
-    public moduleUpdater: ModuleLiveUpdater, // todo: change this to private
+    private moduleUpdater: ModuleLiveUpdater,
   ) {}
 
   /**
@@ -117,8 +117,6 @@ export default class ModulesService {
     if (!entry.enabled) {
       throw new ModuleDisabledException(id)
     }
-    // this.moduleUpdater.subscribe(id, handler)
-
     this.modulesRepository.subscribeToModuleEvents(id, handler)
   }
 
@@ -130,7 +128,7 @@ export default class ModulesService {
    * @throws ModuleDisabledException if the module is disabled
    */
   unsubscribeFromModuleEvents = async (id: string, handler: (render: string) => void) => {
-    const entry = await this.getModuleEntry(id)
+    await this.getModuleEntry(id)
     this.modulesRepository.unsubscribeFromModuleEvents(id, handler)
   }
 
@@ -202,5 +200,9 @@ export default class ModulesService {
     return this.getModuleEntry(id)
       .then(() => true)
       .catch(() => false)
+  }
+
+  get moduleLiveUpdater() {
+    return this.moduleUpdater
   }
 }

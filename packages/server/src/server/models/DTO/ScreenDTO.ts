@@ -1,4 +1,4 @@
-import { ModuleDTO } from './ModuleDTO'
+import { InSlotModuleDTO } from './ModuleDTO'
 
 export type ScreenDTO = {
   readonly id: number
@@ -9,7 +9,7 @@ export type ScreenDTO = {
 
 export type ScreenSlotDTO = {
   readonly id: string
-  module: ModuleDTO
+  module: InSlotModuleDTO
   readonly width: number
   readonly height: number
   readonly x: number

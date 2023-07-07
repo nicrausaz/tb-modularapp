@@ -30,7 +30,10 @@ export type ModuleConfigurationUpdateDTO = {
   readonly fields: ModuleConfigurationFieldDTO[]
 }
 
-// TODO
 export type InSlotModuleDTO = {
   readonly id: string
+  readonly name: string
+  readonly enabled: boolean
+  readonly icon?: string
+  readonly nickname?: string
 }

@@ -85,7 +85,7 @@ export default class EventsController {
     }
     clientCallbacks.add([renderCallback, statusCallback])
 
-    this.modulesService.moduleUpdater.subscribe(moduleId, statusCallback)
+    this.modulesService.moduleLiveUpdater.subscribe(moduleId, statusCallback)
     this.modulesService.subscribeToModuleEvents(moduleId, renderCallback).catch(() => {
       conn.send(
         JSON.stringify({
@@ -113,7 +113,7 @@ export default class EventsController {
 
     clientCallbacks.forEach((callback) => {
       this.modulesService.unsubscribeFromModuleEvents(moduleId, callback[0])
-      this.modulesService.moduleUpdater.unsubscribe(moduleId, callback[1])
+      this.modulesService.moduleLiveUpdater.unsubscribe(moduleId, callback[1])
     })
 
     clientCallbacks.clear()
