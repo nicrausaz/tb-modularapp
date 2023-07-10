@@ -81,7 +81,7 @@ export default function APIKeysList({ keys, onUpdated }: APIKeyListProps) {
             <span className="label-text font-bold">{t('settings.api_keys.title')}</span>
             <div
               className="tooltip tooltip-right tooltip-info"
-              data-tip="Allows other application to interact with your modules through the API"
+              data-tip="Allows other applications to interact with your modules through the API"
             >
               <label className="btn btn-circle btn-ghost btn-xs text-info">
                 <InfoIcon />

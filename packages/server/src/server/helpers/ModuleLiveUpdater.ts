@@ -12,7 +12,6 @@ export default class ModuleLiveUpdater {
    * @param moduleId the screen id to notify
    */
   public notifyChange(moduleId: string) {
-    console.log('Notified from a status change')
     this.emitter.emit(moduleId)
   }
 

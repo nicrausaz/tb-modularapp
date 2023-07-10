@@ -204,12 +204,15 @@ export default function Module() {
               <span className="label-text">Requires</span>
             </label>
             <div className="flex gap-2">
-              {module.requires.length === 0 && <div className="text-neutral text-sm italic ml-6">No requirements</div>}
-              {module.requires.map((require) => (
-                <div className="badge badge-neutral badge-lg gap-2" key={require}>
-                  <LazyIcon name={`${require}Icon`} /> {require}
-                </div>
-              ))}
+              {!module.requires || module.requires.length === 0 && (
+                <div className="text-neutral text-sm italic ml-6">No requirements</div>
+              )}
+              {module.requires &&
+                module.requires.map((require) => (
+                  <div className="badge badge-neutral badge-lg gap-2" key={require}>
+                    <LazyIcon name={`${require}Icon`} /> {require}
+                  </div>
+                ))}
             </div>
           </div>
 

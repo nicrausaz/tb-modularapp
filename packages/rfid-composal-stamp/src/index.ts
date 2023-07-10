@@ -22,17 +22,28 @@ export default class ComposalStampRFID extends Module {
 
   stop(): void {}
 
-  onReceive(type: string, data: string): void {
-    if (type !== 'keyboard') {
-      return
+  onReceive(type: string, data: any): void {
+    // Trigger the clocking using the keyboard event (RFID reader)
+    if (type === 'keyboard') {
+      this.notify({
+        status: 'loading',
+        data: data,
+      })
+
+      this.toggleClocking(data)
     }
 
-    this.notify({
-      status: 'loading',
-      data: data,
-    })
+    // Trigger the clocking using the HTTP event (API)
+    if (type === 'http') {
+      if (data.event === 'toggle') {
+        this.notify({
+          status: 'loading',
+          data: data,
+        })
 
-    this.toggleClocking(data)
+        this.toggleClocking(data)
+      }
+    }
   }
 
   onNewSubscriber(): void {

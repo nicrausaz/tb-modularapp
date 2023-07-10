@@ -135,7 +135,6 @@ export default class BoxRepository {
    */
   public async APIKeyExists(id: number): Promise<boolean> {
     const db = getDB()
-    console.log(id)
     return new Promise((resolve, reject) => {
       db.all('SELECT * FROM APIKeys WHERE id = ?', [id], (err, rows) => {
         if (err) {

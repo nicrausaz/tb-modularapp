@@ -12,6 +12,7 @@ export interface ModuleProps {
 export default abstract class Module {
   private readonly emitter = new EventEmitter()
   private static readonly UPDATE_STATE_KEY = 'update'
+  private static readonly SEND_DATA_KEY = 'send'
 
   public constructor(private readonly _configuration: Configuration, private readonly _renderer?: ModuleRenderer) {}
 
@@ -71,11 +72,25 @@ export default abstract class Module {
   }
 
   /**
+   * Register to the module data send
+   */
+  public registerToSend(callback: (id: string, type: string, data: ModuleProps) => void): void {
+    this.emitter.on(Module.SEND_DATA_KEY, callback)
+  }
+
+  /**
+   * Unregister from the module data send
+   */
+  public unregisterFromSend(callback: (id: string, type: string, data: ModuleProps) => void): void {
+    this.emitter.off(Module.SEND_DATA_KEY, callback)
+  }
+
+  /**
    * Give data to the module
    * @param type The type of received data (usually the key of the device accessor)
    * @param data The data to give
    */
-  public receiveData(type: string, data: ModuleProps): void {
+  public receiveData(type: string, data: any): void {
     this.onReceive(type, data)
   }
 
@@ -137,6 +152,15 @@ export default abstract class Module {
     if (this._renderer) {
       this.emitter.emit(Module.UPDATE_STATE_KEY, renderToStaticMarkup(this._renderer.render(data)))
     }
+  }
+
+  /**
+   * Emit data out of the module
+   * @param type type of the data (usually to match different targets (http, usb, etc.))
+   * @param data data to send
+   */
+  protected sendData(type: string, data: any): void {
+    this.emitter.emit(Module.SEND_DATA_KEY, type, data)
   }
 
   /**

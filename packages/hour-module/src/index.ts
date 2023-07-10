@@ -28,7 +28,6 @@ export default class HourModule extends Module {
   }
 
   onReceive(type: string, data: ModuleProps): void {
-    // Nothing to do here
     console.log('HOUR MODULE, received:', type, data)
   }
 

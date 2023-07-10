@@ -10,19 +10,17 @@ export default class KeyboardAccessor extends BaseAccessor {
     super('keyboard')
   }
 
-  public send<T>() {}
+  public send() {
+    // Nothing can be sent to the keyboard
+  }
 
   public run() {
     process.stdin.on('data', (data) => {
-      const stringData = data.toString('utf8').trim()
-      console.log('data from keyboard accessor', stringData)
-      this.sendToAll(stringData)
+      this.sendToAll(data.toString('utf8').trim())
     })
     process.stdin.on('error', (error) => {
       console.error("Erreur d'entrée standard :", error)
     })
-
-    // process.on('exit', () => this.stop())
 
     process.stdin.resume()
   }

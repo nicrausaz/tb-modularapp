@@ -38,7 +38,7 @@ export default abstract class BaseAccessor {
    * Send data using the accessor's protocol
    * @param data data to send
    */
-  public abstract send(...args: any[]): any
+  public abstract send(...args: any[]): void
 
   /**
    * Run the accessor

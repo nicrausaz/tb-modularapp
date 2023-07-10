@@ -14,10 +14,13 @@ type ModuleId = string
 type ModuleEntry = {
   module: Module
   enabled: boolean
+  onSend: (type: string, data: any) => void
 }
 
-export type ManagerEntry = ModuleEntry & {
+export type ManagerEntry = {
   id: ModuleId
+  module: Module
+  enabled: boolean
 }
 
 /**
@@ -76,6 +79,9 @@ export default class Manager {
       this.modules.set(id, {
         module,
         enabled: false,
+        onSend: (type: string, data: any) => {
+          this.redirectDataToAccessors(id, type, data)
+        },
       })
       return true
     } catch (_) {
@@ -123,6 +129,7 @@ export default class Manager {
       entry.module.start()
       entry.enabled = true
       this.requireModuleAccessors(entry.module, id)
+      entry.module.registerToSend(this.modules.get(id)!.onSend)
       return true
     } catch (_) {
       return false
@@ -145,6 +152,7 @@ export default class Manager {
     try {
       entry.module.stop()
       entry.enabled = false
+      entry.module.unregisterFromSend(this.modules.get(id)!.onSend)
       this.releaseModuleAccessors(entry.module, id)
       return true
     } catch (_) {
@@ -160,10 +168,11 @@ export default class Manager {
   }
 
   /**
-   * Stop all the modules
+   * Stop all the modules and release their accessors
    */
   stop(): void {
     this.modules.forEach((_, id) => this.disableModule(id))
+    this.accessors.forEach((a) => a.run())
   }
 
   /**
@@ -297,7 +306,7 @@ export default class Manager {
       this.registerModule(id, new module.default(configuration, renderer))
       return true
     } catch (e) {
-      console.log(`Module '${filename}', was not loaded because it has invalid structure: ${e}`)
+      console.error(`Module '${filename}', was not loaded because it has invalid structure: ${e}`)
       return false
     }
   }
@@ -364,6 +373,21 @@ export default class Manager {
 
   private configValidation(config: any): boolean {
     return true
+  }
+
+  private redirectDataToAccessors(id: string, type: string, data: unknown): void {
+    const accessor = this.accessors.get(type)
+    if (!accessor) {
+      console.error('No accessor found for type', type)
+      return
+    }
+
+    if (!accessor.hasAccess(id)) {
+      console.error(`Module '${id}' is not allowed to receive data from accessor '${type}'`)
+      return
+    }
+
+    accessor.send(id, data)
   }
 }
 
