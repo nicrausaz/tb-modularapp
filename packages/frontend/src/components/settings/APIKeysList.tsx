@@ -94,13 +94,21 @@ export default function APIKeysList({ keys, onUpdated }: APIKeyListProps) {
           </button>
         </div>
       </div>
+      {keys.length === 0 && (
+        <div className="flex items-center justify-center p-4">
+          <div className="text-gray-500">{t('settings.api_keys.empty')}</div>
+        </div>
+      )}
       {keys.map((key) => (
         <APIKeyRow key={key.id} APIKey={key} onClickDelete={handleOpenDeleteModal} />
       ))}
 
       <APIKeyCreationModal
         isOpen={keyCreationModalOpen}
-        onConfirm={() => setKeyCreationModalOpen(false)}
+        onConfirm={() => {
+          handleCreationClose()
+          tSuccess(t('status.success'), t('settings.api_keys.create_success'))
+        }}
         onCancel={handleCreationClose}
       />
 

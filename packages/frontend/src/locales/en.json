@@ -65,8 +65,7 @@
       "add": "Add",
       "delete": "Delete",
       "confirm_delete": "Are you sure you want to delete this key ?",
-      "show": "Show",
-      "hide": "Hide"
+      "empty": "No API keys created"
     }
   },
   "users": {

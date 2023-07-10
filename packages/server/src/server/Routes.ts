@@ -2,7 +2,7 @@ import express, { NextFunction, Request, Response } from 'express'
 import { AuthController, BoxController, ModulesController, ScreensController, UsersController } from './controllers'
 import { BoxService, ModulesService, ScreensService, UsersService } from './services'
 import { UsersRepository, ModulesRepository, ScreensRepository, BoxRepository } from './repositories'
-import { JwtAuthMiddleware } from './middlewares/AuthMiddleware'
+import { APIKeyAuthMiddleware, JwtAuthMiddleware } from './middlewares/AuthMiddleware'
 import ModuleDatabaseManager from './helpers/ModuleDatabaseManager'
 import { join } from 'path'
 import {
@@ -356,7 +356,6 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    */
   app.patch('/api/modules/:id', Validator(moduleUpdateRules), JwtAuthMiddleware, modulesController.update)
 
-  // TODO: add security (API key)
   /**
    * @swagger
    * /api/modules/{id}/events:
@@ -405,7 +404,7 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *                          "message": "Module not found",
    *                       }
    */
-  app.post('/api/modules/:id/events', JwtAuthMiddleware, modulesController.sendEvent)
+  app.post('/api/modules/:id/events', APIKeyAuthMiddleware, modulesController.sendEvent)
 
   /**
    * @swagger
