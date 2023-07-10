@@ -33,6 +33,8 @@ import KeyboardIcon from './KeyboardIcon'
 import HTTPIcon from './HTTPIcon'
 import UsbIcon from './UsbIcon'
 import AddKeyIcon from './AddKeyIcon'
+import ArrowLeftIcon from './ArrowLeftIcon'
+import ArrowRightIcon from './ArrowRightIcon'
 
 export {
   BoxIcon,
@@ -70,4 +72,6 @@ export {
   HTTPIcon,
   UsbIcon,
   AddKeyIcon,
+  ArrowLeftIcon,
+  ArrowRightIcon,
 }

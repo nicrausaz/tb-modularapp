@@ -7,6 +7,7 @@ import ModuleDatabaseManager from './helpers/ModuleDatabaseManager'
 import { join } from 'path'
 import {
   boxUpdateRules,
+  generateAPIKeyRules,
   loginRules,
   moduleConfigurationUpdateRules,
   moduleStatusUpdateRules,
@@ -763,11 +764,9 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
 
   app.get('/api/box/security/keys', JwtAuthMiddleware, boxController.APIKeys)
 
-  // app.post('/api/box/security/keys', JwtAuthMiddleware, boxController.generateAPIKey)
+  app.post('/api/box/security/keys', Validator(generateAPIKeyRules), JwtAuthMiddleware, boxController.generateAPIKey)
 
-  // app.patch('/api/box/security/keys/:id', JwtAuthMiddleware, boxController.updateAPIKey)
-
-  // app.delete('/api/box/security/keys/:id', JwtAuthMiddleware, boxController.deleteAPIKey)
+  app.delete('/api/box/security/keys/:id', JwtAuthMiddleware, boxController.deleteAPIKey)
 
   /**
    * User routes

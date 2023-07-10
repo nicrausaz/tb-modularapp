@@ -1,7 +1,9 @@
 import { UploadedFile } from 'express-fileupload'
 import BoxMapper from '../mappers/BoxMapper'
-import { APIKeyDTO, BoxDTO } from '../models/DTO/BoxDTO'
+import { APIKeyDTO, BoxDTO, CreateAPIKeyDTO } from '../models/DTO/BoxDTO'
 import { BoxRepository } from '../repositories'
+import { generateApiKey } from '../libs/security'
+import { APIKeyNotFoundException } from '../exceptions/Box'
 
 export default class BoxService {
   constructor(private boxRepository: BoxRepository) {}
@@ -44,5 +46,32 @@ export default class BoxService {
    */
   async getAPIKeys(): Promise<APIKeyDTO[]> {
     return this.boxRepository.getAPIKeys()
+  }
+
+  /**
+   * Generate a new API key
+   */
+  async generateAPIKey(createKey: CreateAPIKeyDTO): Promise<string> {
+    const { key, hash } = await generateApiKey()
+
+    const creation = {
+      name: createKey.name,
+      key: hash,
+      display: key.substring(0, 5) + '∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗',
+    }
+
+    await this.boxRepository.createAPIKey(creation)
+    return key
+  }
+
+  /**
+   * Delete an API key
+   */
+  async deleteAPIKey(id: number) {
+    if (!(await this.boxRepository.APIKeyExists(id))) {
+      throw new APIKeyNotFoundException(id)
+    }
+
+    await this.boxRepository.deleteAPIKey(id)
   }
 }

@@ -7,6 +7,7 @@ import UserEditionModal from '@/components/users/UserEditionModal'
 import Image from '@/components/Image'
 import { remove } from '@/api/requests/users'
 import { useTranslation } from 'react-i18next'
+import InfoIcon from '@/assets/icons/InfoIcon'
 
 type UserRowProps = {
   user: User
@@ -37,7 +38,10 @@ function UserRow({ user, onClickEdit, onClickDelete }: UserRowProps) {
           <SettingsIcon className="w-4 h-4" />
         </button>
         {!user.isDefault && (
-          <button className="btn btn-circle btn-error bg-base-100 text-error hover:text-base-100 hover:animate-shaky" onClick={() => onClickDelete(user)}>
+          <button
+            className="btn btn-circle btn-error bg-base-100 text-error hover:text-base-100 hover:animate-shaky"
+            onClick={() => onClickDelete(user)}
+          >
             <TrashIcon className="w-4 h-4" />
           </button>
         )}
@@ -103,7 +107,13 @@ export default function UsersList({ users, onUpdated }: UsersListProps) {
         <div className="flex items-center justify-between">
           <label className="label">
             <span className="label-text font-bold">{t('users.title')}</span>
+            <div className="tooltip tooltip-right tooltip-info" data-tip="Allow other people to access your box">
+              <label className="btn btn-circle btn-ghost btn-xs text-info">
+                <InfoIcon />
+              </label>
+            </div>
           </label>
+
           <button className="btn btn-sm mr-2" onClick={openAddUserModal}>
             {t('users.add')}
             <AddUserIcon className="w-4 h-4" />

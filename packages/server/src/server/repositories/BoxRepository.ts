@@ -2,7 +2,7 @@ import { UploadedFile } from 'express-fileupload'
 import { getDB } from '../../database/database'
 import { Box } from '../models/entities/Box'
 import { unlinkSync } from 'fs'
-import { UpdateBoxDTO } from '../models/DTO/BoxDTO'
+import { CreateAPIKeyDTO, UpdateBoxDTO } from '../models/DTO/BoxDTO'
 import { join } from 'path'
 import { APIKey } from '../models/entities/APIKey'
 
@@ -90,6 +90,58 @@ export default class BoxRepository {
           reject(err)
         }
         resolve(rows as APIKey[])
+      })
+      db.close()
+    })
+  }
+
+  /**
+   * Create a new API key
+   */
+  public createAPIKey(key: CreateAPIKeyDTO): Promise<void> {
+    const db = getDB()
+    return new Promise((resolve, reject) => {
+      db.run('INSERT INTO APIKeys (name, key, display) VALUES (?, ?, ?)', [key.name, key.key, key.display], (err) => {
+        if (err) {
+          reject(err)
+        }
+        resolve()
+      })
+      db.close()
+    })
+  }
+
+  /**
+   * Delete an API key
+   * @param id id of the API key
+   */
+  public deleteAPIKey(id: number): Promise<void> {
+    const db = getDB()
+    return new Promise((resolve, reject) => {
+      db.run('DELETE FROM APIKeys WHERE id = ?', [id], (err) => {
+        if (err) {
+          reject(err)
+        }
+        resolve()
+      })
+      db.close()
+    })
+  }
+
+  /**
+   * Check if an API key exists
+   * @param id id of the API key
+   * @returns
+   */
+  public async APIKeyExists(id: number): Promise<boolean> {
+    const db = getDB()
+    console.log(id)
+    return new Promise((resolve, reject) => {
+      db.all('SELECT * FROM APIKeys WHERE id = ?', [id], (err, rows) => {
+        if (err) {
+          reject(err)
+        }
+        resolve(rows.length > 0)
       })
       db.close()
     })

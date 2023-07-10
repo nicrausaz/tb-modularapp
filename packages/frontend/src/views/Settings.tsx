@@ -15,12 +15,16 @@ import { getAll } from '@/api/requests/users'
 import IconButton from '@/components/IconButton'
 import { DocsIcon, GitHubIcon, SaveIcon, WebIcon } from '@/assets/icons'
 import APIKeysList from '@/components/settings/APIKeysList'
+import { APIKey } from '@/models/Box'
+import { getAPIKeys } from '@/api/requests/box'
 
 export default function Settings() {
   const { data, loading, error } = useFetchAuth<User[]>('/api/users')
+  const { data: keysData, loading: keysLoading, error: keysError } = useFetchAuth<APIKey[]>('/api/box/security/keys')
   const { box, updateIcon, updateBox } = useBox()
 
   const [users, setUsers] = useState<User[]>([])
+  const [APIKeys, setAPIKeys] = useState<APIKey[]>([])
   const { t } = useTranslation()
   const { tSuccess } = useToast()
 
@@ -34,11 +38,17 @@ export default function Settings() {
     }
   }, [data])
 
-  if (loading) {
+  useEffect(() => {
+    if (keysData) {
+      setAPIKeys(keysData)
+    }
+  }, [keysData])
+
+  if (loading || keysLoading) {
     return <LoadingTopBar />
   }
 
-  if (error) {
+  if (error || keysError) {
     throw error
   }
 
@@ -53,13 +63,21 @@ export default function Settings() {
     }
   }
 
+
+  const refreshAPIKey = async () => {
+    const data = await getAPIKeys()
+    if (data) {
+      setAPIKeys(data)
+    }
+  }
+
   const uploadBoxIcon = async (file: File) => {
     updateIcon(file)
     tSuccess(t('status.success'), t('settings.feedbacks.icon_saved_ok'))
   }
 
   const update = async () => {
-    await updateBox(editingBox.name)
+    updateBox(editingBox.name)
     tSuccess(t('status.success'), t('settings.feedbacks.box_saved_ok'))
   }
 
@@ -139,7 +157,7 @@ export default function Settings() {
 
           <div className="divider"></div>
 
-          <APIKeysList keys={[]} onUpdated={() => {}} />
+          <APIKeysList keys={APIKeys} onUpdated={refreshAPIKey} />
         </div>
       </div>
 

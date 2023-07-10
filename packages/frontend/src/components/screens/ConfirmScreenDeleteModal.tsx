@@ -1,7 +1,7 @@
 import { Screen } from '@/models/Screen'
 import ConfirmModal from '../ConfirmModal'
 
-type ConfirmModuleDeleteModalProps = {
+type ConfirmScreenDeleteModalProps = {
   isOpen: boolean
   screen: Screen
   onClose: () => void
@@ -13,7 +13,7 @@ export default function ConfirmScreenDeleteModal({
   onClose,
   onConfirm,
   screen,
-}: ConfirmModuleDeleteModalProps) {
+}: ConfirmScreenDeleteModalProps) {
   if (!screen) {
     return null
   }

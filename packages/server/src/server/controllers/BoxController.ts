@@ -83,4 +83,15 @@ export default class BoxController {
   APIKeys = async (req: Request, res: Response) => {
     res.send(await this.boxService.getAPIKeys())
   }
+
+  generateAPIKey = async (req: Request, res: Response) => {
+    this.boxService.generateAPIKey(req.body).then((key) => res.send(key))
+  }
+
+  deleteAPIKey = async (req: Request, res: Response, next: NextFunction) => {
+    this.boxService
+      .deleteAPIKey(parseInt(req.params.id))
+      .then(() => res.status(204).send())
+      .catch(next)
+  }
 }

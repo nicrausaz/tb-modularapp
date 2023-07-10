@@ -118,3 +118,8 @@ export const screenUpdateRules = [
  * @see UpdateBoxDTO
  */
 export const boxUpdateRules = [body('name').trim().escape().notEmpty().withMessage('Name is required')]
+
+/**
+ * Validation rule for API key generation
+ */
+export const generateAPIKeyRules = [body('name').trim().escape().notEmpty().withMessage('Name is required')]

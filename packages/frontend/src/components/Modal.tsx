@@ -8,6 +8,9 @@ type ModalProps = {
   title?: string
   confirmEnabled?: boolean
   confirmColor?: string
+  cancelText?: string
+  confirmText?: string
+  confirmHidden?: boolean
 }
 
 /**
@@ -21,15 +24,16 @@ export default function Modal({
   children,
   confirmEnabled = true,
   confirmColor = 'btn-primary',
+  cancelText = 'Cancel',
+  confirmText = 'Confirm',
+  confirmHidden = false,
 }: ModalProps) {
   const modalRef = useRef<HTMLDialogElement>(null)
 
   useEffect(() => {
     if (isOpen) {
       modalRef.current?.showModal()
-      // modalRef.current?.addEventListener('cancel', onClose)
     } else {
-      // modalRef.current?.removeEventListener('cancel', onClose)
       modalRef.current?.close()
     }
   }, [isOpen])
@@ -50,11 +54,13 @@ export default function Modal({
         {children}
         <div className="modal-action">
           <button type="button" className="btn" onClick={onCancel}>
-            Close
+            {cancelText}
           </button>
-          <button type="submit" className={confirmClasses}>
-            Confirm
-          </button>
+          {!confirmHidden && (
+            <button type="submit" className={confirmClasses}>
+              {confirmText}
+            </button>
+          )}
         </div>
       </form>
     </dialog>

@@ -1,26 +1,27 @@
-import { AddKeyIcon, SettingsIcon, TrashIcon } from '@/assets/icons'
+import { AddKeyIcon, TrashIcon } from '@/assets/icons'
 import { useState } from 'react'
 import { useToast } from '@/contexts/ToastContext'
 import { useTranslation } from 'react-i18next'
 import { APIKey } from '@/models/Box'
-import APIKeyEditionModal from './APIKeyEditionModal'
+import APIKeyCreationModal from './APIKeyCreationModal'
+import ConfirmAPIKeyDeleteModal from './ConfirmAPIKeyDeleteModal'
+import { deleteAPIKey } from '@/api/requests/box'
+import InfoIcon from '../../assets/icons/InfoIcon'
 
 type APIKeyRowProps = {
   APIKey: APIKey
-  onClickEdit(key: APIKey): void
   onClickDelete(key: APIKey): void
 }
 
-function APIKeyRow({ APIKey, onClickEdit, onClickDelete }: APIKeyRowProps) {
+function APIKeyRow({ APIKey, onClickDelete }: APIKeyRowProps) {
   return (
     <div className="flex items-center justify-between p-2 border-b">
       <div className="flex items-center gap-2 flex-1">
-        <div>{APIKey.name}</div>
+        <div>
+          {APIKey.name} <span className="text-gray-500">({APIKey.display})</span>
+        </div>
       </div>
       <div className="flex-0">
-        <button className="btn btn-circle bg-base-100 mr-1" onClick={() => onClickEdit(APIKey)}>
-          <SettingsIcon className="w-4 h-4" />
-        </button>
         <button
           className="btn btn-circle btn-error bg-base-100 text-error hover:text-base-100 hover:animate-shaky"
           onClick={() => onClickDelete(APIKey)}
@@ -38,47 +39,38 @@ type APIKeyListProps = {
 }
 
 export default function APIKeysList({ keys, onUpdated }: APIKeyListProps) {
-  const [keyEditionModalOpen, setKeyEditionModalOpen] = useState(false)
-  // const [keyDeletionModalOpen, setKeyDeletionModalOpen] = useState(false)
-  const [editingKey, setEditingKey] = useState<APIKey | null>(null)
-  // const [deletingKey, setDeletingKey] = useState<APIKey | null>(null)
+  const [keyCreationModalOpen, setKeyCreationModalOpen] = useState(false)
+  const [keyDeletionModalOpen, setKeyDeletionModalOpen] = useState(false)
+  const [deletingKey, setDeletingKey] = useState<APIKey | null>(null)
 
   const { t } = useTranslation()
   const { tSuccess } = useToast()
 
-  keys = [
-    {
-      id: '1',
-      name: 'Test 1',
-      key: '1234567890',
-    },
-    {
-      id: '2',
-      name: 'Test 2',
-      key: '1234567890',
-    },
-    {
-      id: '3',
-      name: 'Test 3',
-      key: '1234567890',
-    },
-  ]
-
-  const handleOpenEditionModal = (key: APIKey) => {
-    setEditingKey(key)
-    setKeyEditionModalOpen(true)
+  const handleOpenCreateModal = () => {
+    setKeyCreationModalOpen(true)
   }
 
-  const handleEditionClose = () => {
-    setKeyEditionModalOpen(false)
-    setEditingKey(null)
+  const handleOpenDeleteModal = (key: APIKey) => {
+    setDeletingKey(key)
+    setKeyDeletionModalOpen(true)
   }
 
-  const handleConfirm = () => {
-    setKeyEditionModalOpen(false)
-    setEditingKey(null)
-    tSuccess('Success', 'API key updated')
+  const handleCreationClose = () => {
+    setKeyCreationModalOpen(false)
+    tSuccess(t('status.success'), t('settings.api_keys.create_success'))
     onUpdated()
+  }
+
+  const handleDelete = (id: number) => {
+    deleteAPIKey(id).then(() => {
+      setKeyDeletionModalOpen(false)
+      tSuccess(t('status.success'), t('settings.api_keys.delete_success'))
+      onUpdated()
+    })
+  }
+
+  const handleDeletionClose = () => {
+    setKeyDeletionModalOpen(false)
   }
 
   return (
@@ -87,31 +79,37 @@ export default function APIKeysList({ keys, onUpdated }: APIKeyListProps) {
         <div className="flex items-center justify-between">
           <label className="label">
             <span className="label-text font-bold">{t('settings.api_keys.title')}</span>
+            <div
+              className="tooltip tooltip-right tooltip-info"
+              data-tip="Allows other application to interact with your modules through the API"
+            >
+              <label className="btn btn-circle btn-ghost btn-xs text-info">
+                <InfoIcon />
+              </label>
+            </div>
           </label>
-          <button className="btn btn-sm mr-2" onClick={() => {}}>
+          <button className="btn btn-sm mr-2" onClick={handleOpenCreateModal}>
             {t('settings.api_keys.add')}
             <AddKeyIcon className="w-4 h-4" />
           </button>
         </div>
       </div>
       {keys.map((key) => (
-        <APIKeyRow key={key.id} APIKey={key} onClickEdit={handleOpenEditionModal} onClickDelete={() => {}} />
+        <APIKeyRow key={key.id} APIKey={key} onClickDelete={handleOpenDeleteModal} />
       ))}
 
-      <APIKeyEditionModal
-        APIKey={editingKey}
-        isOpen={keyEditionModalOpen}
-        onConfirm={handleConfirm}
-        onCancel={handleEditionClose}
+      <APIKeyCreationModal
+        isOpen={keyCreationModalOpen}
+        onConfirm={() => setKeyCreationModalOpen(false)}
+        onCancel={handleCreationClose}
       />
 
-      {/*
-      <ConfirmKeyDeleteModal
-        Key={deletingKey}
-        isOpen={KeyDeletionModalOpen}
+      <ConfirmAPIKeyDeleteModal
+        APIKey={deletingKey}
+        isOpen={keyDeletionModalOpen}
         onConfirm={handleDelete}
         onCancel={handleDeletionClose}
-      /> */}
+      />
     </div>
   )
 }

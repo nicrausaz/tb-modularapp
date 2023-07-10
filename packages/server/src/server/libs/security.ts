@@ -1,4 +1,5 @@
 import argon2 from 'argon2'
+import { randomBytes } from 'crypto'
 
 /**
  * Hash a string using argon2
@@ -19,8 +20,16 @@ const verifyString = async (hash: string, value: string): Promise<boolean> => {
   return await argon2.verify(hash, value)
 }
 
-// const generateApiKey = async(length = 32): Promise<{key: string, hash: string}> => {
+/**
+ * Generate a new API key: a random string of <lenght> characters (default: 32)
+ * and its hash for storage (using argon2)
+ * @param length
+ * @returns
+ */
+const generateApiKey = async (length = 32): Promise<{ key: string; hash: string }> => {
+  const key = randomBytes(length).toString('hex')
+  const hash = await hashString(key)
+  return { key, hash }
+}
 
-// }
-
-export { hashString, verifyString }
+export { hashString, verifyString, generateApiKey }
