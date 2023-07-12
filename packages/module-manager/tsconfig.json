@@ -12,6 +12,6 @@
     "forceConsistentCasingInFileNames": true,
     "rootDir": "./src",
     "outDir": "./build",
-    "composite": true
+    "composite": true,
   },
 }

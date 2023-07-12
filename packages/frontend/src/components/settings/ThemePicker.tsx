@@ -1,15 +1,9 @@
 import { ThemeContext } from '@/contexts/ThemeContext'
 import { useContext } from 'react'
 
-// import resolveConfig from 'tailwindcss/resolveConfig'
-// import tailwindConfig from '../../tailwind.config'
-
 const ThemePicker = () => {
   const { theme, switchTheme } = useContext(ThemeContext)
-  // const fullConfig = resolveConfig(tailwindConfig)
-  // console.log(fullConfig)
 
-  // TODO: get them from tailwind.config.js
   const themes = [
     'light',
     'dark',

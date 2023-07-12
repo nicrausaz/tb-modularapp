@@ -2,12 +2,10 @@ import express from 'express'
 import WebSocket from 'ws'
 import configureRoutes from './Routes'
 import ModuleDatabaseManager from './helpers/ModuleDatabaseManager'
-import { join } from 'path'
 import { uploader } from './libs/file-upload'
 import { ErrorMiddleware } from './middlewares/ErrorMiddleware'
 import logger from './libs/logger'
-import { swaggerSpec } from './libs/swagger/swagger'
-import swaggerUi from 'swagger-ui-express'
+
 import compression from 'compression'
 
 export default class Server {
@@ -30,9 +28,6 @@ export default class Server {
 
     // Bind router
     configureRoutes(this.app, this.manager, this.wss)
-
-    // Bind swagger
-    this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
     // Bind error middleware
     this.app.use(ErrorMiddleware)

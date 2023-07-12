@@ -6,6 +6,7 @@ import {
   SpecificConfigurationEntry,
   SpecificConfigurationEntryTypeValue,
 } from './module/configuration/SpecificConfigurationEntry'
+import { schema as ModuleValidationSchema } from './schema'
 
 export {
   Configuration,
@@ -15,4 +16,5 @@ export {
   SpecificConfiguration,
   SpecificConfigurationEntry,
   SpecificConfigurationEntryTypeValue,
+  ModuleValidationSchema,
 }

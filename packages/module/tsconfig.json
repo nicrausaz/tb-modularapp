@@ -13,5 +13,5 @@
     "rootDir": "./src",
     "outDir": "./build",
     "composite": true
-  },
+  }
 }

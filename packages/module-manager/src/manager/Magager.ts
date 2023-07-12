@@ -4,10 +4,12 @@ import {
   ModuleProps,
   SpecificConfiguration,
   SpecificConfigurationEntryTypeValue,
+  ModuleValidationSchema,
 } from '@yalk/module'
 import { BaseAccessor, HTTPAccessor, KeyboardAccessor } from '@yalk/device-accessor'
 import { readdir, lstatSync, existsSync, rmSync } from 'fs'
 import { join } from 'path'
+import Ajv from 'ajv'
 
 type ModuleId = string
 
@@ -283,6 +285,11 @@ export default class Manager {
       // Load the configuration
       const config = (await import(join(modulePath, Manager.CONFIG_FILENAME))).default
 
+      // Validate the configuration using JSON schema
+      if (!this.configValidation(config)) {
+        throw new Error('Invalid configuration schema')
+      }
+
       // Load the specific configuration
       const specific = SpecificConfiguration.fromObject(config.specificConfig)
 
@@ -371,8 +378,10 @@ export default class Manager {
     }
   }
 
-  private configValidation(config: any): boolean {
-    return true
+  private configValidation(config: object): boolean {
+    const ajv = new Ajv()
+    const validate = ajv.compile(ModuleValidationSchema)
+    return validate(config)
   }
 
   private redirectDataToAccessors(id: string, type: string, data: unknown): void {

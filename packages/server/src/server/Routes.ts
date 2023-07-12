@@ -23,6 +23,8 @@ import logger from './libs/logger'
 import EventsController from './controllers/EventsController'
 import ModuleLiveUpdater from './helpers/ModuleLiveUpdater'
 import { NotFoundError } from './middlewares/HTTPError'
+import { swaggerSpec } from './libs/swagger/swagger'
+import swaggerUi from 'swagger-ui-express'
 
 // TODO: Add validation errors to the swagger documentation
 
@@ -798,6 +800,9 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
       logger.info('[WS] Client disconnected')
     })
   })
+
+  // Bind swagger
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
   // Defines the routes used by the application
   // Enable the client routing in production

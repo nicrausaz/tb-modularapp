@@ -71,8 +71,8 @@ export default class ComposalStampRFID extends Module {
 
       // Check if the user has clocked in on time
       if (data.event_type === 'start') {
-        const theoreticalClockingTime = new Date(data.theoretical_clocking_time)
-        const clockedInAt = new Date(data.clocked_in_at)
+        const theoreticalClockingTime = new Date(data.user.theoretical_clocking_time)
+        const clockedInAt = new Date(data.user.clocked_in_at)
 
         if (theoreticalClockingTime.getTime() < clockedInAt.getTime()) {
           message = `You are late by ${
@@ -87,12 +87,12 @@ export default class ComposalStampRFID extends Module {
 
       this.notify({
         status: data.event_type,
+        additionalMessage: message,
         data: {
           display_name: data.user.display_name,
           avatar_url: data.user.avatar_url,
-          theoretical_clocking_time: data.theoretical_clocking_time,
-          clocked_in_at: data.clocked_in_at,
-          additionalMessage: message,
+          theoretical_clocking_time: data.user.theoretical_clocking_time,
+          clocked_in_at: data.user.clocked_in_at,
         },
       })
       this.resetAfter(5000)

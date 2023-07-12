@@ -36,6 +36,7 @@ export default function Module() {
   const [module, setModule] = useState(data)
   const [confirmDelete, setConfirmDelete] = useState<boolean>(false)
   const [confirmReset, setConfirmReset] = useState<boolean>(false)
+  const [deleting, setDeleting] = useState<boolean>(false)
 
   useEffect(() => {
     setModule(data)
@@ -60,7 +61,8 @@ export default function Module() {
     source.getModule(moduleId, callback)
 
     return () => {
-      source.releaseModule(moduleId, callback)
+      console.log(deleting)
+      source.releaseModule(moduleId, callback, !deleting)
     }
   }, [source])
 
@@ -105,10 +107,13 @@ export default function Module() {
       })
   }
 
-  const handleDelete = async () => {
-    setConfirmDelete(false)
-    await remove(module.id)
-    navigate('/modules')
+  const handleDelete = () => {
+    setDeleting(true)
+    remove(module.id).then(() => {
+      setConfirmDelete(false)
+      tSuccess(t('status.success'), t('module.feedbacks.deleted_ok'))
+      navigate('/modules')
+    })
   }
 
   const handleReset = async () => {
@@ -258,7 +263,7 @@ export default function Module() {
           </div>
           <div className="flex items-center justify-end gap-2 mt-2">
             <IconButton
-              onClick={() => setConfirmDelete(true)}
+              onClick={() => {setConfirmDelete(true)}}
               icon={<TrashIcon className="w-4 h-4" />}
               position="left"
               label="Delete"

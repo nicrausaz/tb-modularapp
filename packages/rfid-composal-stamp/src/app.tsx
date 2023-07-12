@@ -17,7 +17,7 @@ export default class ComposalStampRFIDRenderer extends ModuleRenderer {
     if (status === 'start') {
       return (
         <div className="rounded overflow-hidden shadow-lg w-full h-full">
-          <img className="h-28 object-cover md:w-28 mx-auto" src={avatar} alt="user_avatar" />
+          <img className="h-28 object-cover md:w-28 mx-auto" src={avatar} alt="user_avatar" width="100" height="100"/>
           <div className="px-6 py-4">
             <div className="uppercase tracking-wide text-indigo-500 font-semibold text-center text-2xl">Welcome !</div>
             <span className="block mt-1 text-xl leading-tight font-medium text-black text-center">

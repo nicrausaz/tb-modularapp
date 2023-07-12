@@ -66,7 +66,7 @@ export default class EventsManager {
     )
   }
 
-  releaseModule(id: string, callback: (data: RecEvent) => void) {
+  releaseModule(id: string, callback: (data: RecEvent) => void, sendUnsubscribe = true) {
     const observerCallbacks = this.modulesObservers.get(id)
     if (!observerCallbacks) {
       return
@@ -78,6 +78,10 @@ export default class EventsManager {
 
     if (observerCallbacks.size === 0) {
       this.modulesObservers.delete(id)
+
+      if (!sendUnsubscribe) {
+        return
+      }
 
       this.getConn().then((c) =>
         c.send(
