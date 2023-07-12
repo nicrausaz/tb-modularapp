@@ -131,7 +131,7 @@ export default class Manager {
       entry.module.start()
       entry.enabled = true
       this.requireModuleAccessors(entry.module, id)
-      entry.module.registerToSend(this.modules.get(id)!.onSend)
+      entry.module.registerToSend(entry.onSend)
       return true
     } catch (_) {
       return false
@@ -154,7 +154,7 @@ export default class Manager {
     try {
       entry.module.stop()
       entry.enabled = false
-      entry.module.unregisterFromSend(this.modules.get(id)!.onSend)
+      entry.module.unregisterFromSend(entry.onSend)
       this.releaseModuleAccessors(entry.module, id)
       return true
     } catch (_) {
@@ -285,15 +285,13 @@ export default class Manager {
       // Load the configuration
       const config = (await import(join(modulePath, Manager.CONFIG_FILENAME))).default
 
-      // Validate the configuration using JSON schema
+      // Validate the configuration
       if (!this.configValidation(config)) {
         throw new Error('Invalid configuration schema')
       }
 
       // Load the specific configuration
       const specific = SpecificConfiguration.fromObject(config.specificConfig)
-
-      // TODO: add stronger configuration validation
 
       // Build the module configuration
       const configuration = new Configuration(
@@ -378,12 +376,23 @@ export default class Manager {
     }
   }
 
+  /**
+   * Validate the JSON configuration against the schema
+   * @param config configuration to validate
+   * @returns true if the configuration is valid, false otherwise
+   */
   private configValidation(config: object): boolean {
     const ajv = new Ajv()
     const validate = ajv.compile(ModuleValidationSchema)
     return validate(config)
   }
 
+  /**
+   * Redirect data sent from a module to the corresponding accessor
+   * @param id id of the module sending the data
+   * @param type type of the accessor
+   * @param data data to send
+   */
   private redirectDataToAccessors(id: string, type: string, data: unknown): void {
     const accessor = this.accessors.get(type)
     if (!accessor) {

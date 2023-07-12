@@ -143,7 +143,7 @@ export default class ModulesRepository {
    * @param id module id
    * @returns true if the module was unregistered, false otherwise (module internal error)
    */
-  unregisterModule(id: string): boolean {
+  unregisterModule(id: string): Promise<boolean> {
     return this.manager.unregisterModule(id)
   }
 

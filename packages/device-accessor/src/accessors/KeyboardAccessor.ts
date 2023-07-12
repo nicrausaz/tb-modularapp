@@ -16,7 +16,10 @@ export default class KeyboardAccessor extends BaseAccessor {
 
   public run() {
     process.stdin.on('data', (data) => {
-      this.sendToAll(data.toString('utf8').trim())
+      const stringData = data.toString('utf8').trim()
+      if (stringData) {
+        this.sendToAll(stringData)
+      }
     })
     process.stdin.on('error', (error) => {
       console.error("Erreur d'entrée standard :", error)

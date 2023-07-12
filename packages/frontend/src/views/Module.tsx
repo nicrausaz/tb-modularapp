@@ -43,9 +43,15 @@ export default function Module() {
   }, [data])
 
   useEffect(() => {
-    if (!source || !moduleId) {
+    if (!source || !moduleId || !module) {
       return
     }
+
+    const clear = () => {
+      source.releaseModule(moduleId, callback)
+    }
+
+    window.addEventListener('beforeunload', clear)
 
     const callback = (data: { subtype?: string; enabled?: boolean }) => {
       if (data.subtype !== 'status') {
@@ -61,8 +67,8 @@ export default function Module() {
     source.getModule(moduleId, callback)
 
     return () => {
-      console.log(deleting)
       source.releaseModule(moduleId, callback, !deleting)
+      window.removeEventListener('beforeunload', clear)
     }
   }, [source])
 

@@ -1,6 +1,6 @@
 import SuccessIcon from '@/assets/icons/SuccessIcon'
 import WarningIcon from '@/assets/icons/WarningIcon'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import ErrorIcon from '../assets/icons/ErrorIcon'
 import { ToastData } from '@/contexts/ToastContext'
@@ -8,19 +8,17 @@ import { ToastData } from '@/contexts/ToastContext'
 type ToastProps = {
   toast: ToastData
   onAction: (id: string) => void
+  onClose: (id: string) => void
 }
-
-export default function Toast({ toast, onAction }: ToastProps) {
-  const [visible, setVisible] = useState(true)
-
+export default function Toast({ toast, onAction, onClose }: ToastProps) {
   useEffect(() => {
-    const interval = setInterval(() => {
-      setVisible(false)
+    const timeout = setTimeout(() => {
+      onClose(toast.id)
     }, toast.duration)
-    return () => clearInterval(interval)
-  }, [toast.duration])
-
-  if (!visible) return null
+    return () => {
+      clearTimeout(timeout)
+    }
+  }, [toast, onClose])
 
   const colors = {
     success: 'alert-success',

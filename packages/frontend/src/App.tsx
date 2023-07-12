@@ -5,6 +5,7 @@ import router from '@/router'
 import { ThemeContext } from './contexts/ThemeContext'
 import { AuthProvider } from './contexts/AuthContext'
 import { ToastProvider } from './contexts/ToastContext'
+import { LiveEventsProvider } from './contexts/LiveEvents'
 
 const App: React.FC = () => {
   const { theme } = useContext(ThemeContext)
@@ -12,7 +13,9 @@ const App: React.FC = () => {
     <div className="App" data-theme={theme}>
       <AuthProvider>
         <ToastProvider>
-          <RouterProvider router={router} />
+          <LiveEventsProvider>
+            <RouterProvider router={router} />
+          </LiveEventsProvider>
         </ToastProvider>
       </AuthProvider>
     </div>

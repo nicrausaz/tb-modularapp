@@ -32,8 +32,9 @@ export default class ModuleDatabaseManager {
 
   constructor(dirModules: string) {
     this.manager = new Manager(dirModules)
-    this.syncDBToLocalModules()
-    this.startEnabledModules()
+    this.syncDBToLocalModules().then(() => {
+      this.startEnabledModules()
+    })
   }
 
   async getModules(): Promise<ModuleDatabaseManagerRecord[]> {
@@ -142,19 +143,13 @@ export default class ModuleDatabaseManager {
    * The module will be stopped and deleted from the manager and the database
    * @param moduleId module id
    */
-  unregisterModule(moduleId: string): boolean {
+  async unregisterModule(moduleId: string): Promise<boolean> {
     if (!this.manager.unregisterModule(moduleId)) {
       logger.error(`An error occurred while unregistering module ${moduleId}`)
       return false
     }
 
-    const db = getDB()
-    db.run('DELETE FROM modules WHERE id = ?', [moduleId], (err) => {
-      if (err) {
-        logger.error(`An error occurred while unregistering module ${moduleId} %s`, err.message)
-      }
-    })
-    db.close()
+    await this.deleteModuleFromDatabase(moduleId)
     return true
   }
 
@@ -230,24 +225,27 @@ export default class ModuleDatabaseManager {
   private async syncDBToLocalModules(): Promise<void> {
     await this.manager.loadModulesFromPath()
 
-    // Check if the module is in the database, if not, add it
-    for (const entry of this.manager.getModules()) {
+    const localModules = this.manager.getModules()
+
+    // If the local modules are not in the database, add them
+    for (const entry of localModules) {
       const { id } = entry
       if (!(await this.moduleExists(id))) {
         this.registerModule(id)
+        logger.info(`Module ${id} was added to the database as it is in the local modules`)
       }
     }
 
-    // Check if the module is in the local modules, if not, remove it
-    const modules = await this.modules()
-    for (const module of modules) {
+    // If the local modules are in the database but not in the manager, remove them
+    for (const module of await this.modules()) {
       if (!this.manager.getModule(module.id)) {
-        this.unregisterModule(module.id)
+        await this.deleteModuleFromDatabase(module.id)
+        logger.info(`Module ${module.id} was removed from the database as it is not in the local modules`)
       }
     }
 
     // Load the configuration of the modules from the database, if it exists
-    for (const module of modules) {
+    for (const module of await this.modules()) {
       const entry = this.manager.getModule(module.id)
       entry.module.setConfiguration(module.configuration)
     }
@@ -300,6 +298,27 @@ export default class ModuleDatabaseManager {
           reject(err)
         }
         return resolve(rows as ModuleEntity[])
+      })
+      db.close()
+    })
+  }
+
+  private async deleteModuleFromDatabase(moduleId: string): Promise<void> {
+    const db = getDB()
+    return new Promise((resolve, reject) => {
+      db.run('DELETE FROM modules WHERE id = ?', [moduleId], (err) => {
+        if (err) {
+          logger.error(`An error occurred while deleting module ${moduleId} from DB %s`, err.message)
+          reject(err)
+        }
+
+        db.run('DELETE FROM ScreenSlots WHERE moduleId = ?', [moduleId], (err) => {
+          if (err) {
+            logger.error(`An error occurred while deleting module ${moduleId} from DB %s`, err.message)
+            reject(err)
+          }
+        })
+        resolve()
       })
       db.close()
     })
