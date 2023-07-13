@@ -1,4 +1,3 @@
-import { join } from 'path'
 import Server from './server/Server'
 import dotenv from 'dotenv'
 import { buildDB } from './database/database'

@@ -1,0 +1,27 @@
+version: '3.8'
+volumes:
+  database:
+  modules:
+services:
+  modapp:
+    container_name: modapp
+    image: modapp
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./docker/modapp/Dockerfile
+    ports:
+      - '3000:3000'
+    volumes:
+      - database:/var/modapp/database
+      - modules:/var/modapp/modules
+  nginx:
+    restart: unless-stopped
+    build:
+      context: ./docker/nginx
+    ports:
+      - '80:80'
+    depends_on:
+      - modapp

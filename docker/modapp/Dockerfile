@@ -6,12 +6,8 @@ WORKDIR /app
 RUN npm ci
 RUN npm run build --workspaces
 
-
 RUN rm -rf node_modules
 RUN npm install --omit=dev
-
-VOLUME /var/modapp/database
-VOLUME /var/modapp/modules
 
 COPY --chown=node:node packages/server/.env.production /app/packages/server/.env
 
@@ -22,5 +18,7 @@ COPY --chown=node:node packages/server/src/database/seed.sql /var/modapp/databas
 EXPOSE 3000
 
 USER node
+
+ENV NODE_ENV=production
 
 CMD ["npm", "run", "start", "--workspace", "packages/server"]

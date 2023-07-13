@@ -66,6 +66,7 @@ export default class ComposalStampRFIDRenderer extends ModuleRenderer {
     justify-content: center;
     width: 100%;
     height: 100%;
+    background-color: white;
   }
 
   .idle-img {

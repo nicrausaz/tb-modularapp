@@ -5,8 +5,9 @@ import ModuleDatabaseManager from './helpers/ModuleDatabaseManager'
 import { uploader } from './libs/file-upload'
 import { ErrorMiddleware } from './middlewares/ErrorMiddleware'
 import logger from './libs/logger'
-
 import compression from 'compression'
+import { swaggerSpec } from './libs/swagger/swagger'
+import swaggerUi from 'swagger-ui-express'
 
 export default class Server {
   private readonly app: express.Application
@@ -21,10 +22,13 @@ export default class Server {
     // Configure app
     this.app.use(express.json())
     this.app.use(uploader)
-    this.app.use(express.static(process.env.PUBLIC_DIR ?? ''))
+    // this.app.use(express.static(process.env.PUBLIC_DIR ?? ''))
 
     // Configure WebSocket server
     this.wss = new WebSocket.Server({ noServer: true, path: '/events' })
+
+    // Bind swagger
+    this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
     // Bind router
     configureRoutes(this.app, this.manager, this.wss)
@@ -34,7 +38,6 @@ export default class Server {
   }
 
   start() {
-    // Start the HTTP server
     const srv = this.app.listen(this.port, () => {
       logger.info(`Server running on port http://localhost:${this.port}`)
     })
