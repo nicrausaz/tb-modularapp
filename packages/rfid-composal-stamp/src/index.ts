@@ -34,14 +34,18 @@ export default class ComposalStampRFID extends Module {
     }
 
     // Trigger the clocking using the HTTP event (API)
+    // {
+    //   "event": "toggle",
+    //   "nfc_serial_number": "1234567890"
+    // }
     if (type === 'http') {
       if (data.event === 'toggle') {
         this.notify({
           status: 'loading',
-          data: data,
+          data: data.nfc_serial_number,
         })
 
-        this.toggleClocking(data)
+        this.toggleClocking(data.nfc_serial_number)
       }
     }
   }
@@ -68,20 +72,27 @@ export default class ComposalStampRFID extends Module {
       const data = await response.json()
 
       let message = ''
+      const theoreticalClockingTime = new Date(data.user.theoretical_clocking_time)
+      const clockedInAt = new Date(data.user.clocked_in_at)
 
-      // Check if the user has clocked in on time
       if (data.event_type === 'start') {
-        const theoreticalClockingTime = new Date(data.user.theoretical_clocking_time)
-        const clockedInAt = new Date(data.user.clocked_in_at)
-
+        // Check if the user has clocked in on time
         if (theoreticalClockingTime.getTime() < clockedInAt.getTime()) {
-          message = `You are late by ${
-            Math.floor(clockedInAt.getTime() - theoreticalClockingTime.getTime()) / 1000 / 60
-          }`
+          const lateTime = Math.floor(clockedInAt.getTime() - theoreticalClockingTime.getTime()) / 1000 / 60
+          if (lateTime > 60) {
+            message = `You are late by ${Math.floor(lateTime / 60)} hours`
+          } else {
+            message = `You are late by ${Math.floor(lateTime)} minutes`
+          }
         } else if (theoreticalClockingTime.getTime() > clockedInAt.getTime()) {
-          message = `You are early ${Math.floor(theoreticalClockingTime.getTime() - clockedInAt.getTime()) / 1000 / 60}`
+          const earlyTime = Math.floor(theoreticalClockingTime.getTime() - clockedInAt.getTime()) / 1000 / 60
+          if (earlyTime > 60) {
+            message = `You are early by ${Math.floor(earlyTime / 60)} hours`
+          } else {
+            message = `You are early by ${Math.floor(earlyTime)} minutes`
+          }
         } else {
-          message = 'You are on time'
+          message = 'You are on time !'
         }
       }
 
@@ -92,10 +103,10 @@ export default class ComposalStampRFID extends Module {
           display_name: data.user.display_name,
           avatar_url: data.user.avatar_url,
           theoretical_clocking_time: data.user.theoretical_clocking_time,
-          clocked_in_at: data.user.clocked_in_at,
+          clocked_in_at: clockedInAt.toLocaleTimeString('fr-FR', { hour12: false, timeStyle: 'short' }),
         },
       })
-      this.resetAfter(5000)
+      this.resetAfter(7000)
     } else {
       const data = await response.json()
       this.notify({
@@ -103,7 +114,7 @@ export default class ComposalStampRFID extends Module {
         additionalMessage: data.message,
         data: null,
       })
-      this.resetAfter(5000)
+      this.resetAfter(7000)
     }
   }
 

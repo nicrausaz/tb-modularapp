@@ -4,21 +4,19 @@ import { ComposalStampRFIDProps } from '.'
 
 export default class ComposalStampRFIDRenderer extends ModuleRenderer {
   readonly style = `
-  .container {
+  .stamp-card {
     overflow: hidden; 
-    margin-top: 1rem;
-    margin-bottom: 1rem; 
     border-radius: 0.5rem; 
-    max-width: 24rem; 
-    background-color: #ffffff; 
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); 
+    background-color: #ffffff;
+    width: 100%;
+    height: 100%;
   }
   
-  .container > img {
+  .avatar {
     object-fit: cover; 
     object-position: center; 
     width: 100%; 
-    height: 14rem; 
+    height: 30%; 
   }
   
   .banner {
@@ -26,15 +24,9 @@ export default class ComposalStampRFIDRenderer extends ModuleRenderer {
     padding-top: 0.75rem;
     padding-bottom: 0.75rem; 
     padding-left: 1.5rem;
-    padding-right: 1.5rem; 
+    padding-right: 1.5rem;
     align-items: center; 
-    background-color: #111827; 
-  }
-  
-  .banner > h1 {
-    font-size: 1.125rem;
-    line-height: 1.75rem; 
-    font-weight: 600; 
+    background-color: #2065d1;
     color: white; 
   }
   
@@ -46,22 +38,22 @@ export default class ComposalStampRFIDRenderer extends ModuleRenderer {
     text-align: center; 
   }
   
-  .content > .title {
+  .content-title {
     font-size: 1.5rem;
     line-height: 2rem; 
     font-weight: 600; 
     color: #1F2937; 
   }
   
-  .content > .hour {
+  .content-hour {
     padding-top: 0.5rem;
     padding-bottom: 0.5rem; 
-    font-size: 3rem;
-    line-height: 1; 
-    font-weight: 700; 
+    line-height: 1;
+    font-size: 1.25rem;
+    font-weight: 600;
   }
   
-  .content > .details {
+  .content-details {
     display: flex; 
     margin-top: 1rem; 
     align-items: center; 
@@ -76,19 +68,28 @@ export default class ComposalStampRFIDRenderer extends ModuleRenderer {
     height: 100%;
   }
 
-  .idle > img {
+  .idle-img {
     width: 100px;
     height: 100px;
     padding: 1rem; 
     border-radius: 0.75rem; 
-    backdrop-filter: blur(12px); 
-    filter: invert(100%);
+    backdrop-filter: blur(12px);
+    background-color: lightgray;
   }
 
-  .idle > span {
+  .idle-details {
     font-size: 1.5rem;
     font-weight: 600;
     color: #1F2937;
+  }
+
+  .loading-img {
+    width: 100px;
+    height: 100px;
+    padding: 1rem; 
+    border-radius: 0.75rem; 
+    backdrop-filter: blur(12px);
+    background-color: lightgray;
   }
 `
 
@@ -97,9 +98,13 @@ export default class ComposalStampRFIDRenderer extends ModuleRenderer {
 
     if (status === 'loading') {
       return (
-        <div className="w-full h-full flex items-center justify-center">
-          <span className="loading loading-ring loading-lg"></span>
-        </div>
+        <>
+          <style>{this.style}</style>
+          <div className="idle">
+            <img className="loading-img" src="https://test.crausaz.click/composal.svg" alt="composal_logo" />
+            <span className="idle-details">Loading</span>
+          </div>
+        </>
       )
     }
 
@@ -107,15 +112,15 @@ export default class ComposalStampRFIDRenderer extends ModuleRenderer {
       return (
         <>
           <style>{this.style}</style>
-          <div className="container">
-            <img src={avatar} alt="user_avatar" />
+          <div className="stamp-card">
+            <img src={avatar} alt="user_avatar" className="avatar" />
             <div className="banner">
-              <h1>Clocked in !</h1>
+              <h1>Clocked in ! ⏳</h1>
             </div>
             <div className="content">
-              <h1 className="title">{data.display_name}</h1>
-              <p className="hour">{data.clocked_in_at}</p>
-              <div className="details">{additionalMessage}</div>
+              <h1 className="content-title">{data.display_name}</h1>
+              <p className="content-hour">{data.clocked_in_at}</p>
+              <div className="content-details">{additionalMessage} ⏰</div>
             </div>
           </div>
         </>
@@ -126,15 +131,15 @@ export default class ComposalStampRFIDRenderer extends ModuleRenderer {
       return (
         <>
           <style>{this.style}</style>
-          <div className="container">
-            <img src={avatar} alt="user_avatar" />
+          <div className="stamp-card">
+            <img src={avatar} alt="user_avatar" className="avatar" />
             <div className="banner">
-              <h1>Clocked out !</h1>
+              <h1>Clocked out ! ⌛</h1>
             </div>
             <div className="content">
-              <h1 className="title">{data.display_name}</h1>
-              <p className="hour">{data.clocked_in_at}</p>
-              <div className="details">{additionalMessage}</div>
+              <h1 className="content-title">{data.display_name}</h1>
+              <p className="content-hour">{data.clocked_in_at}</p>
+              <div className="content-details">{additionalMessage} ⏰</div>
             </div>
           </div>
         </>
@@ -154,8 +159,8 @@ export default class ComposalStampRFIDRenderer extends ModuleRenderer {
       <>
         <style>{this.style}</style>
         <div className="idle">
-          <img src="https://composal.ch/images/logo-composal@2x.png" alt="composal_logo" />
-          <span className="text-2xl font-bold">Please scan your card</span>
+          <img className="idle-img" src="https://test.crausaz.click/composal.svg" alt="composal_logo" />
+          <span className="idle-details">Please scan your card</span>
         </div>
       </>
     )

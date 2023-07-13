@@ -207,6 +207,15 @@ export default class Manager {
   }
 
   /**
+   * Check if a module is registered
+   * @param id module id
+   * @returns true if the module is registered, false otherwise
+   */
+  moduleExists(id: ModuleId): boolean {
+    return this.modules.has(id)
+  }
+
+  /**
    * Subscribe to a module update event
    * @param moduleId the module id to subscribe to
    * @param callback the callback to call when the module is updated

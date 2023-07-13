@@ -238,7 +238,7 @@ export default class ModuleDatabaseManager {
 
     // If the local modules are in the database but not in the manager, remove them
     for (const module of await this.modules()) {
-      if (!this.manager.getModule(module.id)) {
+      if (!this.manager.moduleExists(module.id)) {
         await this.deleteModuleFromDatabase(module.id)
         logger.info(`Module ${module.id} was removed from the database as it is not in the local modules`)
       }

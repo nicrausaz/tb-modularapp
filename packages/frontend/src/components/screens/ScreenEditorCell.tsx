@@ -26,7 +26,7 @@ export default function ScreenEditorCell({ slot, onDelete, readonly = false }: S
 
   return (
     <div
-      className="bg-base-300 w-full h-full relative rounded"
+      className="w-full h-full relative"
       onMouseEnter={() => handleMouse(true)}
       onMouseLeave={() => handleMouse(false)}
     >
