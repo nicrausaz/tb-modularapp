@@ -3,6 +3,8 @@ import { Screen } from '@/models/Screen'
 import { useEffect, useState } from 'react'
 import IconButton from '@/components/IconButton'
 import Input from '@/components/Input'
+import { useTranslation } from 'react-i18next'
+import { useToast } from '@/contexts/ToastContext'
 
 type ScreenToolbarProps = {
   currentScreen: Screen
@@ -30,6 +32,9 @@ export default function ScreenToolbar({
   const [screenName, setScreenName] = useState('')
   const [screenNameError, setScreenNameError] = useState<string>('')
 
+  const { t } = useTranslation()
+  const { tError } = useToast()
+
   useEffect(() => {
     if (currentScreen) {
       setScreenName(currentScreen.name)
@@ -48,7 +53,8 @@ export default function ScreenToolbar({
 
   const handleSaveScreen = () => {
     if (currentScreen.name.trim() === '') {
-      setScreenNameError('Screen name is required')
+      tError(t('status.error'), t('dashboard.feedbacks.screen_name_error'))
+      setScreenNameError(t('dashboard.feedbacks.screen_name_error'))
       return
     }
 
@@ -85,12 +91,12 @@ export default function ScreenToolbar({
           onChange={toggleEnabled}
           defaultChecked={currentScreen.enabled}
         />
-        <div className="dropdown dropdown-hover dropdown-end mr-2">
+        <div className="dropdown dropdown-hover dropdown-end">
           <label tabIndex={0} className="btn m-1 truncate">
             {screenName}
             <ArrowDownIcon className="w-4 h-4" />
           </label>
-          <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box z-50">
+          <ul tabIndex={0} className="mr-2 w-40 dropdown-content menu p-2 shadow bg-base-100 rounded-box z-50">
             {otherScreens.map((screen) => (
               <li key={screen.id}>
                 <a onClick={() => onScreenSelection(screen)} className="overflow-hidden">
@@ -101,7 +107,7 @@ export default function ScreenToolbar({
             <li className="border-t mt-2 pt-2">
               <a onClick={handleAddScreen}>
                 <NewScreenIcon className="w-4 h-4" />
-                Add new screen
+                {t('dashboard.screen_create')}
               </a>
             </li>
           </ul>

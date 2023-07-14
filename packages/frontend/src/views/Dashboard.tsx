@@ -10,6 +10,7 @@ import { Module } from '@/models/Module'
 import { useToast } from '@/contexts/ToastContext'
 import { uuid } from '@/helpers'
 import { createOrSave, remove } from '@/api/requests/screens'
+import { useTranslation } from 'react-i18next'
 
 export default function Dashboard() {
   const { data, error, loading } = useFetchAuth<Screen[]>('/api/screens')
@@ -19,6 +20,7 @@ export default function Dashboard() {
   const [modulesModalOpen, setModulesModalOpen] = useState<boolean>(false)
   const [deleteScreenModalOpen, setDeleteScreenModalOpen] = useState<boolean>(false)
 
+  const { t } = useTranslation()
   const { tSuccess, tError } = useToast()
 
   useEffect(() => {
@@ -62,7 +64,7 @@ export default function Dashboard() {
 
     setScreens([...screens, newScreen])
     setScreen(newScreen)
-    tSuccess('Success', 'Screen created')
+    tSuccess(t('status.success'), t('dashboard.feedbacks.screen_created_ok'))
   }
 
   const saveScreen = async (screen: Screen) => {
@@ -85,7 +87,7 @@ export default function Dashboard() {
     await createOrSave(screen)
 
     setScreens(screens.map((s) => (s.id === screen.id ? screen : s)))
-    tSuccess('Success', 'Screen saved')
+    tSuccess(t('status.success'), t('dashboard.feedbacks.screen_saved_ok'))
   }
 
   const handleLayoutChange = (slots: ScreenSlot[]) => {
@@ -98,7 +100,7 @@ export default function Dashboard() {
   const addModulesToScreen = (modules: Module[]) => {
     setModulesModalOpen(false)
 
-    // TODO: maybe improve the placement
+    // TODO: improve the placement
     const newSlots: ScreenSlot[] = modules.map((module) => ({
       id: uuid(),
       moduleId: module.id,
@@ -121,7 +123,7 @@ export default function Dashboard() {
     remove(screenId)
       .then(() => {
         setScreens(screens.filter((screen) => screen.id !== screenId))
-        tSuccess('Success', 'Screen deleted')
+        tSuccess(t('status.success'), t('dashboard.feedbacks.screen_deleted_ok'))
       })
       .catch((error) => {
         tError('Error', error.message)
@@ -144,7 +146,7 @@ export default function Dashboard() {
         />
         {screen.slots.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-32">
-            <p className="text-gray-500">No module added to this screen yet</p>
+            <p className="text-xl text-gray-500">{t('dashboard.screen_empty')}</p>
           </div>
         ) : (
           <div style={{ height: 'calc(100vh - 220px)' }}>

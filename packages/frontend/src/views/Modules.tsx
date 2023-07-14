@@ -168,7 +168,7 @@ export default function Modules() {
       </div>
       <hr />
       <div className="my-4">
-        {modules.length === 0 && <p className="text-center text-neutral mt-10">{t('modules.search_no_results')}</p>}
+        {modules.length === 0 && <p className="text-center text-gray-500 mt-10">{t('modules.search_no_results')}</p>}
 
         {modules.length && selectedLayout === 'list' ? (
           <ModulesTable modules={modules} onAction={handleAction} />

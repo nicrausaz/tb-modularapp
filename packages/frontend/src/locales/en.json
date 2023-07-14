@@ -19,6 +19,29 @@
       "submit": "Log in"
     }
   },
+  "home": {
+    "title": "Home",
+    "subtitle": "Welcome back",
+    "call_to_action": {
+      "dashboard": "Configure your visualization screens",
+      "dashboard_subtitle": "Create and configure your dashboards to visualize your data",
+      "modules": "Manage your modules",
+      "modules_subtitle": "Install, configure and manage your modules",
+      "box": "Configure your box",
+      "box_subtitle": "Configure your box and its settings to your usage"
+    }
+  },
+  "dashboard": {
+    "screen_create": "Create a new screen",
+    "screen_empty": "This screen is empty, start by adding a module to it",
+    "feedbacks": {
+      "screen_created_ok": "Screen created successfully",
+      "screen_saved_ok": "Screen saved successfully",
+      "screen_deleted_ok": "Screen deleted successfully",
+      "screen_name_error": "Please enter a name for your screen"
+
+    }
+  },
   "modules": {
     "title": "Modules",
     "search_no_results": "No modules matching your search were found."
