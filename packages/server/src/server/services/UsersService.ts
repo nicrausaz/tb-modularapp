@@ -63,14 +63,13 @@ export default class UsersService {
 
   /**
    * Create a new user
-   * 
+   *
    * @throws UserAlreadyExistsException if the user already exists
    */
   createUser = async (user: CreateUserDTO): Promise<void> => {
-    if ((await this.usersRepository.getByUsername(user.username)).id) {
+    if (await this.userExistsByUsername(user.username)) {
       throw new UserAlreadyExistsException(user.username)
     }
-
     return this.usersRepository.createUser(user)
   }
 
@@ -123,13 +122,25 @@ export default class UsersService {
   }
 
   /**
-   * Check if a user exists
+   * Check if a user exists by its id
    * @param id id of the user
    * @returns true if the user exists, false otherwise
    */
   private userExists = async (id: number): Promise<boolean> => {
     return this.usersRepository
       .getById(id)
+      .then(() => true)
+      .catch(() => false)
+  }
+
+  /**
+   * Check if a user exists by its username
+   * @param username username of the user
+   * @returns true if the user exists, false otherwise
+   */
+  private userExistsByUsername = async (username: string): Promise<boolean> => {
+    return this.usersRepository
+      .getByUsername(username)
       .then(() => true)
       .catch(() => false)
   }

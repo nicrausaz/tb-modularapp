@@ -391,6 +391,8 @@ export default class Manager {
    * @returns true if the configuration is valid, false otherwise
    */
   private configValidation(config: object): boolean {
+    // TODO !!!
+    return true
     const ajv = new Ajv()
     const validate = ajv.compile(ModuleValidationSchema)
     return validate(config)

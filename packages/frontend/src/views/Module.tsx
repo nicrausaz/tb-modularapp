@@ -54,6 +54,7 @@ export default function Module() {
     window.addEventListener('beforeunload', clear)
 
     const callback = (data: { subtype?: string; enabled?: boolean }) => {
+      console.log(data)
       if (data.subtype !== 'status') {
         return
       }

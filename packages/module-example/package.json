@@ -1,0 +1,14 @@
+{
+  "name": "@yalk/module-example",
+  "version": "1.0.0",
+  "description": "Template for easily creating your custom intergrations for the modular app",
+  "devDependencies": {},
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "scripts": {
+    "test": "jest",
+    "build": "tsc --build"
+  },
+  "author": "",
+  "license": "ISC"
+}

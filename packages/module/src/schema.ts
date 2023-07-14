@@ -29,6 +29,7 @@ export const schema = {
           items: {
             type: 'string',
           },
+          enum: ['http', 'keyboard'],
         },
         specificConfig: {
           $ref: '#/definitions/SpecificConfig',
@@ -38,21 +39,23 @@ export const schema = {
       title: 'Module',
     },
     SpecificConfig: {
+      title: 'SpecificConfig',
       type: 'object',
       additionalProperties: true,
-      title: 'SpecificConfig',
       properties: {
-        '^[a-zA-Z0-9]+$': {
+        '^[a-zA-Z0-9_-]+$': {
           $ref: '#/definitions/SpecificConfigEntry',
         },
       },
     },
     SpecificConfigEntry: {
+      title: 'SpecificConfigEntry',
       type: 'object',
       additionalProperties: false,
       properties: {
         type: {
           type: 'string',
+          enum: ['text', 'number', 'bool', 'option'],
         },
         label: {
           type: 'string',
@@ -66,9 +69,11 @@ export const schema = {
             type: 'string',
           },
         },
+        value: {
+          oneOf: [{ type: 'string' }, { type: 'number' }, { type: 'boolean' }],
+        },
       },
       required: ['description', 'label', 'type', 'value'],
-      title: 'SpecificConfigEntry',
     },
   },
 }

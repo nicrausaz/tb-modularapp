@@ -1,6 +1,6 @@
 {
-  "$schema": "./schema.json",
-  "name": "C",
+  "$schema": "https://test.crausaz.click/schema.json",
+  "name": "Composal Badging",
   "description": "Module allowing users to scan their badge through a RFID reader to clock in and out",
   "version": "1.0.0",
   "author": "Nicolas Crausaz",

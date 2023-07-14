@@ -1,0 +1,39 @@
+{
+  "name": "Example Module",
+  "description": "Template for easily creating your custom intergrations for the modular app",
+  "version": "1.0.0",
+  "author": "Nicolas Crausaz",
+  "icon": "icon.svg",
+  "requires": ["http", "keyboard"],
+  "specificConfig": {
+    "anExampleText": {
+      "type": "text",
+      "label": "Example value",
+      "description": "An example value for a text",
+      "value": "A base value"
+    },
+    "anExampleNumber": {
+      "type": "number",
+      "label": "Example number",
+      "description": "An example value for a number",
+      "value": 42
+    },
+    "anExampleBool": {
+      "type": "bool",
+      "label": "Example boolean",
+      "description": "An example value for a boolean",
+      "value": true
+    },
+    "anExampleOption": {
+      "type": "option",
+      "label": "Example select",
+      "description": "An example value for a select",
+      "value": "option1",
+      "options": [
+        "option1",
+        "option2",
+        "option3"
+      ]
+    }
+  }
+}

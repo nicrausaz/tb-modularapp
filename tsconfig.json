@@ -27,6 +27,9 @@
       "path": "./packages/server"
     },
     {
+      "path": "./packages/module-example"
+    },
+    {
       "path": "./packages/debug-module"
     },
     {

@@ -4,6 +4,9 @@ import SearchBar from '@/components/SearchBar'
 import ModuleSelectRow from './ModuleSelectRow'
 import { useFetchAuth } from '@/hooks/useFetch'
 import { useEffect, useRef, useState } from 'react'
+import IconButton from '../IconButton'
+import { AddSquareIcon } from '@/assets/icons'
+import { useNavigate } from 'react-router-dom'
 
 type ConfirmModuleDeleteModalProps = {
   isOpen: boolean
@@ -18,6 +21,8 @@ export default function ChoseModulesModal({ isOpen, onClose, onConfirm }: Confir
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [searchFilter, setSearchFilter] = useState<string>('All')
   const selectAll = useRef<HTMLInputElement>(null)
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (data) {
@@ -99,6 +104,48 @@ export default function ChoseModulesModal({ isOpen, onClose, onConfirm }: Confir
 
   const searchFilters = ['All', 'Enabled', 'Disabled']
 
+  const ModuleTable = () => (
+    <div className="modal-body">
+      <div className="m-2">
+        <SearchBar
+          hasFilters={true}
+          query={searchQuery}
+          filters={searchFilters}
+          currentFilter={searchFilter}
+          onQueryChange={(query) => setSearchQuery(query)}
+          onFilterChange={(filter) => setSearchFilter(filter)}
+        />
+      </div>
+      <div className="overflow-x-auto">
+        <table className="table table-pin-rows table-pin-cols">
+          <thead>
+            <tr>
+              <th>
+                <label>
+                  <input
+                    type="checkbox"
+                    className="checkbox"
+                    checked={isAllChecked}
+                    onChange={toggleSelectAll}
+                    ref={selectAll}
+                  />
+                </label>
+              </th>
+              <th>Name</th>
+              <th>Version</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {modules.map((module, i) => (
+              <ModuleSelectRow key={i} module={module} selected={isSelected(module)} onSelect={handleSelect} />
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+
   return (
     <ConfirmModal
       isOpen={isOpen}
@@ -107,45 +154,20 @@ export default function ChoseModulesModal({ isOpen, onClose, onConfirm }: Confir
       onCancel={handleClose}
       confirmEnabled={selectedModules.length > 0}
     >
-      <div className="modal-body">
-        <div className="m-2">
-          <SearchBar
-            hasFilters={true}
-            query={searchQuery}
-            filters={searchFilters}
-            currentFilter={searchFilter}
-            onQueryChange={(query) => setSearchQuery(query)}
-            onFilterChange={(filter) => setSearchFilter(filter)}
+      {data && data.length === 0 ? (
+        <div className="mt-4 text-center text-xl text-gray-500 flex flex-col items-center gap-2">
+          <span>No modules found</span>
+          <IconButton
+            icon={<AddSquareIcon />}
+            label="Add modules now !"
+            position="left"
+            className="btn-primary"
+            onClick={() => navigate('/modules')}
           />
         </div>
-        <div className="overflow-x-auto">
-          <table className="table table-pin-rows table-pin-cols">
-            <thead>
-              <tr>
-                <th>
-                  <label>
-                    <input
-                      type="checkbox"
-                      className="checkbox"
-                      checked={isAllChecked}
-                      onChange={toggleSelectAll}
-                      ref={selectAll}
-                    />
-                  </label>
-                </th>
-                <th>Name</th>
-                <th>Version</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {modules.map((module, i) => (
-                <ModuleSelectRow key={i} module={module} selected={isSelected(module)} onSelect={handleSelect} />
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      ) : (
+        <ModuleTable />
+      )}
     </ConfirmModal>
   )
 }

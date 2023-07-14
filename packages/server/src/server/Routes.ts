@@ -1,10 +1,9 @@
-import express, { NextFunction, Request, Response } from 'express'
+import express from 'express'
 import { AuthController, BoxController, ModulesController, ScreensController, UsersController } from './controllers'
 import { BoxService, ModulesService, ScreensService, UsersService } from './services'
 import { UsersRepository, ModulesRepository, ScreensRepository, BoxRepository } from './repositories'
 import { APIKeyAuthMiddleware, JwtAuthMiddleware } from './middlewares/AuthMiddleware'
 import ModuleDatabaseManager from './helpers/ModuleDatabaseManager'
-import { join } from 'path'
 import {
   boxUpdateRules,
   generateAPIKeyRules,
