@@ -55,7 +55,7 @@ export default function APIKeysList({ keys, onUpdated }: APIKeyListProps) {
     setKeyDeletionModalOpen(true)
   }
 
-  const handleCreationClose = () => {
+  const handleCreationConfirm = () => {
     setKeyCreationModalOpen(false)
     tSuccess(t('status.success'), t('settings.api_keys.create_success'))
     onUpdated()
@@ -106,10 +106,9 @@ export default function APIKeysList({ keys, onUpdated }: APIKeyListProps) {
       <APIKeyCreationModal
         isOpen={keyCreationModalOpen}
         onConfirm={() => {
-          handleCreationClose()
-          tSuccess(t('status.success'), t('settings.api_keys.create_success'))
+          handleCreationConfirm()
         }}
-        onCancel={handleCreationClose}
+        onCancel={() => setKeyCreationModalOpen(false)}
       />
 
       <ConfirmAPIKeyDeleteModal
