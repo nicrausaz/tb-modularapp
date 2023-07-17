@@ -67,8 +67,7 @@ export default class EventsController {
           )
         })
         .catch((err) => {
-          // TODO:send disabled ?
-          console.log('EH HO, error is: ', err, 'disabled ?')
+          console.log('error is: ', err, 'disabled ?')
         })
     }
 
@@ -85,24 +84,17 @@ export default class EventsController {
     }
     clientCallbacks.add([renderCallback, statusCallback])
 
-    this.modulesService
-      .subscribeToModuleEvents(moduleId, renderCallback)
-      .then(() => {
-        this.modulesService.moduleLiveUpdater.subscribe(moduleId, statusCallback)
-      })
-      .catch(() => {
-        conn.send(
-          JSON.stringify({
-            type: 'module',
-            subtype: 'render',
-            id: moduleId,
-            error: 'Module is disabled',
-          }),
-        )
-        // TODO: check if this is necessary, internal error ?
-        // console.log('DELETE CALLBACKS')
-        // clientCallbacks?.delete([renderCallback, statusCallback])
-      })
+    this.modulesService.moduleLiveUpdater.subscribe(moduleId, statusCallback)
+    this.modulesService.subscribeToModuleEvents(moduleId, renderCallback).catch(() => {
+      conn.send(
+        JSON.stringify({
+          type: 'module',
+          subtype: 'render',
+          id: moduleId,
+          error: 'Module is disabled',
+        }),
+      )
+    })
   }
 
   private unsubscribeFromModule(conn: WebSocket, moduleId: string) {
@@ -117,21 +109,17 @@ export default class EventsController {
     }
 
     clientCallbacks.forEach((callback) => {
-      this.modulesService
-        .unsubscribeFromModuleEvents(moduleId, callback[0])
-        .then(() => {
-          this.modulesService.moduleLiveUpdater.unsubscribe(moduleId, callback[1])
-        })
-        .catch(() => {
-          conn.send(
-            JSON.stringify({
-              type: 'module',
-              subtype: 'render',
-              id: moduleId,
-              error: 'Module is disabled',
-            }),
-          )
-        })
+      this.modulesService.moduleLiveUpdater.unsubscribe(moduleId, callback[1])
+      this.modulesService.unsubscribeFromModuleEvents(moduleId, callback[0]).catch(() => {
+        conn.send(
+          JSON.stringify({
+            type: 'module',
+            subtype: 'render',
+            id: moduleId,
+            error: 'Module is disabled',
+          }),
+        )
+      })
     })
 
     clientCallbacks.clear()

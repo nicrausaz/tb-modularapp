@@ -22,7 +22,6 @@ export default class Server {
     // Configure app
     this.app.use(express.json())
     this.app.use(uploader)
-    // this.app.use(express.static(process.env.PUBLIC_DIR ?? ''))
 
     // Configure WebSocket server
     this.wss = new WebSocket.Server({ noServer: true, path: '/events' })

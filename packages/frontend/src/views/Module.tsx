@@ -36,25 +36,17 @@ export default function Module() {
   const [module, setModule] = useState(data)
   const [confirmDelete, setConfirmDelete] = useState<boolean>(false)
   const [confirmReset, setConfirmReset] = useState<boolean>(false)
-  const [deleting, setDeleting] = useState<boolean>(false)
 
   useEffect(() => {
     setModule(data)
   }, [data])
 
   useEffect(() => {
-    if (!source || !moduleId || !module) {
+    if (!source || !moduleId) {
       return
     }
 
-    const clear = () => {
-      source.releaseModule(moduleId, callback)
-    }
-
-    window.addEventListener('beforeunload', clear)
-
     const callback = (data: { subtype?: string; enabled?: boolean }) => {
-      console.log(data)
       if (data.subtype !== 'status') {
         return
       }
@@ -65,10 +57,16 @@ export default function Module() {
       }))
     }
 
+    const clear = () => {
+      source.releaseModule(moduleId, callback)
+    }
+
+    window.addEventListener('beforeunload', clear)
+
     source.getModule(moduleId, callback)
 
     return () => {
-      source.releaseModule(moduleId, callback, !deleting)
+      source.releaseModule(moduleId, callback)
       window.removeEventListener('beforeunload', clear)
     }
   }, [source])
@@ -115,7 +113,6 @@ export default function Module() {
   }
 
   const handleDelete = () => {
-    setDeleting(true)
     remove(module.id).then(() => {
       setConfirmDelete(false)
       tSuccess(t('status.success'), t('module.feedbacks.deleted_ok'))

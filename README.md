@@ -225,3 +225,9 @@ Command to run on production (PI):
 `docker build -t modapp .`
 
 `docker run -p 3000:3000  modapp`
+
+npm run build -W
+
+npm run dev -w packages/frontend
+
+npm run start -w packages/server

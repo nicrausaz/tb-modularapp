@@ -63,7 +63,6 @@ export default function Settings() {
     }
   }
 
-
   const refreshAPIKey = async () => {
     const data = await getAPIKeys()
     if (data) {
@@ -132,6 +131,7 @@ export default function Settings() {
           <label className="label">
             <span className="label-text">{t('settings.configuration.image')}</span>
           </label>
+
           <FilePreviewerInput
             onUpload={uploadBoxIcon}
             currentPicture={`/api/box/static/${box.icon}`}

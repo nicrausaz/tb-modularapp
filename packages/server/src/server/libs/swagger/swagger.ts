@@ -15,6 +15,10 @@ const swaggerSpec = swaggerJSDoc({
           type: 'http',
           scheme: 'bearer',
         },
+        apikey: {
+          type: 'apiKey',
+          name: 'x-api-key',
+        }
       },
     },
   },

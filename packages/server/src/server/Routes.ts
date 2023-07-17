@@ -361,6 +361,8 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *     summary: Send an event to a module
    *     description: Send an event to a module
    *     tags: [Modules]
+   *     security:
+   *       - apikey: []
    *     parameters:
    *       - in: path
    *         name: id
@@ -747,8 +749,63 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
   /**
    * Box routes
    */
+
+  /**
+   * @swagger
+   * /api/box:
+   *   get:
+   *     summary: Get box information
+   *     description: Get box information
+   *     tags: [Box]
+   *     security:
+   *       - bearer: []
+   *     responses:
+   *       200:
+   *         description: Return box information
+   *         content:
+   *           application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               name:
+   *                 type: string
+   *               logo:
+   *                 type: string
+   *               version:
+   *                 type: string
+   *           example: {
+   *                 "name": "Modular APP",
+   *                 "icon": "logo.svg",
+   *                 "version": "1.0.0"
+   *              }
+   */
   app.get('/api/box', boxController.index)
 
+  /**
+   * @swagger
+   * /api/box:
+   *   put:
+   *     summary: Update box information
+   *     description: Update box information
+   *     tags: [Box]
+   *     security:
+   *       - bearer: []
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *              name:
+   *                type: string
+   *           example: {
+   *             "name": "Modular APP"
+   *            }
+   *      responses:
+   *        204:
+   *          description: Box information updated
+   */
   app.put('/api/box', Validator(boxUpdateRules), JwtAuthMiddleware, boxController.update)
 
   app.put('/api/box/icon', JwtAuthMiddleware, boxController.updateIcon)
