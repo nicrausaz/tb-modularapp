@@ -32,7 +32,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (screens.length > 0) {
-      setScreen(screens[0])
+      setScreen(screens[screens.length - 1])
     }
   }, [screens])
 
@@ -99,16 +99,16 @@ export default function Dashboard() {
 
   const addModulesToScreen = (modules: Module[]) => {
     setModulesModalOpen(false)
-
-    // TODO: improve the placement
-    const newSlots: ScreenSlot[] = modules.map((module) => ({
+    
+    const x = screen.slots.length * 3
+    const newSlots: ScreenSlot[] = modules.map((module, i) => ({
       id: uuid(),
       moduleId: module.id,
       screenId: screen?.id,
       module,
-      width: 2,
+      width: 3,
       height: 2,
-      x: (screen.slots.length * 2) % 10,
+      x: (x + i * 3) % 12,
       y: 0,
     }))
 

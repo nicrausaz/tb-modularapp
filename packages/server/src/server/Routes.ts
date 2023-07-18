@@ -352,7 +352,7 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *                          "message": "Module not found",
    *                       }
    */
-  app.patch('/api/modules/:id', Validator(moduleUpdateRules), JwtAuthMiddleware, modulesController.update)
+  app.patch('/api/modules/:id', JwtAuthMiddleware, Validator(moduleUpdateRules), modulesController.update)
 
   /**
    * @swagger
@@ -405,6 +405,8 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *                       }
    */
   app.post('/api/modules/:id/events', APIKeyAuthMiddleware, modulesController.sendEvent)
+
+  app.post('/api/modules/events', APIKeyAuthMiddleware, modulesController.sendManyEvents)
 
   /**
    * @swagger
@@ -502,8 +504,8 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    */
   app.put(
     '/api/modules/:id/configuration',
-    Validator(moduleConfigurationUpdateRules),
     JwtAuthMiddleware,
+    Validator(moduleConfigurationUpdateRules),
     modulesController.moduleConfigurationUpdate,
   )
 
@@ -581,8 +583,8 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    */
   app.post(
     '/api/modules/:id/status',
-    Validator(moduleStatusUpdateRules),
     JwtAuthMiddleware,
+    Validator(moduleStatusUpdateRules),
     modulesController.moduleStatusUpdate,
   )
 
@@ -710,7 +712,7 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *                          "message": "Screen not found",
    *                       }
    */
-  app.put('/api/screens/:id', Validator(screenUpdateRules), JwtAuthMiddleware, screensController.createOrUpdate)
+  app.put('/api/screens/:id', JwtAuthMiddleware, Validator(screenUpdateRules), screensController.createOrUpdate)
 
   /**
    * @swagger
@@ -806,7 +808,7 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *        204:
    *          description: Box information updated
    */
-  app.put('/api/box', Validator(boxUpdateRules), JwtAuthMiddleware, boxController.update)
+  app.put('/api/box', JwtAuthMiddleware, Validator(boxUpdateRules), boxController.update)
 
   app.put('/api/box/icon', JwtAuthMiddleware, boxController.updateIcon)
 
@@ -818,7 +820,7 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
 
   app.get('/api/box/security/keys', JwtAuthMiddleware, boxController.APIKeys)
 
-  app.post('/api/box/security/keys', Validator(generateAPIKeyRules), JwtAuthMiddleware, boxController.generateAPIKey)
+  app.post('/api/box/security/keys', JwtAuthMiddleware, Validator(generateAPIKeyRules), boxController.generateAPIKey)
 
   app.delete('/api/box/security/keys/:id', JwtAuthMiddleware, boxController.deleteAPIKey)
 
@@ -827,9 +829,9 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    */
   app.get('/api/users', JwtAuthMiddleware, usersController.index)
 
-  app.post('/api/users', Validator(userCreateRules), JwtAuthMiddleware, usersController.create)
+  app.post('/api/users', JwtAuthMiddleware, Validator(userCreateRules), usersController.create)
 
-  app.patch('/api/users/:id', Validator(userUpdateRules), JwtAuthMiddleware, usersController.update)
+  app.patch('/api/users/:id', JwtAuthMiddleware, Validator(userUpdateRules), usersController.update)
 
   app.put('/api/users/:id/avatar', JwtAuthMiddleware, usersController.updatePicture)
 

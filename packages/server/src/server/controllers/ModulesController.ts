@@ -52,6 +52,17 @@ export default class ModulesController {
   }
 
   /**
+   * POST
+   * Send an event to multiple modules
+   */
+  sendManyEvents = async (req: Request, res: Response, next: NextFunction) => {
+    this.modulesService
+      .sendEventToModules(req.body.ids, req.body.data)
+      .then(() => res.status(204).send())
+      .catch(next)
+  }
+
+  /**
    * GET
    * Get a module's configuration
    */

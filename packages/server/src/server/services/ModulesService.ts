@@ -154,6 +154,16 @@ export default class ModulesService {
   }
 
   /**
+   * Send any data to multiple modules if they exist and are enabled
+   * 
+   * @throws ModuleNotFoundException if a module does not exist
+   * @throws ModuleDisabledException if a module is disabled
+   */
+  sendEventToModules = async (ids: string[], data: unknown) => {
+    return await Promise.all(ids.map((id) => this.sendEventToModule(id, data)))
+  }
+
+  /**
    * Upload a zip file containing a module to the application.
    */
   uploadModule = (file: UploadedFile) => {

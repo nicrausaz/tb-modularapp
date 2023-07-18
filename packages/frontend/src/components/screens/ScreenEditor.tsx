@@ -88,9 +88,9 @@ export default function ScreenEditor({ slots, onChange, containerClassName, read
   const editorProps: GridLayout.ReactGridLayoutProps = {
     isDraggable: !readonly,
     isResizable: !readonly,
-    cols: 10,
+    cols: 12,
     rowHeight: (container.current?.clientHeight || 0) / 5,
-    maxRows: 5,
+    maxRows: 4,
     width: container.current?.clientWidth || 0,
     resizeHandles: ['se'],
     compactType: 'vertical',
