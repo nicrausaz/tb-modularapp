@@ -90,7 +90,7 @@ export default abstract class Module {
    * @param type The type of received data (usually the key of the device accessor)
    * @param data The data to give
    */
-  public receiveData(type: string, data: any): void {
+  public receiveData(type: string, data: unknown): void {
     this.onReceive(type, data)
   }
 
@@ -159,7 +159,7 @@ export default abstract class Module {
    * @param type type of the data (usually to match different targets (http, usb, etc.))
    * @param data data to send
    */
-  protected sendData(type: string, data: any): void {
+  protected sendData(type: string, data: unknown): void {
     this.emitter.emit(Module.SEND_DATA_KEY, type, data)
   }
 
@@ -168,7 +168,7 @@ export default abstract class Module {
    * @param type The type of received data (usually the key of the device accessor)
    * @param data The data to process
    */
-  protected abstract onReceive(type: string, data: ModuleProps): void
+  protected abstract onReceive(type: string, data: unknown): void
 
   /**
    * Called when a new subscriber is registered

@@ -3,7 +3,9 @@ import { ModuleRenderer } from '@yalk/module'
 import { HelloModuleProps } from '.'
 
 export default class HelloModuleRenderer extends ModuleRenderer {
-  render({ name, last }: HelloModuleProps): JSX.Element {
+  protected style: string = ``
+  
+  display({ name, last }: HelloModuleProps): JSX.Element {
     return (
       <div className="p-6 bg-white border border-gray-200 rounded-lg shadow text-center">
         <h5 className="mb-2 text-2xl font-bold tracking-tight text-red-900 italic">Debug module</h5>

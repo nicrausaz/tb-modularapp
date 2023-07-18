@@ -3,7 +3,7 @@ import { ModuleRenderer } from '@yalk/module'
 import { ComposalStampRFIDProps } from '.'
 
 export default class ComposalStampRFIDRenderer extends ModuleRenderer {
-  readonly style = `
+  override readonly style = `
   .stamp-card {
     overflow: hidden; 
     border-radius: 0.5rem; 
@@ -94,56 +94,47 @@ export default class ComposalStampRFIDRenderer extends ModuleRenderer {
   }
 `
 
-  render({ status, additionalMessage, data }: ComposalStampRFIDProps): JSX.Element {
+  display({ status, additionalMessage, data }: ComposalStampRFIDProps): JSX.Element {
     const avatar = data?.avatar_url || '/assets/placeholder.svg'
 
     if (status === 'loading') {
       return (
-        <>
-          <style>{this.style}</style>
-          <div className="idle">
-            <img className="loading-img" src="https://test.crausaz.click/composal.svg" alt="composal_logo" />
-            <span className="idle-details">Loading</span>
-          </div>
-        </>
+        <div className="idle">
+          <img className="loading-img" src="https://test.crausaz.click/composal.svg" alt="composal_logo" />
+          <span className="idle-details">Loading</span>
+        </div>
       )
     }
 
     if (status === 'start') {
       return (
-        <>
-          <style>{this.style}</style>
-          <div className="stamp-card">
-            <img src={avatar} alt="user_avatar" className="avatar" />
-            <div className="banner">
-              <h1>Clocked in ! ⏳</h1>
-            </div>
-            <div className="content">
-              <h1 className="content-title">{data.display_name}</h1>
-              <p className="content-hour">{data.clocked_in_at}</p>
-              <div className="content-details">{additionalMessage} ⏰</div>
-            </div>
+        <div className="stamp-card">
+          <img src={avatar} alt="user_avatar" className="avatar" />
+          <div className="banner">
+            <h1>Clocked in ! ⏳</h1>
           </div>
-        </>
+          <div className="content">
+            <h1 className="content-title">{data.display_name}</h1>
+            <p className="content-hour">{data.clocked_in_at}</p>
+            <div className="content-details">{additionalMessage} ⏰</div>
+          </div>
+        </div>
       )
     }
 
     if (status === 'end') {
       return (
-        <>
-          <style>{this.style}</style>
-          <div className="stamp-card">
-            <img src={avatar} alt="user_avatar" className="avatar" />
-            <div className="banner">
-              <h1>Clocked out ! ⌛</h1>
-            </div>
-            <div className="content">
-              <h1 className="content-title">{data.display_name}</h1>
-              <p className="content-hour">{data.clocked_in_at}</p>
-              <div className="content-details">{additionalMessage} ⏰</div>
-            </div>
+        <div className="stamp-card">
+          <img src={avatar} alt="user_avatar" className="avatar" />
+          <div className="banner">
+            <h1>Clocked out ! ⌛</h1>
           </div>
-        </>
+          <div className="content">
+            <h1 className="content-title">{data.display_name}</h1>
+            <p className="content-hour">{data.clocked_in_at}</p>
+            <div className="content-details">{additionalMessage} ⏰</div>
+          </div>
+        </div>
       )
     }
 
@@ -157,13 +148,10 @@ export default class ComposalStampRFIDRenderer extends ModuleRenderer {
 
     // Default status is 'idle'
     return (
-      <>
-        <style>{this.style}</style>
-        <div className="idle">
-          <img className="idle-img" src="https://test.crausaz.click/composal.svg" alt="composal_logo" />
-          <span className="idle-details">Please scan your card</span>
-        </div>
-      </>
+      <div className="idle">
+        <img className="idle-img" src="https://test.crausaz.click/composal.svg" alt="composal_logo" />
+        <span className="idle-details">Please scan your card</span>
+      </div>
     )
   }
 }

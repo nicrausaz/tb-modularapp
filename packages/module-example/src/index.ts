@@ -49,12 +49,30 @@ export default class ExampleModule extends Module {
   }
 
   stop(): void {
-    // todo
+    // This is where you will define the behavior of your module when it is stopped.
+    // This method is called once the module is stopped.
+    // You can remove this method if you don't need it
+    // Your code here ...
   }
 
-  onReceive(type: string, data: ExampleModuleProps): void {}
+  protected onReceive(type: string, data: unknown): void {
+    // This is where you will define the behavior of your module when it receives data.
+    // This method is called every time the module receives data.
+
+    // type: The type of received data (usually the key of the device accessor)
+    // data: The received data
+
+    // Notice: to receive data, you need to register a device accessor in the configuration
+    // using the "requires" key.
+
+    // Your code here ...
+    if (type === 'http') {
+      console.log('Received data from http', data)
+    }
+  }
 
   onNewSubscriber(): void {
-    // Nothing to do here
+    // This is where you will define the behavior of your module when a new subscriber is registered.
+    // This method is called every time a new subscriber is registered.
   }
 }
