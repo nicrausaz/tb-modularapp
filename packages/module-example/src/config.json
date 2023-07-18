@@ -1,4 +1,5 @@
 {
+  "$schema": "https://test.crausaz.click/schema.json",
   "name": "Example Module",
   "description": "Template for easily creating your custom intergrations for the modular app",
   "version": "1.0.0",
@@ -34,6 +35,12 @@
         "option2",
         "option3"
       ]
+    },
+    "anExampleSecret": {
+      "type": "secret",
+      "label": "Example secret",
+      "description": "An example value for a secret",
+      "value": "secret"
     }
   }
 }
