@@ -5,6 +5,7 @@ type ConfirmModalProps = {
   title: string
   children: React.ReactNode
   confirmColor?: string
+  cancelEnabled?: boolean
   confirmEnabled?: boolean
   cancelText?: string
   confirmText?: string
@@ -23,6 +24,7 @@ export default function ConfirmModal({
   onConfirm,
   onCancel,
   confirmColor,
+  cancelEnabled = true,
   confirmEnabled = true,
   cancelText = 'Cancel',
   confirmText = 'Confirm',
@@ -39,6 +41,7 @@ export default function ConfirmModal({
       cancelText={cancelText}
       confirmText={confirmText}
       confirmHidden={confirmHidden}
+      cancelEnabled={cancelEnabled}
     >
       <div className="modal-body">{children}</div>
     </Modal>

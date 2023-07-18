@@ -59,6 +59,7 @@ export default function APIKeyCreationModal({ isOpen, onCancel, onConfirm }: API
       onCancel={cleanAndClose}
       confirmHidden={APIKey === ''}
       confirmText="Copy & close"
+      cancelEnabled={generationStep !== 1}
     >
       <div className="modal-body">
         <ul className="steps mt-4 w-full">

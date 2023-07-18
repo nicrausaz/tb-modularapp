@@ -6,6 +6,7 @@ type ModalProps = {
   onCancel: () => void
   children: React.ReactNode
   title?: string
+  cancelEnabled?: boolean
   confirmEnabled?: boolean
   confirmColor?: string
   cancelText?: string
@@ -22,6 +23,7 @@ export default function Modal({
   onCancel,
   title,
   children,
+  cancelEnabled = true,
   confirmEnabled = true,
   confirmColor = 'btn-primary',
   cancelText = 'Cancel',
@@ -39,6 +41,7 @@ export default function Modal({
   }, [isOpen])
 
   const confirmClasses = `btn ${confirmEnabled ? confirmColor : 'btn-disabled'}`
+  const cancelClasses = `btn ${cancelEnabled ? '' : 'btn-disabled'}`
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -53,7 +56,7 @@ export default function Modal({
         <h3 className="font-bold text-lg">{title}</h3>
         {children}
         <div className="modal-action">
-          <button type="button" className="btn" onClick={onCancel}>
+          <button type="button" className={cancelClasses} onClick={onCancel}>
             {cancelText}
           </button>
           {!confirmHidden && (

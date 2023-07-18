@@ -10,7 +10,7 @@ export interface ModuleProps {
 }
 
 export default abstract class Module {
-  private readonly emitter = new EventEmitter()
+  private readonly emitter = new EventEmitter().setMaxListeners(50)
   private static readonly UPDATE_STATE_KEY = 'update'
   private static readonly SEND_DATA_KEY = 'send'
 

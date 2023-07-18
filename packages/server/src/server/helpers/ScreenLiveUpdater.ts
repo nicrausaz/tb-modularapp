@@ -5,7 +5,7 @@ import logger from '../libs/logger'
  * Allows to handle live updates for screens visualizations
  */
 export default class ScreenLiveUpdater {
-  private emitter = new EventEmitter()
+  private emitter = new EventEmitter().setMaxListeners(50)
 
   /**
    * Notify a screen update

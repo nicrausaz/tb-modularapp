@@ -22,7 +22,7 @@ export type RecEvent = {
 }
 
 export default class EventsManager {
-  private readonly emitter = new EventEmitter()
+  private readonly emitter = new EventEmitter().setMaxListeners(50)
   protected conn!: WebSocket
   private static URL = 'ws://localhost:3000/events'
 
