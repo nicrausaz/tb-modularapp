@@ -85,7 +85,7 @@ export default class BoxRepository {
   public getAPIKeys(): Promise<APIKey[]> {
     const db = getDB()
     return new Promise((resolve, reject) => {
-      db.all('SELECT * FROM APIKeys', (err, rows) => {
+      db.all('SELECT id, name, display, createdAt FROM APIKeys', (err, rows) => {
         if (err) {
           reject(err)
         }

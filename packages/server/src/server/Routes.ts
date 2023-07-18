@@ -12,6 +12,8 @@ import {
   moduleStatusUpdateRules,
   moduleUpdateRules,
   screenUpdateRules,
+  sendEventRules,
+  sendMultipleEventsRules,
   userCreateRules,
   userUpdateRules,
 } from './models/validators'
@@ -376,6 +378,9 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *          application/json:
    *              schema:
    *                type: object
+   *                properties:
+   *                  data:
+   *                    type: object
    *     responses:
    *       204:
    *         description: Event sent
@@ -404,9 +409,76 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *                          "message": "Module not found",
    *                       }
    */
-  app.post('/api/modules/:id/events', APIKeyAuthMiddleware, modulesController.sendEvent)
+  app.post('/api/modules/:id/events', Validator(sendEventRules), APIKeyAuthMiddleware, modulesController.sendEvent)
 
-  app.post('/api/modules/events', APIKeyAuthMiddleware, modulesController.sendManyEvents)
+  /**
+   * @swagger
+   * /api/modules/events:
+   *   post:
+   *     summary: Send an event to multiple modules
+   *     description: Send an event to multiple modules
+   *     tags: [Modules]
+   *     security:
+   *       - apikey: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: The module id
+   *     requestBody:
+   *        required: true
+   *        content:
+   *          application/json:
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  ids:
+   *                    type: array
+   *                  data:
+   *                    type: object
+   *              example: {
+   *                   "ids": [
+   *                       "6881d200-9f96-4c9a-a290-226c42a9476f",
+   *                       "cfc7c162-9700-493a-b8c8-5cf32e22d0ca"
+   *                   ],
+   *                   "data": {}
+   *               }
+   *     responses:
+   *       204:
+   *         description: Event sent
+   *       403:
+   *         description: The module is not enabled or not allowed to receive events
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *             example: {
+   *                          "message": "Module with id 5f68ba88-df21-4fbe-98b8-f39a6b6e469a is not allowed to receive HTTP data",
+   *                       }
+   *       404:
+   *         description: The module does not exist
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *             example: {
+   *                          "message": "Module not found",
+   *                       }
+   */
+  app.post(
+    '/api/modules/events',
+    Validator(sendMultipleEventsRules),
+    APIKeyAuthMiddleware,
+    modulesController.sendManyEvents,
+  )
 
   /**
    * @swagger
@@ -431,6 +503,11 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *           application/json:
    *           schema:
    *             type: array
+   *             items:
+   *               type: object
+   *               properties:
+   *                 name:
+   *                   type: string
    *           example:
    *                 [
    *                   {
@@ -804,40 +881,385 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *           example: {
    *             "name": "Modular APP"
    *            }
-   *      responses:
-   *        204:
-   *          description: Box information updated
+   *     responses:
+   *       204:
+   *         description: Box information updated
    */
   app.put('/api/box', JwtAuthMiddleware, Validator(boxUpdateRules), boxController.update)
 
+  /**
+   * @swagger
+   * /api/box/icon:
+   *   post:
+   *     summary: Update the box icon
+   *     description: Upload and update the box icon
+   *     tags: [Box]
+   *     security:
+   *       - bearer: []
+   *     consumes:
+   *       - multipart/form-data
+   *     parameters:
+   *        - in: formData
+   *          name: file
+   *          type: file
+   *          description: The icon to upload
+   *     responses:
+   *       200:
+   *         description: Icon imported successfully
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *                 moduleId:
+   *                   type: string
+   *             example: {
+   *                          "message": "Icon updated successfully",
+   *                          "moduleId": "icon.svg"
+   *                       }
+   *       400:
+   *         description: No file provided, invalid file format or invalid archive structure. Each error is returned in the response message
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *             example: {
+   *                          "message": "No files were uploaded",
+   *                       }
+   */
   app.put('/api/box/icon', JwtAuthMiddleware, boxController.updateIcon)
 
+  /**
+   * @swagger
+   * /api/box/static/{filename}:
+   *   get:
+   *     summary: Get a static file (public)
+   *     description: Get a static file from the public directory
+   *     tags: [Box]
+   *     parameters:
+   *       - in: path
+   *         name: filename
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: The name of the file to get
+   *     responses:
+   *       200:
+   *         description: Return the file
+   *       404:
+   *         description: The file does not exist
+   */
   app.get('/api/box/static/:filename', boxController.staticFile)
 
+  /**
+   * @swagger
+   * /api/box/static/module/{moduleId}/{filename}:
+   *   get:
+   *     summary: Get a static file (module)
+   *     description: Get a static file from a module directory
+   *     tags: [Box]
+   *     parameters:
+   *       - in: path
+   *         name: moduleId
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: The module id
+   *       - in: path
+   *         name: filename
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: The name of the file to get
+   *     responses:
+   *       200:
+   *         description: Return the file
+   *       404:
+   *         description: The file does not exist
+   */
   app.get('/api/box/static/module/:moduleId/:filename', boxController.moduleStaticFile)
 
+  /**
+   * @swagger
+   * /api/box/static/user/{filename}:
+   *   get:
+   *     summary: Get a static file (user avatar)
+   *     description: Get a static file from the user avatar directory
+   *     tags: [Box]
+   *     parameters:
+   *       - in: path
+   *         name: filename
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: The name of the file to get
+   *     responses:
+   *       200:
+   *         description: Return the file
+   *       404:
+   *         description: The file does not exist
+   */
   app.get('/api/box/static/user/:filename', boxController.userStaticFile)
 
+  /**
+   * @swagger
+   * /api/box/security/keys:
+   *   get:
+   *     summary: Get API keys
+   *     description: Get existing API keys, onyl the prefix of the keys are returned
+   *     tags: [Box]
+   *     security:
+   *       - bearer: []
+   *     responses:
+   *       200:
+   *       description: Return the API keys
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: array
+   *             items:
+   *               type: object
+   *               properties:
+   *                 id:
+   *                   type: string
+   *                 display:
+   *                   type: string
+   *                 name:
+   *                   type: string
+   *                 createdAt:
+   *                   type: string
+   *           example: [
+   *               {
+   *                   "id": 1,
+   *                   "name": "sdfg",
+   *                   "display": "bcef9∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗",
+   *                   "createdAt": "2023-07-18 11:51:01"
+   *               },
+   *               {
+   *                   "id": 2,
+   *                   "name": "asdf",
+   *                   "display": "6dd90∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗",
+   *                   "createdAt": "2023-07-18 12:27:56"
+   *               }
+   *             ]
+   *
+   *
+   */
   app.get('/api/box/security/keys', JwtAuthMiddleware, boxController.APIKeys)
 
+  /**
+   * @swagger
+   * /api/box/security/keys:
+   *   post:
+   *     summary: Generate a new API key
+   *     description: Generate a new API key and return it
+   *     tags: [Box]
+   *     security:
+   *       - bearer: []
+   *     requestBody:
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               name:
+   *                 type: string
+   *     responses:
+   *       200:
+   *         description: Return the API key
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 key:
+   *                   type: string
+   */
   app.post('/api/box/security/keys', JwtAuthMiddleware, Validator(generateAPIKeyRules), boxController.generateAPIKey)
 
+  /**
+   * @swagger
+   * /api/box/security/keys/{id}:
+   *   delete:
+   *     summary: Delete an API key
+   *     description: Delete an API key
+   *     tags: [Box]
+   *     security:
+   *       - bearer: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: integer
+   *         required: true
+   *     responses:
+   *       204:
+   *         description: The API key has been deleted
+   *       404:
+   *         description: The API key does not exist
+   */
   app.delete('/api/box/security/keys/:id', JwtAuthMiddleware, boxController.deleteAPIKey)
 
   /**
    * User routes
    */
+
+  /**
+   * @swagger
+   * /api/users:
+   *   get:
+   *     summary: Get all users
+   *     description: Get all users
+   *     tags: [Users]
+   *     security:
+   *       - bearer: []
+   *     responses:
+   *       200:
+   *         description: Return the users
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: array
+   *               items:
+  *                  type: object
+  *                  properties:
+  *                    id:
+  *                      type: integer
+  *                    username:
+  *                      type: string
+  *                    avatar:
+  *                      type: string
+  *                    isDefault:
+  *                      type: boolean
+   */
   app.get('/api/users', JwtAuthMiddleware, usersController.index)
 
+  /**
+   * @swagger
+   * /api/users/{id}:
+   *   post:
+   *     summary: Create a new user
+   *     description: Create a new user
+   *     tags: [Users]
+   *     security:
+   *       - bearer: []
+   *     requestBody:
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               username:
+   *                 type: string
+   *               password:
+   *                 type: string
+   *     responses:
+   *       204:
+   *         description: The user has been created
+   *       400:
+   *         description: The username is already taken
+   */
   app.post('/api/users', JwtAuthMiddleware, Validator(userCreateRules), usersController.create)
 
+  /**
+   * @swagger
+   * /api/users/{id}:
+   *   patch:
+   *     summary: Update a user
+   *     description: Update a user
+   *     tags: [Users]
+   *     security:
+   *       - bearer: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: integer
+   *           required: true
+   *     requestBody:
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               username:
+   *                 type: string
+   *                 required: true
+   *               password:
+   *                 type: string
+   *                 required: false
+   *     responses:
+   *       204:
+   *         description: The user has been updated
+   *       404:
+   *         description: The user does not exist
+   */
   app.patch('/api/users/:id', JwtAuthMiddleware, Validator(userUpdateRules), usersController.update)
 
+  /**
+   * @swagger
+   * /api/users/{id}/avatar:
+   *   put:
+   *     summary: Update a user avatar
+   *     description: Update a user avatar
+   *     tags: [Users]
+   *     security:
+   *       - bearer: []
+   *     consumes:
+   *       - multipart/form-data
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: integer
+   *           required: true
+   *       - in: formData
+   *         name: file
+   *         type: file
+   *         description: The icon to upload
+   *         required: true
+   *
+   *     responses:
+   *      204:
+   *        description: The user avatar has been updated
+   *      404:
+   *        description: The user does not exist
+   */
   app.put('/api/users/:id/avatar', JwtAuthMiddleware, usersController.updatePicture)
 
+  /**
+   * @swagger
+   * /api/users/{id}:
+   *   delete:
+   *     summary: Delete a user
+   *     description: Delete a user if it is not the default one
+   *     tags: [Users]
+   *     security:
+   *       - bearer: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: integer
+   *           required: true
+   *     responses:
+   *       204:
+   *         description: The user has been deleted
+   *       404:
+   *         description: The user does not exist
+   * 
+   */
   app.delete('/api/users/:id', JwtAuthMiddleware, usersController.delete)
 
-  // Bind the WebSocket handler (act as a router)
+
+  /**
+   * WebSocket "routes" handler
+   */
   wss.on('connection', (ws) => {
     logger.info('[WS] Client connected')
 

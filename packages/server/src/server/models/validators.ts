@@ -123,3 +123,17 @@ export const boxUpdateRules = [body('name').trim().escape().notEmpty().withMessa
  * Validation rule for API key generation
  */
 export const generateAPIKeyRules = [body('name').trim().escape().notEmpty().withMessage('Name is required')]
+
+/**
+ * Validation rule for event send
+ */
+export const sendEventRules = [body('data').isObject().withMessage('Data must be an object')]
+
+/**
+ * Validation rule for multiple events send
+ */
+export const sendMultipleEventsRules = [
+  body('ids').isArray().withMessage('Ids must be an array'),
+  body('ids.*').trim().escape().notEmpty().withMessage('Id is required'),
+  body('data').isObject().withMessage('Data must be an object'),
+]
