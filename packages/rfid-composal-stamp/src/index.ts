@@ -59,11 +59,12 @@ export default class ComposalStampRFID extends Module {
 
   private toggleClocking = async (rfid: string): Promise<void> => {
     const url = this.getEntryValue<string>('composalUrl')
+    const token = this.getEntryValue<string>('authToken')
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer NUYC7IzclxqvGI3NyTKrzApO379nmeAyDE-2BYci_H6-MYugWyzqRFm362LHiTb1`,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({ nfc_serial_number: rfid }),
     })

@@ -1,7 +1,7 @@
 /**
  * Defines the allowed types for a specific configuration entry.
  */
-export type SpecificConfigurationEntryType = 'text' | 'number' | 'bool' | 'option'
+export type SpecificConfigurationEntryType = 'text' | 'number' | 'bool' | 'option' | 'secret'
 
 /**
  * Defines the allowed values for a specific configuration entry.

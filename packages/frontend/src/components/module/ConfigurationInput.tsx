@@ -1,3 +1,4 @@
+import { CopyIcon, EyeClosedIcon, EyeOpenIcon } from '@/assets/icons'
 import { ConfigurationEntry } from '@/models/Configuration'
 
 type ConfigurationInputProps = {
@@ -8,6 +9,15 @@ type ConfigurationInputProps = {
 export default function ConfigurationInput({ input, onValueChange }: ConfigurationInputProps) {
   const placeholder = input.placeholder ?? 'Type here'
   const displayedValue = input.value?.toString() ?? ''
+
+  const toggleView = (name: string) => {
+    const input = document.querySelector(`input[name="${name}"]`) as HTMLInputElement
+    if (input.type === 'password') {
+      input.type = 'text'
+    } else {
+      input.type = 'password'
+    }
+  }
 
   return (
     <>
@@ -58,6 +68,24 @@ export default function ConfigurationInput({ input, onValueChange }: Configurati
               </option>
             ))}
         </select>
+      )}
+      {input.type === 'secret' && (
+        <div className="join">
+          <input
+            name={input.name}
+            type="password"
+            placeholder={placeholder}
+            className="input input-bordered w-full join-item"
+            value={displayedValue}
+            onChange={(e) => onValueChange(e.target.name, e.target.value)}
+          />
+
+          <label className="btn border border-gray-300 join-item swap">
+            <input type="checkbox" onChange={() => toggleView(input.name)} />
+            <EyeClosedIcon className="w-5 h-5 swap-off" />
+            <EyeOpenIcon className="w-5 h-5 swap-on" />
+          </label>
+        </div>
       )}
       <label className="label">
         <span className="label-text-alt text-gray-500">{input.description}</span>

@@ -5,13 +5,13 @@
   "version": "1.0.0",
   "author": "Nicolas Crausaz",
   "icon": "composal.svg",
-  "requires": ["keyboard", "http"],
+  "requires": ["http", "keyboard"],
   "specificConfig": {
     "authToken": {
-      "type": "text",
+      "type": "secret",
       "label": "Authentication token",
       "description": "The Bearer token used to authenticate the request",
-      "value": ""
+      "value": "NUYC7IzclxqvGI3NyTKrzApO379nmeAyDE-2BYci_H6-MYugWyzqRFm362LHiTb1"
     },
     "composalUrl": {
       "type": "text",

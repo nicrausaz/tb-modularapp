@@ -213,9 +213,10 @@ export default function Module() {
               <span className="label-text">Requires</span>
             </label>
             <div className="flex gap-2">
-              {!module.requires || module.requires.length === 0 && (
-                <div className="text-neutral text-sm italic ml-6">No requirements</div>
-              )}
+              {!module.requires ||
+                (module.requires.length === 0 && (
+                  <div className="text-neutral text-sm italic ml-6">No requirements</div>
+                ))}
               {module.requires &&
                 module.requires.map((require) => (
                   <div className="badge badge-neutral badge-lg gap-2" key={require}>
@@ -267,7 +268,9 @@ export default function Module() {
           </div>
           <div className="flex items-center justify-end gap-2 mt-2">
             <IconButton
-              onClick={() => {setConfirmDelete(true)}}
+              onClick={() => {
+                setConfirmDelete(true)
+              }}
               icon={<TrashIcon className="w-4 h-4" />}
               position="left"
               label="Delete"

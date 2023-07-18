@@ -1,10 +1,14 @@
 export const schema = {
+  $schema: 'http://json-schema.org/draft-07/schema#',
   $ref: '#/definitions/module',
   definitions: {
     module: {
       type: 'object',
       additionalProperties: false,
       properties: {
+        $schema: {
+          type: 'string',
+        },
         name: {
           type: 'string',
           minLength: 2,
@@ -28,8 +32,8 @@ export const schema = {
           type: 'array',
           items: {
             type: 'string',
+            enum: ['http', 'keyboard'],
           },
-          enum: ['http', 'keyboard'],
         },
         specificConfig: {
           $ref: '#/definitions/SpecificConfig',
@@ -55,7 +59,7 @@ export const schema = {
       properties: {
         type: {
           type: 'string',
-          enum: ['text', 'number', 'bool', 'option'],
+          enum: ['text', 'number', 'bool', 'option', 'secret'],
         },
         label: {
           type: 'string',
@@ -71,7 +75,7 @@ export const schema = {
         },
         value: {
           oneOf: [{ type: 'string' }, { type: 'number' }, { type: 'boolean' }],
-        },
+        }
       },
       required: ['description', 'label', 'type', 'value'],
     },

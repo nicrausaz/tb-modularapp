@@ -35,6 +35,8 @@ import UsbIcon from './UsbIcon'
 import AddKeyIcon from './AddKeyIcon'
 import ArrowLeftIcon from './ArrowLeftIcon'
 import ArrowRightIcon from './ArrowRightIcon'
+import EyeClosedIcon from './EyeClosedIcon'
+import EyeOpenIcon from './EyeOpenIcon'
 
 export {
   BoxIcon,
@@ -74,4 +76,6 @@ export {
   AddKeyIcon,
   ArrowLeftIcon,
   ArrowRightIcon,
+  EyeClosedIcon,
+  EyeOpenIcon,
 }

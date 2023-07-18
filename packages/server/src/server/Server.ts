@@ -21,7 +21,7 @@ export default class Server {
     this.app.use(compression())
     // Configure app
     this.app.use(express.json())
-    //this.app.use(uploader)
+    this.app.use(uploader)
 
     // Configure WebSocket server
     this.wss = new WebSocket.Server({ noServer: true, path: '/events' })

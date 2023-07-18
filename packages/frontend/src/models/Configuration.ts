@@ -1,7 +1,7 @@
 export type Configuration = Array<ConfigurationEntry>
 
 export type ConfigurationEntry = {
-  readonly type: 'text' | 'number' | 'bool' | 'option'
+  readonly type: 'text' | 'number' | 'bool' | 'option' | 'secret'
 
   readonly name: string
 
