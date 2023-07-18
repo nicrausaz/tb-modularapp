@@ -9,13 +9,6 @@ export default function ConfigurationInput({ input, onValueChange }: Configurati
   const placeholder = input.placeholder ?? 'Type here'
   const displayedValue = input.value?.toString() ?? ''
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    if (input.type === 'bool') {
-      return onValueChange(event.target.name, (event.target as HTMLInputElement).checked)
-    }
-    onValueChange(event.target.name, event.target.value)
-  }
-
   return (
     <>
       <label className="label">
@@ -28,7 +21,7 @@ export default function ConfigurationInput({ input, onValueChange }: Configurati
           placeholder={placeholder}
           className="input input-bordered w-full"
           value={displayedValue}
-          onChange={handleChange}
+          onChange={(e) => onValueChange(e.target.name, e.target.value)}
         />
       )}
       {input.type === 'number' && (
@@ -38,7 +31,7 @@ export default function ConfigurationInput({ input, onValueChange }: Configurati
           placeholder={placeholder}
           className="input input-bordered w-full"
           value={displayedValue}
-          onChange={handleChange}
+          onChange={(e) => onValueChange(e.target.name, parseInt(e.target.value))}
         />
       )}
       {input.type === 'bool' && (
@@ -48,12 +41,16 @@ export default function ConfigurationInput({ input, onValueChange }: Configurati
           className="checkbox"
           placeholder={placeholder}
           checked={input.value as boolean}
-          onChange={handleChange}
+          onChange={(e) => onValueChange(e.target.name, e.target.checked)}
           value="true"
         />
       )}
       {input.type === 'option' && (
-        <select className="select select-bordered w-full" onChange={handleChange} name={input.name}>
+        <select
+          className="select select-bordered w-full"
+          onChange={(e) => onValueChange(e.target.name, e.target.value)}
+          name={input.name}
+        >
           {input.options &&
             input.options.map((option, i) => (
               <option key={i} value={option}>

@@ -83,7 +83,7 @@ export const moduleUpdateRules = []
 export const moduleConfigurationUpdateRules = [
   body('fields').isArray().withMessage('Fields must be an array'),
   body('fields.*.name').trim().escape().notEmpty().withMessage('Name is required'),
-  body('fields.*.value').trim().escape().notEmpty().withMessage('Value is required'),
+  body('fields.*.value').notEmpty().withMessage('Value is required'),
 ]
 
 /**
