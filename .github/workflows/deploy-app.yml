@@ -22,8 +22,8 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
-          context: ./docker/modapp
-          file: ./Dockerfile
+          context: .
+          file: ./docker/modapp/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/tb-modular-app:latest
           platforms: linux/amd64,linux/arm64
