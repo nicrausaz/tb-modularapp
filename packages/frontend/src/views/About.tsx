@@ -1,19 +1,18 @@
 import { GitHubIcon, WebIcon } from '@/assets/icons'
 import IconButton from '@/components/IconButton'
+import { useTranslation } from 'react-i18next'
 
 export default function About() {
+  const { t } = useTranslation()
+
   return (
     <div className="bg-gradient-to-r from-primary to-accent flex items-center justify-center h-screen">
       <div className="max-w-md p-6 rounded-xl bg-base-100 shadow-lg">
         <div className="flex items-center justify-center mb-6">
           <img src="/assets/logo.svg" alt="Logo" className="w-16 h-16 mr-2" />
-          <h1 className="text-4xl font-bold text-gray-800">Modular App</h1>
+          <h1 className="text-4xl font-bold text-gray-800">{t('about.app_basename')}</h1>
         </div>
-        <p className="text-lg mb-4">
-          Modular app allows you to create integrations between devices and your favorite services. You can import
-          customizable modules to create your own integrations.
-        </p>
-        <p className="text-lg mb-4">Version : 1.0.0</p>
+        <p className="text-lg mb-4">{t('about.description')}</p>
         <div className="flex justify-center gap-2">
           <IconButton
             icon={<GitHubIcon className="w-6 h-6" />}

@@ -1,12 +1,14 @@
-import { CopyIcon, EyeClosedIcon, EyeOpenIcon } from '@/assets/icons'
+import { EyeClosedIcon, EyeOpenIcon } from '@/assets/icons'
 import { ConfigurationEntry } from '@/models/Configuration'
+import Input from '../Input'
 
 type ConfigurationInputProps = {
   input: ConfigurationEntry
+  error?: string
   onValueChange: (name: string, value: string | number | boolean) => void
 }
 
-export default function ConfigurationInput({ input, onValueChange }: ConfigurationInputProps) {
+export default function ConfigurationInput({ input, error, onValueChange }: ConfigurationInputProps) {
   const placeholder = input.placeholder ?? 'Type here'
   const displayedValue = input.value?.toString() ?? ''
 
@@ -19,29 +21,33 @@ export default function ConfigurationInput({ input, onValueChange }: Configurati
     }
   }
 
+  const labelClass = error ? 'label-text text-error' : 'label-text'
+
   return (
     <>
       <label className="label">
-        <span className="label-text">{input.label}</span>
+        <span className={labelClass}>{input.label}</span>
       </label>
       {input.type === 'text' && (
-        <input
+        <Input
           name={input.name}
           type="text"
           placeholder={placeholder}
           className="input input-bordered w-full"
           value={displayedValue}
-          onChange={(e) => onValueChange(e.target.name, e.target.value)}
+          onChange={(val) => onValueChange(input.name, val)}
+          error={error}
         />
       )}
       {input.type === 'number' && (
-        <input
+        <Input
           name={input.name}
           type="number"
           placeholder={placeholder}
           className="input input-bordered w-full"
           value={displayedValue}
-          onChange={(e) => onValueChange(e.target.name, parseInt(e.target.value))}
+          onChange={(val) => onValueChange(input.name, parseInt(val))}
+          error={error}
         />
       )}
       {input.type === 'bool' && (
@@ -59,6 +65,7 @@ export default function ConfigurationInput({ input, onValueChange }: Configurati
         <select
           className="select select-bordered w-full"
           onChange={(e) => onValueChange(e.target.name, e.target.value)}
+          defaultValue={input.value as string}
           name={input.name}
         >
           {input.options &&

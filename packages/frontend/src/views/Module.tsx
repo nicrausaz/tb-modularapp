@@ -80,7 +80,7 @@ export default function Module() {
   }
 
   if (!module) {
-    return <div>Module not found</div>
+    return <></>
   }
 
   const handleChangeStatus = async (action: string) => {
@@ -177,12 +177,12 @@ export default function Module() {
       </div>
 
       <div className="flex flex-col w-full items-center mb-4">
-        <div className="divider text-2xl text-neutral font-bold mb-6">Actions & informations</div>
+        <div className="divider text-2xl text-neutral font-bold mb-6">{t('module.information.title')}</div>
 
         <div className="shadow rounded-box w-full md:w-3/4 p-4">
           <div className="flex flex-col w-full lg:flex-row">
             <div className="grid flex-grow card rounded-box place-items-center border-2 border-dotted">
-              {module.enabled ? <ModuleRender id={module.id} /> : <p>Activate module to see the preview</p>}
+              {module.enabled ? <ModuleRender id={module.id} /> : <p>{t('module.information.preview_disabled')}</p>}
             </div>
             <div className="divider divider-horizontal p-1"></div>
             <div className="grid card rounded-box place-items-center">
@@ -210,12 +210,12 @@ export default function Module() {
           <div className="divider"></div>
           <div>
             <label className="label">
-              <span className="label-text">Requires</span>
+              <span className="label-text">{t('module.information.requires')}</span>
             </label>
             <div className="flex gap-2">
               {!module.requires ||
                 (module.requires.length === 0 && (
-                  <div className="text-neutral text-sm italic ml-6">No requirements</div>
+                  <div className="text-neutral text-sm italic ml-6">{t('module.information.no_requires')}</div>
                 ))}
               {module.requires &&
                 module.requires.map((require) => (
@@ -229,7 +229,7 @@ export default function Module() {
           <div className="divider"></div>
           <div className="form-control">
             <label className="label">
-              <span className="label-text">Identifier</span>
+              <span className="label-text">{t('module.information.identifier')}</span>
             </label>
             <div className="join">
               <input
@@ -245,12 +245,10 @@ export default function Module() {
               </button>
             </div>
             <label className="label">
-              <span className="label-text-alt text-gray-500">
-                The identifier can be used to interact with the module through the API
-              </span>
+              <span className="label-text-alt text-gray-500">{t('module.information.identifier_description')}</span>
             </label>
             <label className="label">
-              <span className="label-text">Nickname</span>
+              <span className="label-text">{t('module.information.nickname')}</span>
             </label>
             <input
               name="nickname"
@@ -261,9 +259,7 @@ export default function Module() {
               onChange={(e) => setModule({ ...module, nickname: e.target.value })}
             />
             <label className="label">
-              <span className="label-text-alt text-gray-500">
-                The nickname is an alternative name given to a module to make it more reconizable
-              </span>
+              <span className="label-text-alt text-gray-500">{t('module.information.nickname_description')}</span>
             </label>
           </div>
           <div className="flex items-center justify-end gap-2 mt-2">
@@ -290,7 +286,7 @@ export default function Module() {
         </div>
       </div>
       <div className="flex flex-col w-full items-center">
-        <div className="divider text-2xl text-neutral font-bold my-6">Configuration</div>
+        <div className="divider text-2xl text-neutral font-bold my-6">{t('module.configuration.title')}</div>
         <div className="bg-base-100 shadow rounded-box w-full md:w-3/4 p-4">
           <ConfigurationEditor
             configuration={module.currentConfig}

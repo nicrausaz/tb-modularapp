@@ -50,19 +50,19 @@ export default function Login() {
               <div className="flex-row">
                 <span className="flex items-center gap-2 my-2">
                   <CheckIcon className="w-5 h-5" />
-                  Add & configure your modules
+                  {t('login.features.key_1')}
                 </span>
                 <span className="flex items-center gap-2 my-2">
                   <CheckIcon className="w-5 h-5" />
-                  Make great dashboards to visualize your data
+                  {t('login.features.key_2')}
                 </span>
                 <span className="flex items-center gap-2 my-2">
                   <CheckIcon className="w-5 h-5" />
-                  Configure users and permissions
+                  {t('login.features.key_3')}
                 </span>
                 <span className="flex items-center gap-2 my-2">
                   <CheckIcon className="w-5 h-5" />
-                  Personalize your box your way
+                  {t('login.features.key_4')}
                 </span>
               </div>
             </div>

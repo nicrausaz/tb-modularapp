@@ -17,6 +17,12 @@
       "password_error": "Please enter your password",
       "forgot": "Forgot your password ?",
       "submit": "Log in"
+    },
+    "features": {
+      "key_1": "Add & configure your modules",
+      "key_2": "Make great dashboards to visualize your data",
+      "key_3": "Configure users and permissions",
+      "key_4": "Personalize your box your way"
     }
   },
   "home": {
@@ -39,7 +45,6 @@
       "screen_saved_ok": "Screen saved successfully",
       "screen_deleted_ok": "Screen deleted successfully",
       "screen_name_error": "Please enter a name for your screen"
-
     }
   },
   "modules": {
@@ -53,6 +58,19 @@
       "stop": "Stop",
       "edit": "Edit",
       "delete": "Delete"
+    },
+    "information": {
+      "title": "Actions & information",
+      "preview_disabled": "Activate module to see the preview",
+      "requires": "Requires",
+      "no_requires": "No requirements",
+      "identifier": "Identifier",
+      "identifier_description": "The identifier can be used to interact with the module through the API",
+      "nickname": "Nickname",
+      "nickname_description": "The nickname is an alternative name given to a module to make it more reconizable"
+    },
+    "configuration": {
+      "title": "Configuration"
     },
     "feedbacks": {
       "enabled_ok": "Module enabled successfully",
@@ -98,6 +116,11 @@
     "edit": "Edit user",
     "update": "Update user",
     "delete": "Delete"
+  },
+  "about": {
+    "title": "About",
+    "app_basename": "Modular App",
+    "description": "Modular app allows you to create integrations between devices and your favorite services. You can import customizable modules to create your own integrations."
   },
   "errors": {
     "not_found": {
