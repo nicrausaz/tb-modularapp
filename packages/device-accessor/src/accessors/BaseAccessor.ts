@@ -41,9 +41,10 @@ export default abstract class BaseAccessor {
 
   /**
    * Send data using the accessor's protocol
+   * @param moduleId id of the sender module
    * @param data data to send
    */
-  public abstract send(data: unknown): void
+  public abstract send(moduleId: string, data: unknown): void
 
   /**
    * Run the accessor
@@ -66,7 +67,7 @@ export default abstract class BaseAccessor {
    * Send data to all registered modules
    * @param data data to send
    */
-  protected transmitToAll(data: unknown): void {
+  public transmitToAll(data: unknown): void {
     this.registeredModules.forEach((entry) => {
       entry.module.receiveData(this.typeKey, data)
     })
@@ -77,7 +78,7 @@ export default abstract class BaseAccessor {
    * @param moduleId module id to send data to
    * @param data data to send
    */
-  protected transmitTo(moduleId: string, data: unknown): void {
+  public transmitTo(moduleId: string, data: unknown): void {
     const entry = this.registeredModules.find((m) => m.id === moduleId)
     if (entry) {
       entry.module.receiveData(this.type, data)

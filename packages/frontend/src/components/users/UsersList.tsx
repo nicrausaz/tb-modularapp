@@ -107,7 +107,7 @@ export default function UsersList({ users, onUpdated }: UsersListProps) {
         <div className="flex items-center justify-between">
           <label className="label">
             <span className="label-text font-bold">{t('users.title')}</span>
-            <div className="tooltip tooltip-right tooltip-info" data-tip="Allow other people to access your box">
+            <div className="tooltip tooltip-right tooltip-info" data-tip={t('users.info_tooltip')}>
               <label className="btn btn-circle btn-ghost btn-xs text-info">
                 <InfoIcon />
               </label>

@@ -247,7 +247,7 @@ export default class Manager {
       throw new ModuleHTTPAccessorDenied(entry.id)
     }
 
-    accessor.sendTo(entry.id, data)
+    accessor.transmitTo(entry.id, data)
   }
 
   /**

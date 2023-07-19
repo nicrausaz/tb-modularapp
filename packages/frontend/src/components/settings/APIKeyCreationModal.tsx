@@ -31,7 +31,7 @@ export default function APIKeyCreationModal({ isOpen, onCancel, onConfirm }: API
 
   const copyId = () => {
     navigator.clipboard.writeText(APIKey)
-    tSuccess('Copied', 'Key copied to your clipboard')
+    tSuccess(t('settings.api_keys.generation.copied_title'), t('settings.api_keys.generation.copied_message'))
   }
 
   const nextStep = () => {
@@ -54,25 +54,28 @@ export default function APIKeyCreationModal({ isOpen, onCancel, onConfirm }: API
   return (
     <ConfirmModal
       isOpen={isOpen}
-      title="Generate API Key"
+      title={t('settings.api_keys.generation.title')}
       onConfirm={handleConfirm}
       onCancel={cleanAndClose}
       confirmHidden={APIKey === ''}
-      confirmText="Copy & close"
+      confirmText={t('settings.api_keys.generation.confirm')}
+      cancelText={t('settings.api_keys.generation.cancel')}
       cancelEnabled={generationStep !== 1}
     >
       <div className="modal-body">
         <ul className="steps mt-4 w-full">
-          <li className="step step-primary">Chose a name</li>
+          <li className="step step-primary">{t('settings.api_keys.generation.chose_name')}</li>
           <li className={`step ${generationStep === 1 ? 'step-primary' : ''}`} data-content="🔑">
-            {generationStep === 1 ? 'Key generated !' : 'Generate key'}
+            {generationStep === 1
+              ? t('settings.api_keys.generation.generated_key')
+              : t('settings.api_keys.generation.generate_key')}
           </li>
         </ul>
         {generationStep === 0 && (
           <div className="form-control">
             <Input
-              label="Name"
-              placeholder="Type a reconizable name..."
+              label={t('settings.api_keys.generation.name')}
+              placeholder={t('settings.api_keys.generation.name_placeholder')}
               value={keyName}
               onChange={(value) => setKeyName(value)}
               type="text"
@@ -95,7 +98,7 @@ export default function APIKeyCreationModal({ isOpen, onCancel, onConfirm }: API
               <div>
                 <div className="alert alert-warning mb-2">
                   <WarningIcon />
-                  <span>Warning: This key will only be shown once. Be sure to copy it in a safe place now !</span>
+                  <span>{t('settings.api_keys.generation.once_warning')}</span>
                 </div>
                 <div className="join w-full">
                   <input

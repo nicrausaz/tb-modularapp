@@ -19,7 +19,7 @@ export default function About() {
             asLink={true}
             to="https://github.com/nicrausaz/tb-modularapp/"
             target="_blank"
-            label="GitHub"
+            label={t('about.links.github')}
             position="left"
             className="btn-primary"
           />
@@ -29,7 +29,7 @@ export default function About() {
             asLink={true}
             to="https://example.com"
             target="_blank"
-            label="Website"
+            label={t('about.links.website')}
             position="left"
             className="btn-primary"
           />

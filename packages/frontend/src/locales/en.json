@@ -139,6 +139,15 @@
       "name": "Box name",
       "save": "Save"
     },
+    "others": {
+      "title": "Others",
+      "links": {
+        "api": "API documentation",
+        "github": "GitHub",
+        "website": "Website",
+        "about": "About"
+      }
+    },
     "feedbacks": {
       "icon_saved_ok": "Icon saved successfully",
       "box_saved_ok": "Box saved successfully"
@@ -149,21 +158,60 @@
       "add": "Add",
       "delete": "Delete",
       "confirm_delete": "Are you sure you want to delete this key ?",
-      "empty": "No API keys created"
+      "empty": "No API keys created",
+      "info_tooltip": "",
+      "generation": {
+        "title": "Generate a new API key",
+        "name": "Name",
+        "name_placeholder": "Type a reconizable name...",
+        "once_warning": "Warning: You will only be able to see this key once, make sure to copy it somewhere safe.",
+        "chose_name": "Chose a name",
+        "generate_key": "Generate key",
+        "generated_key": "Key generated !",
+        "cancel": "Cancel",
+        "confirm": "Copy & close",
+        "copied_title": "Copied !",
+        "copied_message": "The key has been copied to your clipboard"
+      },
+      "feedbacks": {
+        "created_ok": "API key created successfully",
+        "deleted_ok": "API key deleted successfully"
+      }
     }
   },
   "users": {
     "title": "Users",
     "add": "Add",
-    "create": "Create user",
-    "edit": "Edit user",
     "update": "Update user",
-    "delete": "Delete"
+    "delete": "Delete",
+    "info_tooltip": "Allow other people to access your box",
+    "edition": {
+      "create_title": "Create a new user",
+      "edit_title": "Edit user",
+      "username": "Username",
+      "username_placeholder": "Enter a username ...",
+      "password": "Password",
+      "password_leave_empty": "Password (leave empty to keep the current password)",
+      "password_placeholder": "Enter a password ...",
+      "confirm": "Confirm",
+      "cancel": "Cancel"
+    },
+    "feedbacks": {
+      "created_ok": "User created successfully",
+      "updated_ok": "User updated successfully",
+      "deleted_ok": "User deleted successfully",
+      "created_error": "An error occurred while creating the user",
+      "updated_error": "An error occurred while updating the user"
+    }
   },
   "about": {
     "title": "About",
     "app_basename": "Modular App",
-    "description": "Modular app allows you to create integrations between devices and your favorite services. You can import customizable modules to create your own integrations."
+    "description": "Modular app allows you to create integrations between devices and your favorite services. You can import customizable modules to create your own integrations.",
+    "links": {
+      "github": "GitHub",
+      "website": "Website"
+    }
   },
   "errors": {
     "not_found": {

@@ -162,7 +162,7 @@ export default function Settings() {
       </div>
 
       <div className="flex flex-col w-full items-center">
-        <div className="divider text-2xl text-neutral font-bold my-6">Others</div>
+        <div className="divider text-2xl text-neutral font-bold my-6">{t('settings.others.title')}</div>
 
         <div className="bg-base-100 shadow rounded-box w-full md:w-3/4 p-4 flex items-center justify-between">
           <IconButton
@@ -170,7 +170,7 @@ export default function Settings() {
             asLink={true}
             to="http://localhost:3000/api-docs"
             className="btn-link"
-            label="API Documentation"
+            label={t('settings.others.links.api')}
             position="left"
             target="_blank"
           />
@@ -179,7 +179,7 @@ export default function Settings() {
             asLink={true}
             to="https://github.com/nicrausaz/tb-modularapp"
             className="btn-link"
-            label="Github"
+            label={t('settings.others.links.github')}
             position="left"
             target="_blank"
           />
@@ -188,7 +188,7 @@ export default function Settings() {
             asLink={true}
             to="https://example.com"
             className="btn-link"
-            label="Website"
+            label={t('settings.others.links.website')}
             position="left"
             target="_blank"
             disabled={true}
@@ -199,7 +199,7 @@ export default function Settings() {
             asLink={true}
             to="/about"
             className="btn-link"
-            label="About"
+            label={t('settings.others.links.about')}
             position="left"
             target="_blank"
             disabled={true}

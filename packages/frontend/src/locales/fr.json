@@ -38,8 +38,8 @@
       "dashboard_subtitle": "Créer et configurer vos tableaux de bord pour visualiser vos données",
       "modules": "Gérer vos modules",
       "modules_subtitle": "Installer, configurer et gérer vos modules",
-      "box": "Configurer votre boîte",
-      "box_subtitle": "Configurer votre boîte et ses paramètres selon votre utilisation"
+      "box": "Configurer votre box",
+      "box_subtitle": "Configurer votre box et ses paramètres selon votre utilisation"
     }
   },
   "dashboard": {
@@ -135,13 +135,22 @@
     },
     "configuration": {
       "title": "Configuration",
-      "image": "Image de la boîte",
-      "name": "Nom de la boîte",
+      "image": "Image de la box",
+      "name": "Nom de la box",
       "save": "Enregistrer"
+    },
+    "others": {
+      "title": "Autres",
+      "links": {
+        "api": "Documentation API",
+        "github": "GitHub",
+        "website": "Site web",
+        "about": "À propos"
+      }
     },
     "feedbacks": {
       "icon_saved_ok": "Icône enregistrée avec succès",
-      "box_saved_ok": "Boîte enregistrée avec succès"
+      "box_saved_ok": "Box enregistrée avec succès"
     },
     "api_keys": {
       "title": "Clés API",
@@ -149,21 +158,60 @@
       "add": "Ajouter",
       "delete": "Supprimer",
       "confirm_delete": "Êtes-vous sûr de vouloir supprimer cette clé ?",
-      "empty": "Aucune clé API créée"
+      "empty": "Aucune clé API créée",
+      "info_tooltip": "",
+      "generation": {
+        "title": "Générer une nouvelle clé API",
+        "name": "Nom",
+        "name_placeholder": "Entrer un nom reconnaissable ...",
+        "once_warning": "Attention: vous ne pourrez voir cette clé qu'une seule fois ! Assurez-vous de la copier et de la conserver en lieu sûr.",
+        "chose_name": "Choisir un nom",
+        "generate_key": "Générer la clé",
+        "generated_key": "Clé générée !",
+        "cancel": "Annuler",
+        "confirm": "Copier & fermer",
+        "copied_title": "Copié !",
+        "copied_message": "La clé a été copiée dans le presse-papiers"
+      },
+      "feedbacks": {
+        "created_ok": "Clé API créée avec succès",
+        "deleted_ok": "Clé API supprimée avec succès"
+      }
     }
   },
   "users": {
     "title": "Utilisateurs",
     "add": "Ajouter",
-    "create": "Créer un utilisateur",
-    "edit": "Modifier un utilisateur",
     "update": "Mettre à jour un utilisateur",
-    "delete": "Supprimer"
+    "delete": "Supprimer",
+    "info_tooltip": "Autorisez d'autres personnes à accéder à votre box",
+    "edition": {
+      "create_title": "Créer un nouvel utilisateur",
+      "edit_title": "Modifier un utilisateur",
+      "username": "Nom d'utilisateur",
+      "username_placeholder": "Saisir un nom d'utilisateur ...",
+      "password": "Mot de passe",
+      "password_leave_empty": "Mot de passe (laisser vide pour ne pas changer le mot de passe)",
+      "password_placeholder": "Saisir un mot de passe ...",
+      "confirm": "Confirmer",
+      "cancel": "Annuler"
+    },
+    "feedbacks": {
+      "created_ok": "Utilisateur créé avec succès",
+      "updated_ok": "Utilisateur mis à jour avec succès",
+      "deleted_ok": "Utilisateur supprimé avec succès",
+      "created_error": "Une erreur s'est produite lors de la création de l'utilisateur",
+      "updated_error": "Une erreur s'est produite lors de la mise à jour de l'utilisateur"
+    }
   },
   "about": {
     "title": "À propos",
     "app_basename": "Modular App",
-    "description": "Modular App vous permet de créer des intégrations entre les appareils et vos services préférés. Vous pouvez importer des modules personnalisables pour créer vos propres intégrations."
+    "description": "Modular App vous permet de créer des intégrations entre les appareils et vos services préférés. Vous pouvez importer des modules personnalisables pour créer vos propres intégrations.",
+    "links": {
+      "github": "GitHub",
+      "website": "Site web"
+    }
   },
   "errors": {
     "not_found": {

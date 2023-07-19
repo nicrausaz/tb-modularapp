@@ -40,7 +40,7 @@ export default function UserEditionModal({ isOpen, user, onCancel, onConfirm }: 
   }, [isOpen])
 
   const mode = user ? 'update' : 'create'
-  const title = user ? t('users.edit') : t('users.create')
+  const title = user ? t('users.edition.edit_title') : t('users.edition.create_title')
 
   const userCreation = async (username: string, password: string): Promise<boolean> => {
     const newUser = {
@@ -57,7 +57,7 @@ export default function UserEditionModal({ isOpen, user, onCancel, onConfirm }: 
             password: err.f('password'),
           })
         } else {
-          tError('Error', 'An error occured while creating the user')
+          tError(t('status.error'), t('users.feedbacks.created_error'))
         }
         return false
       })
@@ -86,7 +86,7 @@ export default function UserEditionModal({ isOpen, user, onCancel, onConfirm }: 
             password: err.f('password'),
           })
         } else {
-          tError('Error', 'An error occured while creating the user')
+          tError(t('status.error'), t('users.feedbacks.updated_error'))
         }
         return false
       })
@@ -98,28 +98,26 @@ export default function UserEditionModal({ isOpen, user, onCancel, onConfirm }: 
       if (!(await userCreation(username, password))) {
         return
       }
-      tSuccess('Success', 'User created')
+      tSuccess(t('status.success'), t('users.feedbacks.created_ok'))
     } else if (mode === 'update' && user) {
       if (!(await userUpdate(user?.id, username, password, avatar))) {
         return
       }
-      tSuccess('Success', 'User updated')
+      tSuccess(t('status.success'), t('users.feedbacks.updated_ok'))
     }
 
     onConfirm()
   }
 
-  const cleanAndClose = () => {
-    // setForm({
-    //   username: '',
-    //   password: '',
-    //   avatar: null,
-    // })
-    onCancel()
-  }
-
   return (
-    <ConfirmModal isOpen={isOpen} title={title} onConfirm={handleConfirm} onCancel={cleanAndClose}>
+    <ConfirmModal
+      isOpen={isOpen}
+      title={title}
+      onConfirm={handleConfirm}
+      onCancel={onCancel}
+      confirmText={t('users.edition.confirm')}
+      cancelText={t('users.edition.cancel')}
+    >
       <div className="modal-body">
         <div className="form-control">
           {mode === 'update' && user && (
@@ -134,8 +132,8 @@ export default function UserEditionModal({ isOpen, user, onCancel, onConfirm }: 
             </div>
           )}
           <Input
-            label="Username"
-            placeholder="Type a username..."
+            label={t('users.edition.username')}
+            placeholder={t('users.edition.username_placeholder')}
             value={form.username}
             onChange={(value) => setForm({ ...form, username: value })}
             type="text"
@@ -144,8 +142,8 @@ export default function UserEditionModal({ isOpen, user, onCancel, onConfirm }: 
           />
 
           <Input
-            label={mode === 'create' ? 'Password' : 'Password (leave empty to keep the same password)'}
-            placeholder="Type a password..."
+            label={mode === 'create' ? t('users.edition.password') : t('users.edition.password_leave_empty')}
+            placeholder={t('users.edition.password_placeholder')}
             value={form.password}
             onChange={(value) => setForm({ ...form, password: value })}
             type="password"
