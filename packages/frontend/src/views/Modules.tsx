@@ -29,9 +29,26 @@ export default function Modules() {
   const [uploadModalOpen, setUploadModalOpen] = useState<boolean>(false)
 
   const [searchQuery, setSearchQuery] = useState<string>('')
-  const [searchFilter, setSearchFilter] = useState<string>('All')
 
   const { t } = useTranslation()
+
+  const searchFilters = [
+    {
+      label: t('modules.search_filters.all'),
+      key: 'all',
+    },
+    {
+      label: t('modules.search_filters.enabled'),
+      key: 'enabled',
+    },
+    {
+      label: t('modules.search_filters.disabled'),
+      key: 'disabled',
+    }
+  ]
+
+  const [searchFilter, setSearchFilter] = useState<string>(searchFilters[0].key)
+
   const { tSuccess, tError } = useToast()
 
   useEffect(() => {
@@ -63,14 +80,14 @@ export default function Modules() {
       )
     }
 
-    if (searchFilter !== 'All') {
-      filteredModules = filteredModules.filter((module) => module.enabled === (searchFilter === 'Enabled'))
+    if (searchFilter !== 'all') {
+      filteredModules = filteredModules.filter((module) => module.enabled === (searchFilter === 'enabled'))
     }
 
     setModules(filteredModules)
   }
 
-  const searchFilters = ['All', 'Enabled', 'Disabled']
+
 
   const changeModuleStatus = async (id: string, enabled: boolean) => {
     const data = [...modules]
@@ -162,7 +179,7 @@ export default function Modules() {
           icon={<UploadIcon className="w-5 h-5" />}
           onClick={() => setUploadModalOpen(true)}
           className={`btn-neutral ${modules.length ? '' : ' animate-wiggle'}`}
-          label="Add"
+          label={t('modules.add')}
           position={'left'}
         />
       </div>

@@ -1,9 +1,10 @@
-import { SearchIcon } from "@/assets/icons"
+import { SearchIcon } from '@/assets/icons'
+import { useTranslation } from 'react-i18next'
 
 type SearchBarProps = {
   hasFilters?: boolean
   query: string
-  filters: string[]
+  filters: Array<{ key: string; label: string }>
   currentFilter: string
   onQueryChange?: (search: string) => void
   onFilterChange?: (filter: string) => void
@@ -17,6 +18,8 @@ export default function SearchBar({
   onQueryChange,
   onFilterChange,
 }: SearchBarProps) {
+  const { t } = useTranslation()
+
   const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (onQueryChange) {
       onQueryChange(event.target.value)
@@ -35,7 +38,7 @@ export default function SearchBar({
         <div>
           <input
             className="input input-bordered join-item w-full"
-            placeholder="Search..."
+            placeholder={t('modules.search_placeholder')}
             defaultValue={query}
             onChange={handleQueryChange}
           />
@@ -48,8 +51,8 @@ export default function SearchBar({
           onChange={handleFilterChange}
         >
           {filters.map((filter) => (
-            <option value={filter} key={filter}>
-              {filter}
+            <option value={filter.key} key={filter.key}>
+              {filter.label}
             </option>
           ))}
         </select>

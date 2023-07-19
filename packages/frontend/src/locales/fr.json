@@ -1,45 +1,180 @@
 {
   "menu": {
     "home": "Accueil",
-    "dashboard": "Tableau de bord",
+    "dashboard": "Éditeur de tableau de bord",
     "modules": "Modules",
-    "settings": "Paramètres"
+    "settings": "Paramètres",
+    "user_menu": {
+      "profile": "Profil",
+      "about": "A propos",
+      "logout": "Déconnexion"
+    }
   },
   "login": {
-    "title": "Log in",
-    "subtitle": "Log in to your account and start automating your workflow.",
+    "title": "Se connecter",
+    "subtitle": "Connectez-vous à votre compte et commencez à automatiser votre flux de travail.",
     "form": {
-      "username": "Username",
-      "username_placeholder": "Enter your username",
-      "username_error": "Please enter your username",
-      "password": "Password",
-      "password_placeholder": "Enter your password",
-      "password_error": "Please enter your password",
-      "forgot": "Forgot your password ?",
-      "submit": "Log in"
+      "username": "Nom d'utilisateur",
+      "username_placeholder": "Entrez votre nom d'utilisateur",
+      "username_error": "Veuillez entrer votre nom d'utilisateur",
+      "password": "Mot de passe",
+      "password_placeholder": "Entrez votre mot de passe",
+      "password_error": "Veuillez entrer votre mot de passe",
+      "forgot": "Mot de passe oublié ?",
+      "submit": "Se connecter"
+    },
+    "features": {
+      "key_1": "Ajouter et configurer vos modules",
+      "key_2": "Créer des tableaux de bord pour visualiser vos données",
+      "key_3": "Configurer les utilisateurs et les permissions",
+      "key_4": "Personnaliser votre box à votre manière"
+    }
+  },
+  "home": {
+    "title": "Accueil",
+    "subtitle": "Bienvenue",
+    "call_to_action": {
+      "dashboard": "Configurer vos écrans de visualisation",
+      "dashboard_subtitle": "Créer et configurer vos tableaux de bord pour visualiser vos données",
+      "modules": "Gérer vos modules",
+      "modules_subtitle": "Installer, configurer et gérer vos modules",
+      "box": "Configurer votre boîte",
+      "box_subtitle": "Configurer votre boîte et ses paramètres selon votre utilisation"
+    }
+  },
+  "dashboard": {
+    "screen_create": "Créer un nouvel écran",
+    "screen_empty": "Cet écran est vide, commencez par y ajouter un module",
+    "screen_add_module": "Ajouter un module",
+    "screen_save": "Sauvegarder",
+    "screen_delete": "Supprimer",
+    "screen_preview": "Visualiser",
+    "screen_active": "Actif ?",
+    "screen_name_placeholder": "Saisir un nom ...",
+    "feedbacks": {
+      "screen_created_ok": "Écran créé avec succès",
+      "screen_saved_ok": "Écran enregistré avec succès",
+      "screen_deleted_ok": "Écran supprimé avec succès",
+      "screen_name_error": "Veuillez entrer un nom pour votre écran"
     }
   },
   "modules": {
     "title": "Modules",
-    "search_no_results": "No modules matching your search were found."
+    "search_no_results": "Aucun module correspondant à votre recherche n'a été trouvé.",
+    "search_placeholder": "Rechercher un module ...",
+    "search_filters": {
+      "all": "Tous",
+      "enabled": "Actifs",
+      "disabled": "Inactifs"
+    },
+    "add": "Ajouter",
+    "add_modal": {
+      "add_title": "Sélectionner un module à ajouter à l'écran",
+      "add_now": "Ajouter des modules maintenant !",
+      "no_modules": "Aucun module trouvé"
+    },
+    "information": {
+      "name": "Nom",
+      "description": "Description",
+      "infos": "Informations",
+      "version": "Version",
+      "actions": "Actions",
+      "status": "Statut",
+      "details": "Détails"
+    }
   },
-  "settings": {
-    "title": "Settings",
-    "preferences": {
-      "title": "Your preferences",
-      "language": "Language",
-      "theme": "Theme"
+  "module": {
+    "title": "Module",
+    "actions": {
+      "start": "Démarrer",
+      "stop": "Arrêter",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "save": "Enregistrer"
+    },
+    "information": {
+      "title": "Actions et informations",
+      "preview_disabled": "Activer le module pour voir l'aperçu",
+      "requires": "Requiert",
+      "no_requires": "Aucune exigence",
+      "identifier": "Identifiant",
+      "identifier_description": "L'identifiant peut être utilisé pour interagir avec le module via l'API",
+      "identifier_copied_title": "Copié !",
+      "identifier_copied_message": "L'identifiant du module a été copié dans le presse-papiers",
+      "nickname": "Surnom",
+      "nickname_description": "Le surnom est un nom alternatif donné à un module pour le rendre plus reconnaissable",
+      "nickname_placeholder": "Saisir un surnom ...",
+      "author": "Auteur",
+      "version": "Version",
+      "import_date": "Date d'ajout"
     },
     "configuration": {
       "title": "Configuration",
-      "users": "Users"
+      "save": "Enregistrer",
+      "reset": "Réinitialiser",
+      "reset_confirm_title": "Réinitialiser la configuration",
+      "reset_confirm_message": "Êtes-vous sûr de vouloir réinitialiser la configuration de ce module aux valeurs par défaut ?"
+    },
+    "feedbacks": {
+      "enabled_ok": "Module activé avec succès",
+      "disabled_ok": "Module désactivé avec succès",
+      "deleted_ok": "Module supprimé avec succès",
+      "uploaded_ok": "Module téléchargé avec succès",
+      "saved_ok": "Module enregistré avec succès",
+      "config_saved_ok": "Configuration du module enregistrée avec succès",
+      "config_reset_ok": "Réinitialisation de la configuration du module avec succès",
+      "config_reset_error": "Une erreur s'est produite lors de la réinitialisation de la configuration du module"
     }
+  },
+  "settings": {
+    "title": "Paramètres",
+    "preferences": {
+      "title": "Vos préférences",
+      "language": "Langue",
+      "theme": "Thème"
+    },
+    "configuration": {
+      "title": "Configuration",
+      "image": "Image de la boîte",
+      "name": "Nom de la boîte",
+      "save": "Enregistrer"
+    },
+    "feedbacks": {
+      "icon_saved_ok": "Icône enregistrée avec succès",
+      "box_saved_ok": "Boîte enregistrée avec succès"
+    },
+    "api_keys": {
+      "title": "Clés API",
+      "description": "Les clés API vous permettent de vous connecter à l'API et de l'utiliser dans vos propres applications.",
+      "add": "Ajouter",
+      "delete": "Supprimer",
+      "confirm_delete": "Êtes-vous sûr de vouloir supprimer cette clé ?",
+      "empty": "Aucune clé API créée"
+    }
+  },
+  "users": {
+    "title": "Utilisateurs",
+    "add": "Ajouter",
+    "create": "Créer un utilisateur",
+    "edit": "Modifier un utilisateur",
+    "update": "Mettre à jour un utilisateur",
+    "delete": "Supprimer"
+  },
+  "about": {
+    "title": "À propos",
+    "app_basename": "Modular App",
+    "description": "Modular App vous permet de créer des intégrations entre les appareils et vos services préférés. Vous pouvez importer des modules personnalisables pour créer vos propres intégrations."
   },
   "errors": {
     "not_found": {
-      "title": "Page not found",
-      "subtitle": "The page you are looking for does not exist.",
-      "button": "Go home"
+      "title": "Page introuvable",
+      "subtitle": "La page que vous recherchez n'existe pas.",
+      "button": "Retour à l'accueil"
     }
+  },
+  "status": {
+    "success": "Succès",
+    "error": "Erreur",
+    "warning": "Avertissement"
   }
 }

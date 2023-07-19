@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { LogoutIcon } from '@/assets/icons'
 import Image from '@/components/Image'
 import { User } from '@/models/User'
+import { useTranslation } from 'react-i18next'
 
 type UserDropdownProps = {
   user: User
@@ -9,6 +10,8 @@ type UserDropdownProps = {
 }
 
 export default function UserDropdown({ user, onAction }: UserDropdownProps) {
+  const { t } = useTranslation()
+
   return (
     <>
       <div className="dropdown dropdown-end">
@@ -27,17 +30,17 @@ export default function UserDropdown({ user, onAction }: UserDropdownProps) {
         >
           <li>
             <a onClick={() => onAction('profile')} className="justify-between">
-              Profile <span className="badge">{user.username}</span>
+              {t('menu.user_menu.profile')} <span className="badge">{user.username}</span>
             </a>
           </li>
           <li>
             <Link to={'/about'} className="justify-between">
-              About
+              {t('menu.user_menu.about')}
             </Link>
           </li>
           <li>
             <a onClick={() => onAction('logout')} className="justify-between">
-              Logout
+              {t('menu.user_menu.logout')}
               <LogoutIcon className="w-4 h-4 ml-2" />
             </a>
           </li>

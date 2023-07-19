@@ -1,4 +1,5 @@
 import ConfirmModal from '@/components/ConfirmModal'
+import { useTranslation } from 'react-i18next'
 
 type ConfirmConfigResetModalProps = {
   isOpen: boolean
@@ -7,16 +8,17 @@ type ConfirmConfigResetModalProps = {
 }
 
 export default function ConfirmConfigResetModal({ isOpen, onClose, onConfirm }: ConfirmConfigResetModalProps) {
+  const { t } = useTranslation()
   return (
     <ConfirmModal
       isOpen={isOpen}
-      title="Confirm configuration reset"
+      title={t('module.configuration.reset_confirm_title')}
       onConfirm={onConfirm}
       onCancel={onClose}
       confirmColor="btn-error"
     >
       <div className="modal-body">
-        <p>Are you sure you want to reset the configuration to its default values ?</p>
+        <p>{t('module.configuration.reset_confirm_message')}</p>
       </div>
     </ConfirmModal>
   )

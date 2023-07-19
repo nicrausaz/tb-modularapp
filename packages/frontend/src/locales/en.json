@@ -3,7 +3,12 @@
     "home": "Home",
     "dashboard": "Dashboard editor",
     "modules": "Modules",
-    "settings": "Settings"
+    "settings": "Settings",
+    "user_menu": {
+      "profile": "Profile",
+      "about": "About",
+      "logout": "Log out"
+    }
   },
   "login": {
     "title": "Log in",
@@ -40,6 +45,12 @@
   "dashboard": {
     "screen_create": "Create a new screen",
     "screen_empty": "This screen is empty, start by adding a module to it",
+    "screen_add_module": "Add module",
+    "screen_save": "Save",
+    "screen_delete": "Delete",
+    "screen_preview": "Preview",
+    "screen_active": "Active ?",
+    "screen_name_placeholder": "Enter a name ...",
     "feedbacks": {
       "screen_created_ok": "Screen created successfully",
       "screen_saved_ok": "Screen saved successfully",
@@ -49,7 +60,28 @@
   },
   "modules": {
     "title": "Modules",
-    "search_no_results": "No modules matching your search were found."
+    "search_no_results": "No modules matching your search were found.",
+    "search_placeholder": "Search a module ...",
+    "search_filters": {
+      "all": "All",
+      "enabled": "Enabled",
+      "disabled": "Disabled"
+    },
+    "add": "Add",
+    "add_modal": {
+      "add_title": "Select a module to add to the screen",
+      "add_now": "Add modules now !",
+      "no_modules": "No modules found"
+    },
+    "information": {
+      "name": "Name",
+      "description": "Description",
+      "infos": "Informations",
+      "version": "Version",
+      "actions": "Actions",
+      "status": "Status",
+      "details": "Details"
+    }
   },
   "module": {
     "title": "Module",
@@ -57,7 +89,8 @@
       "start": "Start",
       "stop": "Stop",
       "edit": "Edit",
-      "delete": "Delete"
+      "delete": "Delete",
+      "save": "Save"
     },
     "information": {
       "title": "Actions & information",
@@ -66,11 +99,21 @@
       "no_requires": "No requirements",
       "identifier": "Identifier",
       "identifier_description": "The identifier can be used to interact with the module through the API",
+      "identifier_copied_title": "Copied !",
+      "identifier_copied_message": "Module identifier copied to your clipboard",
       "nickname": "Nickname",
-      "nickname_description": "The nickname is an alternative name given to a module to make it more reconizable"
+      "nickname_description": "The nickname is an alternative name given to a module to make it more reconizable",
+      "nickname_placeholder": "Enter a nickname ...",
+      "author": "Author",
+      "version": "Version",
+      "import_date": "Importation date"
     },
     "configuration": {
-      "title": "Configuration"
+      "title": "Configuration",
+      "save": "Save",
+      "reset": "Reset to default",
+      "reset_confirm_title": "Reset module configuration",
+      "reset_confirm_message": "Are you sure you want to reset the module configuration to its default values ?"
     },
     "feedbacks": {
       "enabled_ok": "Module enabled successfully",
@@ -78,7 +121,7 @@
       "deleted_ok": "Module deleted successfully",
       "uploaded_ok": "Module uploaded successfully",
       "saved_ok": "Module saved successfully",
-      "config_save_ok": "Module configuration saved successfully",
+      "config_saved_ok": "Module configuration saved successfully",
       "config_reset_ok": "Module configuration reset successfully",
       "config_reset_error": "An error occurred while reseting the module configuration"
     }

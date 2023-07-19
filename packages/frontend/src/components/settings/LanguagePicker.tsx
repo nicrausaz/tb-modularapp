@@ -1,4 +1,4 @@
-import i18n from '@/libs/i18n'
+import { i18n, setLanguage } from '@/libs/i18n'
 
 /**
  * Input to select the UI language
@@ -8,7 +8,7 @@ export default function LanguagePicker() {
   const current = i18n.language
 
   const handleThemeSelection = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    i18n.changeLanguage(event.target.value)
+    setLanguage(event.target.value)
   }
 
   return (

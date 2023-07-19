@@ -13,9 +13,16 @@ const resources = {
   },
 }
 
+const configuredLanguage = localStorage.getItem('preferred_language') || 'en'
+
+const setLanguage = (language: string) => {
+  localStorage.setItem('preferred_language', language)
+  i18n.changeLanguage(language)
+}
+
 i18n.use(initReactI18next).init({
   resources,
-  lng: 'en',
+  lng: configuredLanguage,
   fallbackLng: ['en', 'fr'],
   supportedLngs: ['en', 'fr'],
   interpolation: {
@@ -23,4 +30,4 @@ i18n.use(initReactI18next).init({
   },
 })
 
-export default i18n
+export { i18n, setLanguage }

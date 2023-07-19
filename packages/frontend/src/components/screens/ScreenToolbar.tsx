@@ -78,19 +78,21 @@ export default function ScreenToolbar({
           name={'screenName'}
           value={screenName}
           onChange={(value) => onNameChange(value)}
-          placeholder="Screen name..."
+          placeholder={t('dashboard.screen_name_placeholder')}
           className="input-md"
           error={screenNameError}
           displayErrorLabel={false}
         />
       </div>
       <div className="flex items-center">
-        <input
-          type="checkbox"
-          className="toggle toggle-success"
-          onChange={toggleEnabled}
-          defaultChecked={currentScreen.enabled}
-        />
+        <div className="tooltip tooltip-bottom flex" data-tip={t('dashboard.screen_active')}>
+          <input
+            type="checkbox"
+            className="toggle toggle-success"
+            onChange={toggleEnabled}
+            defaultChecked={currentScreen.enabled}
+          />
+        </div>
         <div className="dropdown dropdown-hover dropdown-end">
           <label tabIndex={0} className="btn m-1 truncate">
             {screenName}
@@ -117,7 +119,7 @@ export default function ScreenToolbar({
             onClick={onSlotAdd}
             icon={<AddSquareIcon className="w-4 h-4" />}
             position="right"
-            label="Add"
+            label={t('dashboard.screen_add_module')}
             className="btn-outline"
           />
 
@@ -125,7 +127,7 @@ export default function ScreenToolbar({
             onClick={handleDeleteScreen}
             icon={<TrashIcon className="w-4 h-4" />}
             position="right"
-            label="Delete"
+            label={t('dashboard.screen_delete')}
             className="btn-error"
           />
 
@@ -133,14 +135,14 @@ export default function ScreenToolbar({
             onClick={handleSaveScreen}
             icon={<SaveIcon className="w-4 h-4" />}
             position="right"
-            label="Save"
+            label={t('dashboard.screen_save')}
             className="btn-success"
           />
 
           <IconButton
             icon={<OpenNewTabIcon className="w-4 h-4" />}
             position="right"
-            label="Preview"
+            label={t('dashboard.screen_preview')}
             className="btn-info"
             to={`/visualize/${currentScreen?.id}`}
             target="_blank"

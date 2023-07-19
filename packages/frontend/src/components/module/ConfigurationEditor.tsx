@@ -3,6 +3,7 @@ import { Configuration } from '@/models/Configuration'
 import ConfigurationInput from '@/components/module/ConfigurationInput'
 import IconButton from '@/components/IconButton'
 import { SaveIcon } from '@/assets/icons'
+import { useTranslation } from 'react-i18next'
 
 type ConfigurationEditorProps = {
   configuration: Configuration
@@ -11,6 +12,7 @@ type ConfigurationEditorProps = {
 }
 
 export default function ConfigurationEditor({ configuration, onSave, onReset }: ConfigurationEditorProps) {
+  const { t } = useTranslation()
   const [editingConfig, setEditingConfig] = useState<Configuration>([...configuration])
 
   const handleInputChange = (name: string, value: string | boolean | number) => {
@@ -24,20 +26,19 @@ export default function ConfigurationEditor({ configuration, onSave, onReset }: 
 
   return (
     <div className="form-control w-full">
-      {configuration.map((input, i) => [
-        <ConfigurationInput input={input} key={i} onValueChange={handleInputChange} />,
-        <div className="divider m-0" key={`divider${i}`}></div>,
-      ])}
+      {configuration.map((input, i) => (
+        <ConfigurationInput input={input} key={i} onValueChange={handleInputChange} />
+      ))}
 
       <div className="flex items-center justify-end gap-2 mt-2">
         <button className="btn" onClick={onReset}>
-          Reset to default
+          {t('module.configuration.reset')}
         </button>
         <IconButton
           onClick={() => onSave(editingConfig)}
           icon={<SaveIcon className="w-4 h-4" />}
           position="left"
-          label="Save"
+          label={t('module.configuration.save')}
           className="btn-primary"
           keepLabel={true}
         />

@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from 'react'
 import IconButton from '../IconButton'
 import { AddSquareIcon } from '@/assets/icons'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 type ConfirmModuleDeleteModalProps = {
   isOpen: boolean
@@ -19,10 +20,26 @@ export default function ChoseModulesModal({ isOpen, onClose, onConfirm }: Confir
   const [modules, setModules] = useState<Module[]>([])
   const [selectedModules, setSelectedModules] = useState<Module[]>([])
   const [searchQuery, setSearchQuery] = useState<string>('')
-  const [searchFilter, setSearchFilter] = useState<string>('All')
-  const selectAll = useRef<HTMLInputElement>(null)
+  const { t } = useTranslation()
 
   const navigate = useNavigate()
+
+  const searchFilters = [
+    {
+      label: t('modules.search_filters.all'),
+      key: 'all',
+    },
+    {
+      label: t('modules.search_filters.enabled'),
+      key: 'enabled',
+    },
+    {
+      label: t('modules.search_filters.disabled'),
+      key: 'disabled',
+    },
+  ]
+
+  const [searchFilter, setSearchFilter] = useState<string>('all')
 
   useEffect(() => {
     if (data) {
@@ -42,6 +59,8 @@ export default function ChoseModulesModal({ isOpen, onClose, onConfirm }: Confir
     }
   })
 
+  const selectAll = useRef<HTMLInputElement>(null)
+
   if (!isOpen) {
     return null
   }
@@ -55,8 +74,8 @@ export default function ChoseModulesModal({ isOpen, onClose, onConfirm }: Confir
       )
     }
 
-    if (searchFilter !== 'All') {
-      filteredModules = filteredModules.filter((module) => module.enabled === (searchFilter === 'Enabled'))
+    if (searchFilter !== 'all') {
+      filteredModules = filteredModules.filter((module) => module.enabled === (searchFilter === 'enabled'))
     }
 
     setModules(filteredModules)
@@ -102,8 +121,6 @@ export default function ChoseModulesModal({ isOpen, onClose, onConfirm }: Confir
     onClose()
   }
 
-  const searchFilters = ['All', 'Enabled', 'Disabled']
-
   const ModuleTable = () => (
     <div className="modal-body">
       <div className="m-2">
@@ -131,9 +148,9 @@ export default function ChoseModulesModal({ isOpen, onClose, onConfirm }: Confir
                   />
                 </label>
               </th>
-              <th>Name</th>
-              <th>Version</th>
-              <th>Status</th>
+              <th>{t('modules.information.name')}</th>
+              <th>{t('modules.information.version')}</th>
+              <th>{t('modules.information.status')}</th>
             </tr>
           </thead>
           <tbody>
@@ -149,17 +166,17 @@ export default function ChoseModulesModal({ isOpen, onClose, onConfirm }: Confir
   return (
     <ConfirmModal
       isOpen={isOpen}
-      title="Select a module to add to the screen"
+      title={t('modules.add_modal.add_title')}
       onConfirm={confirm}
       onCancel={handleClose}
       confirmEnabled={selectedModules.length > 0}
     >
       {data && data.length === 0 ? (
         <div className="mt-4 text-center text-xl text-gray-500 flex flex-col items-center gap-2">
-          <span>No modules found</span>
+          <span>{t('modules.add_modal.no_modules')}</span>
           <IconButton
             icon={<AddSquareIcon />}
-            label="Add modules now !"
+            label={t('modules.add_modal.add_now')}
             position="left"
             className="btn-primary"
             onClick={() => navigate('/modules')}

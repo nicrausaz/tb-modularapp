@@ -1,4 +1,5 @@
 import { Module } from '@/models/Module'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 type ModuleSelectRowProps = {
@@ -8,6 +9,8 @@ type ModuleSelectRowProps = {
 }
 
 export default function ModuleSelectRow({ module, selected = false, onSelect }: ModuleSelectRowProps) {
+  const { t } = useTranslation()
+
   const handleSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     onSelect(module, event.target.checked)
   }
@@ -47,7 +50,7 @@ export default function ModuleSelectRow({ module, selected = false, onSelect }: 
             <div className="badge badge-error badge-xs"></div>
           )}
           <Link to={`/modules/${module.id}`} className="btn btn-ghost btn-xs ml-2">
-            details
+            {t('modules.information.details')}
           </Link>
         </div>
       </th>

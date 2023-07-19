@@ -137,7 +137,7 @@ export default function Module() {
 
   const copyId = () => {
     navigator.clipboard.writeText(module.id)
-    tSuccess('Copied', 'Identifier copied to your clipboard')
+    tSuccess(t('module.information.identifier_copied_title'), t('module.information.identifier_copied_message'))
   }
 
   const iconLink = module.icon ? `/api/box/static/module/${module.id}/${module.icon}` : '/assets/module_placeholder.svg'
@@ -159,15 +159,15 @@ export default function Module() {
             <div className="divider" />
 
             <div className="flex gap-2">
-              <div className="badge flex items-center tooltip tooltip-bottom" data-tip="Author">
+              <div className="badge flex items-center tooltip tooltip-bottom" data-tip={t('module.information.author')}>
                 <DeveloperIcon className="w-4 h-4 mr-2" />
                 <span className="font-light">{module.author}</span>
               </div>
-              <div className="badge flex items-center tooltip tooltip-bottom" data-tip="Version">
+              <div className="badge flex items-center tooltip tooltip-bottom" data-tip={t('module.information.version')}>
                 <VersionIcon className="w-4 h-4 mr-2" />
                 <span className="font-light">{module.version}</span>
               </div>
-              <div className="badge flex items-center tooltip tooltip-bottom" data-tip="Importation date">
+              <div className="badge flex items-center tooltip tooltip-bottom" data-tip={t('module.information.import_date')}>
                 <TimeIcon className="w-4 h-4 mr-2" />
                 <span className="font-light">{module.importedAt.toString()}</span>
               </div>
@@ -191,7 +191,7 @@ export default function Module() {
                   onClick={() => handleChangeStatus('disable')}
                   icon={<StopIcon className="w-4 h-4" />}
                   position="left"
-                  label="Stop"
+                  label={t('module.actions.stop')}
                   className="btn-error"
                   keepLabel={true}
                 />
@@ -200,7 +200,7 @@ export default function Module() {
                   onClick={() => handleChangeStatus('enable')}
                   icon={<PlayIcon className="w-4 h-4" />}
                   position="left"
-                  label="Start"
+                  label={t('module.actions.start')}
                   className="btn-success"
                   keepLabel={true}
                 />
@@ -253,7 +253,7 @@ export default function Module() {
             <input
               name="nickname"
               type="text"
-              placeholder="Enter module nickname"
+              placeholder={t('module.information.nickname_placeholder')}
               className="input input-bordered w-full"
               value={module.nickname ?? ''}
               onChange={(e) => setModule({ ...module, nickname: e.target.value })}
@@ -269,7 +269,7 @@ export default function Module() {
               }}
               icon={<TrashIcon className="w-4 h-4" />}
               position="left"
-              label="Delete"
+              label={t('module.actions.delete')}
               className="btn-error"
               keepLabel={true}
             />
@@ -278,7 +278,7 @@ export default function Module() {
               onClick={handleSaveModule}
               icon={<SaveIcon className="w-4 h-4" />}
               position="left"
-              label="Save"
+              label={t('module.actions.save')}
               className="btn-primary"
               keepLabel={true}
             />
