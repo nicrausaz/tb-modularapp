@@ -46,6 +46,7 @@ export default abstract class Module {
     configuration.forEach((field) => {
       this.currentConfig.updateEntryFromKey(field.name, field.value)
     })
+    this.onConfigurationChanged()
   }
 
   /**
@@ -171,8 +172,14 @@ export default abstract class Module {
   protected abstract onReceive(type: string, data: unknown): void
 
   /**
-   * Called when a new subscriber is registered
+   * Called when a new subscriber is registered to the module render updates
    * This method is useful to send the current or initial state to the new subscriber
    */
   protected abstract onNewSubscriber(): void
+
+  /**
+   * Called when the configuration values are changed
+   * This method is usefull if the module need to react to configuration changes
+   */
+  protected onConfigurationChanged(): void {}
 }

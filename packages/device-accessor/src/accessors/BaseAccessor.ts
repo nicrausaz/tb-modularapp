@@ -6,16 +6,16 @@ import { Module } from '@yalk/module'
  * from a defined protocol or device.
  */
 export default abstract class BaseAccessor {
-  protected registeredModules: Array<{ id: string; module: Module }> = []
+  private registeredModules: Array<{ id: string; module: Module }> = []
 
-  protected constructor(private typeKey: string) {}
+  protected constructor(private readonly typeKey: string) {}
 
   /**
    * Aquire the access to the accessor from a module
    * @param module module that require the accessor
    * @param moduleId module id that require the accessor
    */
-  public require(module: Module, moduleId: string) {
+  public require(module: Module, moduleId: string): void {
     this.registeredModules.push({
       id: moduleId,
       module,
@@ -26,10 +26,15 @@ export default abstract class BaseAccessor {
    * Release the access to the accessor from a module
    * @param moduleId module id that release the accessor
    */
-  public release(moduleId: string) {
+  public release(moduleId: string): void {
     this.registeredModules = this.registeredModules.filter((m) => m.id !== moduleId)
   }
 
+  /**
+   * Check is a module has access to the accessor
+   * @param moduleId module id to check
+   * @returns true if the module has access to the accessor, false otherwise
+   */
   public hasAccess(moduleId: string): boolean {
     return this.registeredModules.some((m) => m.id === moduleId)
   }
@@ -38,7 +43,7 @@ export default abstract class BaseAccessor {
    * Send data using the accessor's protocol
    * @param data data to send
    */
-  public abstract send(...args: any[]): void
+  public abstract send(data: unknown): void
 
   /**
    * Run the accessor
@@ -61,7 +66,7 @@ export default abstract class BaseAccessor {
    * Send data to all registered modules
    * @param data data to send
    */
-  public sendToAll(data: any) {
+  protected transmitToAll(data: unknown): void {
     this.registeredModules.forEach((entry) => {
       entry.module.receiveData(this.typeKey, data)
     })
@@ -72,7 +77,7 @@ export default abstract class BaseAccessor {
    * @param moduleId module id to send data to
    * @param data data to send
    */
-  public sendTo(moduleId: string, data: any) {
+  protected transmitTo(moduleId: string, data: unknown): void {
     const entry = this.registeredModules.find((m) => m.id === moduleId)
     if (entry) {
       entry.module.receiveData(this.type, data)

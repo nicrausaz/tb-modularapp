@@ -18,7 +18,7 @@ export default class KeyboardAccessor extends BaseAccessor {
     process.stdin.on('data', (data) => {
       const stringData = data.toString('utf8').trim()
       if (stringData) {
-        this.sendToAll(stringData)
+        this.transmitToAll(stringData)
       }
     })
     process.stdin.on('error', (error) => {
