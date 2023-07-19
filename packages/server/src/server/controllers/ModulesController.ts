@@ -46,7 +46,7 @@ export default class ModulesController {
    */
   sendEvent = async (req: Request, res: Response, next: NextFunction) => {
     this.modulesService
-      .sendEventToModule(req.params.id, req.body)
+      .sendEventToModule(req.params.id, req.body.data)
       .then(() => res.status(204).send())
       .catch(next)
   }

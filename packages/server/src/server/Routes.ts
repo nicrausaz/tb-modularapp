@@ -75,8 +75,10 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *                properties:
    *                  username:
    *                    type: string
+   *                    required: true
    *                  password:
    *                    type: string
+   *                    required: true
    *     responses:
    *       200:
    *         description: Authentication success
@@ -85,6 +87,39 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *             schema:
    *               type: string
    *             example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+   *       400:
+   *        description: Username or password missing
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: object
+   *              properties:
+   *                errors:
+   *                  type: array
+   *                  items:
+   *                    type: object
+   *                    properties:
+   *                      type:
+   *                        type: string
+   *                      value:
+   *                        type: string
+   *                      msg:
+   *                        type: string
+   *                      path:
+   *                        type: string
+   *                      location:
+   *                        type: string
+   *            example: {
+   *               "errors": [
+   *                   {
+   *                       "type": "field",
+   *                       "value": "",
+   *                       "msg": "Password is required",
+   *                       "path": "password",
+   *                       "location": "body"
+   *                   }
+   *               ]
+   *             }
    *       401:
    *        description: Authentication failed
    *        content:
@@ -384,6 +419,39 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *     responses:
    *       204:
    *         description: Event sent
+   *       400:
+   *        description: Invalid body structure (missing data)
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: object
+   *              properties:
+   *                errors:
+   *                  type: array
+   *                  items:
+   *                    type: object
+   *                    properties:
+   *                      type:
+   *                        type: string
+   *                      value:
+   *                        type: string
+   *                      msg:
+   *                        type: string
+   *                      path:
+   *                        type: string
+   *                      location:
+   *                        type: string
+   *            example: {
+   *               "errors": [
+   *                   {
+   *                       "type": "field",
+   *                       "value": "",
+   *                       "msg": "Data must be an object",
+   *                       "path": "data",
+   *                       "location": "body"
+   *                   }
+   *               ]
+   *             }
    *       403:
    *         description: The module is not enabled or not allowed to receive events
    *         content:
@@ -409,7 +477,7 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *                          "message": "Module not found",
    *                       }
    */
-  app.post('/api/modules/:id/events', Validator(sendEventRules), APIKeyAuthMiddleware, modulesController.sendEvent)
+  app.post('/api/modules/:id/events', APIKeyAuthMiddleware, Validator(sendEventRules), modulesController.sendEvent)
 
   /**
    * @swagger
@@ -448,6 +516,39 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *     responses:
    *       204:
    *         description: Event sent
+   *       400:
+   *        description: Invalid body structure (missing ids or data)
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: object
+   *              properties:
+   *                errors:
+   *                  type: array
+   *                  items:
+   *                    type: object
+   *                    properties:
+   *                      type:
+   *                        type: string
+   *                      value:
+   *                        type: string
+   *                      msg:
+   *                        type: string
+   *                      path:
+   *                        type: string
+   *                      location:
+   *                        type: string
+   *            example: {
+   *               "errors": [
+   *                   {
+   *                       "type": "field",
+   *                       "value": "",
+   *                       "msg": "Data must be an object",
+   *                       "path": "data",
+   *                       "location": "body"
+   *                   }
+   *               ]
+   *             }
    *       403:
    *         description: The module is not enabled or not allowed to receive events
    *         content:
@@ -475,8 +576,8 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    */
   app.post(
     '/api/modules/events',
-    Validator(sendMultipleEventsRules),
     APIKeyAuthMiddleware,
+    Validator(sendMultipleEventsRules),
     modulesController.sendManyEvents,
   )
 
@@ -501,33 +602,30 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *         description: Module exists
    *         content:
    *           application/json:
-   *           schema:
-   *             type: array
-   *             items:
-   *               type: object
-   *               properties:
-   *                 name:
-   *                   type: string
-   *           example:
-   *                 [
-   *                   {
-   *                     'name': 'refreshRate',
-   *                     'type': 'number',
-   *                     'label': 'Refresh rate',
-   *                     'description': 'The refresh rate in ms',
-   *                     'value': 1000,
-   *                   },
-   *                 ]
+   *             schema:
+   *               type: array
+   *               items:
+   *                 type: object
+   *             example:
+   *                   [
+   *                     {
+   *                       'name': 'refreshRate',
+   *                       'type': 'number',
+   *                       'label': 'Refresh rate',
+   *                       'description': 'The refresh rate in ms',
+   *                       'value': 1000,
+   *                     },
+   *                   ]
    *       404:
    *         description: The module does not exist
    *         content:
    *           application/json:
-   *           schema:
-   *             type: object
-   *             properties:
-   *               message:
-   *                 type: string
-   *           example: { 'message': 'Module not found' }
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *             example: { 'message': 'Module not found' }
    */
   app.get('/api/modules/:id/configuration', JwtAuthMiddleware, modulesController.moduleConfiguration)
 
@@ -548,7 +646,6 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *         required: true
    *         description: The module id
    *     requestBody:
-   *        required: true
    *        content:
    *          application/json:
    *             schema:
@@ -566,6 +663,39 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *     responses:
    *       204:
    *         description: Module configuration updated
+   *       400:
+   *        description: Invalid configuration values
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: object
+   *              properties:
+   *                errors:
+   *                  type: array
+   *                  items:
+   *                    type: object
+   *                    properties:
+   *                      type:
+   *                        type: string
+   *                      value:
+   *                        type: string
+   *                      msg:
+   *                        type: string
+   *                      path:
+   *                        type: string
+   *                      location:
+   *                        type: string
+   *            example: {
+   *               "errors": [
+   *                   {
+   *                       "type": "field",
+   *                       "value": "",
+   *                       "msg": "Name is required",
+   *                       "path": "fields[0].name",
+   *                       "location": "body"
+   *                   }
+   *               ]
+   *             }
    *       404:
    *         description: The module does not exist
    *         content:
@@ -767,15 +897,52 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *             properties:
    *               id:
    *                 type: integer
+   *                 required: true
    *               name:
    *                 type: string
+   *                 required: true
    *               enabled:
    *                 type: boolean
+   *                 required: true
    *               slots:
    *                 type: array
+   *                 required: true
    *     responses:
    *       204:
    *         description: Screen updated
+   *       400:
+   *        description: Invalid screen body
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: object
+   *              properties:
+   *                errors:
+   *                  type: array
+   *                  items:
+   *                    type: object
+   *                    properties:
+   *                      type:
+   *                        type: string
+   *                      value:
+   *                        type: string
+   *                      msg:
+   *                        type: string
+   *                      path:
+   *                        type: string
+   *                      location:
+   *                        type: string
+   *            example: {
+   *               "errors": [
+   *                   {
+   *                       "type": "field",
+   *                       "value": "",
+   *                       "msg": "Name is required",
+   *                       "path": "name",
+   *                       "location": "body"
+   *                   }
+   *               ]
+   *             }
    *       404:
    *         description: The screen does not exist
    *         content:
@@ -843,20 +1010,20 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *         description: Return box information
    *         content:
    *           application/json:
-   *           schema:
-   *             type: object
-   *             properties:
-   *               name:
-   *                 type: string
-   *               logo:
-   *                 type: string
-   *               version:
-   *                 type: string
-   *           example: {
-   *                 "name": "Modular APP",
-   *                 "icon": "logo.svg",
-   *                 "version": "1.0.0"
-   *              }
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 name:
+   *                   type: string
+   *                 logo:
+   *                   type: string
+   *                 version:
+   *                   type: string
+   *             example: {
+   *                   "name": "Modular APP",
+   *                   "icon": "logo.svg",
+   *                   "version": "1.0.0"
+   *                }
    */
   app.get('/api/box', boxController.index)
 
@@ -884,6 +1051,39 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *     responses:
    *       204:
    *         description: Box information updated
+   *       400:
+   *        description: Invalid box body
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: object
+   *              properties:
+   *                errors:
+   *                  type: array
+   *                  items:
+   *                    type: object
+   *                    properties:
+   *                      type:
+   *                        type: string
+   *                      value:
+   *                        type: string
+   *                      msg:
+   *                        type: string
+   *                      path:
+   *                        type: string
+   *                      location:
+   *                        type: string
+   *            example: {
+   *               "errors": [
+   *                   {
+   *                       "type": "field",
+   *                       "value": "",
+   *                       "msg": "Name is required",
+   *                       "path": "name",
+   *                       "location": "body"
+   *                   }
+   *               ]
+   *             }
    */
   app.put('/api/box', JwtAuthMiddleware, Validator(boxUpdateRules), boxController.update)
 
@@ -1017,36 +1217,36 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *       - bearer: []
    *     responses:
    *       200:
-   *       description: Return the API keys
-   *       content:
-   *         application/json:
-   *           schema:
-   *             type: array
-   *             items:
-   *               type: object
-   *               properties:
-   *                 id:
-   *                   type: string
-   *                 display:
-   *                   type: string
-   *                 name:
-   *                   type: string
-   *                 createdAt:
-   *                   type: string
-   *           example: [
-   *               {
-   *                   "id": 1,
-   *                   "name": "sdfg",
-   *                   "display": "bcef9∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗",
-   *                   "createdAt": "2023-07-18 11:51:01"
-   *               },
-   *               {
-   *                   "id": 2,
-   *                   "name": "asdf",
-   *                   "display": "6dd90∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗",
-   *                   "createdAt": "2023-07-18 12:27:56"
-   *               }
-   *             ]
+   *         description: Return the API keys
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: array
+   *               items:
+   *                 type: object
+   *                 properties:
+   *                   id:
+   *                     type: string
+   *                   display:
+   *                     type: string
+   *                   name:
+   *                     type: string
+   *                   createdAt:
+   *                     type: string
+   *             example: [
+   *                 {
+   *                     "id": 1,
+   *                     "name": "sdfg",
+   *                     "display": "bcef9∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗",
+   *                     "createdAt": "2023-07-18 11:51:01"
+   *                 },
+   *                 {
+   *                     "id": 2,
+   *                     "name": "asdf",
+   *                     "display": "6dd90∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗",
+   *                     "createdAt": "2023-07-18 12:27:56"
+   *                 }
+   *               ]
    *
    *
    */
@@ -1079,6 +1279,39 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *               properties:
    *                 key:
    *                   type: string
+   *       400:
+   *        description: Invalid api key name
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: object
+   *              properties:
+   *                errors:
+   *                  type: array
+   *                  items:
+   *                    type: object
+   *                    properties:
+   *                      type:
+   *                        type: string
+   *                      value:
+   *                        type: string
+   *                      msg:
+   *                        type: string
+   *                      path:
+   *                        type: string
+   *                      location:
+   *                        type: string
+   *            example: {
+   *               "errors": [
+   *                   {
+   *                       "type": "field",
+   *                       "value": "",
+   *                       "msg": "Name is required",
+   *                       "path": "name",
+   *                       "location": "body"
+   *                   }
+   *               ]
+   *             }
    */
   app.post('/api/box/security/keys', JwtAuthMiddleware, Validator(generateAPIKeyRules), boxController.generateAPIKey)
 
@@ -1126,16 +1359,16 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *             schema:
    *               type: array
    *               items:
-  *                  type: object
-  *                  properties:
-  *                    id:
-  *                      type: integer
-  *                    username:
-  *                      type: string
-  *                    avatar:
-  *                      type: string
-  *                    isDefault:
-  *                      type: boolean
+   *                  type: object
+   *                  properties:
+   *                    id:
+   *                      type: integer
+   *                    username:
+   *                      type: string
+   *                    avatar:
+   *                      type: string
+   *                    isDefault:
+   *                      type: boolean
    */
   app.get('/api/users', JwtAuthMiddleware, usersController.index)
 
@@ -1162,7 +1395,42 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *       204:
    *         description: The user has been created
    *       400:
-   *         description: The username is already taken
+   *        description: |
+   *           Some fields are missing or invalid:
+   *           + Missing username
+   *           + The username is already taken 
+   *           + The password does not match the requirements (8 chars min, 1 uppercase, 1 lowercase, 1 number, 1 special char)
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: object
+   *              properties:
+   *                errors:
+   *                  type: array
+   *                  items:
+   *                    type: object
+   *                    properties:
+   *                      type:
+   *                        type: string
+   *                      value:
+   *                        type: string
+   *                      msg:
+   *                        type: string
+   *                      path:
+   *                        type: string
+   *                      location:
+   *                        type: string
+   *            example: {
+   *               "errors": [
+   *                   {
+   *                       "type": "field",
+   *                       "value": "",
+   *                       "msg": "Username is required",
+   *                       "path": "username",
+   *                       "location": "body"
+   *                   }
+   *               ]
+   *             }
    */
   app.post('/api/users', JwtAuthMiddleware, Validator(userCreateRules), usersController.create)
 
@@ -1196,6 +1464,43 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *     responses:
    *       204:
    *         description: The user has been updated
+   *       400:
+   *        description: |
+   *           Some fields are missing or invalid:
+   *           + Missing username
+   *           + The username is already taken 
+   *           + The password does not match the requirements (8 chars min, 1 uppercase, 1 lowercase, 1 number, 1 special char)
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: object
+   *              properties:
+   *                errors:
+   *                  type: array
+   *                  items:
+   *                    type: object
+   *                    properties:
+   *                      type:
+   *                        type: string
+   *                      value:
+   *                        type: string
+   *                      msg:
+   *                        type: string
+   *                      path:
+   *                        type: string
+   *                      location:
+   *                        type: string
+   *            example: {
+   *               "errors": [
+   *                   {
+   *                       "type": "field",
+   *                       "value": "",
+   *                       "msg": "Username is required",
+   *                       "path": "username",
+   *                       "location": "body"
+   *                   }
+   *               ]
+   *             }
    *       404:
    *         description: The user does not exist
    */
@@ -1252,10 +1557,9 @@ const configureRoutes = (app: express.Application, manager: ModuleDatabaseManage
    *         description: The user has been deleted
    *       404:
    *         description: The user does not exist
-   * 
+   *
    */
   app.delete('/api/users/:id', JwtAuthMiddleware, usersController.delete)
-
 
   /**
    * WebSocket "routes" handler
