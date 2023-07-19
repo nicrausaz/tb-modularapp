@@ -3,7 +3,7 @@ import { Configuration } from './configuration/Configuration'
 import { SpecificConfiguration } from './configuration/SpecificConfiguration'
 import ModuleRenderer from './ModuleRenderer'
 import { SpecificConfigurationEntryTypeValue } from './configuration/SpecificConfigurationEntry'
-import { renderToStaticMarkup } from 'react-dom/server'
+
 
 export interface ModuleProps {
   [key: string]: unknown
@@ -151,7 +151,7 @@ export default abstract class Module {
   protected notify<T extends ModuleProps>(data: T): void {
     // Render the module to HTML and emit the result
     if (this._renderer) {
-      this.emitter.emit(Module.UPDATE_STATE_KEY, renderToStaticMarkup(this._renderer.render(data)))
+      this.emitter.emit(Module.UPDATE_STATE_KEY, this._renderer.render(data))
     }
   }
 
