@@ -303,6 +303,10 @@ export default class ModuleDatabaseManager {
     })
   }
 
+  /**
+   * Remove a module from the database
+   * @param moduleId  module id to remove
+   */
   private async deleteModuleFromDatabase(moduleId: string): Promise<void> {
     const db = getDB()
     return new Promise((resolve, reject) => {

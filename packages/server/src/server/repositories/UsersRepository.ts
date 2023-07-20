@@ -14,11 +14,11 @@ export default class UsersRepository {
   public getById(id: number): Promise<UserEntity> {
     const db = getDB()
     return new Promise((resolve, reject) => {
-      db.all('SELECT id, username, isDefault, avatar FROM Users WHERE id = ?', [id], (err, row) => {
-        if (err || row.length === 0) {
+      db.all('SELECT id, username, isDefault, avatar FROM Users WHERE id = ?', [id], (err, rows) => {
+        if (err || rows.length === 0) {
           reject(err)
         }
-        resolve(row[0] as UserEntity)
+        resolve(rows[0] as UserEntity)
       })
       db.close()
     })
