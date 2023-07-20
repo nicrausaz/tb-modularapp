@@ -129,7 +129,7 @@ export default function Modules() {
         changeModuleStatus(id, enabled)
         tSuccess(t('status.success'), enabled ? t('module.feedbacks.enabled_ok') : t('module.feedbacks.disabled_ok'))
       })
-      .catch((err) => tError('Error', err.message))
+      .catch((err) => tError(t('status.error'), err.message))
   }
 
   const handleDelete = async (id: string) => {

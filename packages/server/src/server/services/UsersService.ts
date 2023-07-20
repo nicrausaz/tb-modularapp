@@ -83,6 +83,12 @@ export default class UsersService {
       throw new UserNotFoundException(id)
     }
 
+    // Check if the username is already taken
+    const existingUser = await this.usersRepository.getByUsername(user.username)
+    if (existingUser && existingUser.id !== id) {
+      throw new UserAlreadyExistsException(user.username)
+    }
+
     return this.usersRepository.updateUser(id, user)
   }
 

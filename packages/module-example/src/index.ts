@@ -74,5 +74,6 @@ export default class ExampleModule extends Module {
   onNewSubscriber(): void {
     // This is where you will define the behavior of your module when a new subscriber is registered.
     // This method is called every time a new subscriber is registered.
+    this.notify({ message: 'Hello World!' })
   }
 }

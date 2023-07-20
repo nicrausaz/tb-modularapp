@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import Modal from './Modal'
+import { useTranslation } from 'react-i18next'
 
 type UploadModalProps = {
   open: boolean
@@ -15,6 +16,8 @@ export default function UploadModal({ open, onClose, onUpload, allowedFormats }:
 
   const allowed = allowedFormats?.join(', ') ?? ''
 
+  const { t } = useTranslation()
+
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) {
       setFile(null)
@@ -23,7 +26,7 @@ export default function UploadModal({ open, onClose, onUpload, allowedFormats }:
 
     const file = e.target.files[0]
     if (!allowedFormats?.includes(file.type)) {
-      setError('File format not allowed')
+      setError(t('modules.import.format_not_allowed'))
       return
     }
 
@@ -33,7 +36,7 @@ export default function UploadModal({ open, onClose, onUpload, allowedFormats }:
 
   const submit = () => {
     if (file == null) {
-      setError('No file selected')
+      setError(t('modules.import.no_file'))
       return
     }
     onUpload(file)
@@ -52,16 +55,18 @@ export default function UploadModal({ open, onClose, onUpload, allowedFormats }:
   return (
     <Modal
       isOpen={open}
-      title="Add a new module from archive"
+      title={t('modules.import.title')}
       onCancel={close}
       confirmEnabled={file != null}
       onConfirm={submit}
+      cancelText={t('modules.import.cancel')}
+      confirmText={t('modules.import.confirm')}
     >
       <div className="modal-body">
         <div className="form-control w-full">
           <label className="label">
-            <span className="label-text">Pick a file</span>
-            <span className="label-text-alt">{allowed} allowed</span>
+            <span className="label-text">{t('modules.import.input_label')}</span>
+            <span className="label-text-alt">{allowed} {t('modules.import.format_allowed')}</span>
           </label>
           <input
             type="file"

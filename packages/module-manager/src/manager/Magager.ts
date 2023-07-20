@@ -1,7 +1,6 @@
 import {
   Configuration,
   Module,
-  ModuleProps,
   SpecificConfiguration,
   SpecificConfigurationEntryTypeValue,
   ModuleValidationSchema,
@@ -16,7 +15,7 @@ type ModuleId = string
 type ModuleEntry = {
   module: Module
   enabled: boolean
-  onSend: (type: string, data: any) => void
+  onSend: (type: string, data: unknown) => void
 }
 
 export type ManagerEntry = {
@@ -81,7 +80,7 @@ export default class Manager {
       this.modules.set(id, {
         module,
         enabled: false,
-        onSend: (type: string, data: any) => {
+        onSend: (type: string, data: unknown) => {
           this.redirectDataToAccessors(id, type, data)
         },
       })

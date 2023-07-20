@@ -34,7 +34,7 @@ export default function Dashboard() {
     if (screens.length > 0) {
       setScreen(screens[screens.length - 1])
     }
-  }, [screens])
+  }, [screens.length])
 
   if (loading) {
     return <LoadingTopBar />
@@ -126,7 +126,7 @@ export default function Dashboard() {
         tSuccess(t('status.success'), t('dashboard.feedbacks.screen_deleted_ok'))
       })
       .catch((error) => {
-        tError('Error', error.message)
+        tError(t('status.error'), error.message)
       })
   }
 

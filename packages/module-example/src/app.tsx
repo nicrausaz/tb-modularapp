@@ -5,7 +5,8 @@ import { ExampleModuleProps } from '.'
 export default class ExampleModuleRenderer extends ModuleRenderer {
   protected style: string = `
     .example-module {
-      background-color: green;
+      background-color: lightgreen;
+      padding: 6px;
     }
   `
 

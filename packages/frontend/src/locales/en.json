@@ -81,6 +81,17 @@
       "actions": "Actions",
       "status": "Status",
       "details": "Details"
+    },
+    "import": {
+      "title": "Add a new module from archive",
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+      "input_label": "Pick a file",
+      "format_allowed": "allowed",
+      "feedbacks": {
+        "no_file": "No file selected",
+        "format_error": "The file format is not allowed"
+      }
     }
   },
   "module": {

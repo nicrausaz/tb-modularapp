@@ -57,7 +57,7 @@ export default function UserEditionModal({ isOpen, user, onCancel, onConfirm }: 
             password: err.f('password'),
           })
         } else {
-          tError(t('status.error'), t('users.feedbacks.created_error'))
+          tError(t('status.error'), err.message)
         }
         return false
       })
@@ -86,7 +86,7 @@ export default function UserEditionModal({ isOpen, user, onCancel, onConfirm }: 
             password: err.f('password'),
           })
         } else {
-          tError(t('status.error'), t('users.feedbacks.updated_error'))
+          tError(t('status.error'), err.message)
         }
         return false
       })
@@ -109,12 +109,20 @@ export default function UserEditionModal({ isOpen, user, onCancel, onConfirm }: 
     onConfirm()
   }
 
+  const handleCancel = () => {
+    setErrors({
+      username: '',
+      password: '',
+    })
+    onCancel()
+  }
+
   return (
     <ConfirmModal
       isOpen={isOpen}
       title={title}
       onConfirm={handleConfirm}
-      onCancel={onCancel}
+      onCancel={handleCancel}
       confirmText={t('users.edition.confirm')}
       cancelText={t('users.edition.cancel')}
     >

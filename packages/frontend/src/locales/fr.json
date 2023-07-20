@@ -81,6 +81,17 @@
       "actions": "Actions",
       "status": "Statut",
       "details": "Détails"
+    },
+    "import": {
+      "title": "Ajouter un module à partir d'une archive",
+      "confirm": "Confirmer",
+      "cancel": "Annuler",
+      "input_label": "Choisir un fichier",
+      "format_allowed": "autorisé",
+      "feedbacks": {
+        "no_file": "Aucun fichier sélectionné",
+        "format_error": "Le format du fichier n'est pas autorisé"
+      }
     }
   },
   "module": {
