@@ -44,9 +44,8 @@ export default function LoginForm({ onSubmit }: LoginFormProps) {
     onSubmit(form.username, form.password)
   }
 
-  //  border border-error shadow-error
   return (
-    <form className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100" onSubmit={handleFormSubmit} action="">
+    <form className="card flex-shrink-0 w-full max-w-sm shadow-lg bg-base-100" onSubmit={handleFormSubmit} action="">
       <div className="card-body">
         <div className="form-control">
           <Input

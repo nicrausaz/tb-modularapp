@@ -28,15 +28,10 @@ function Navbar() {
     }
   }
 
-  // const handleEditionClose = () => {
-  //   setIsProfileModalOpen(false)
-  //   setEditingUser(null)
-  // }
-
   return (
     <div className="navbar bg-base-100 border">
       <div className="navbar-start">
-        <Link to={'/'} className="btn btn-ghost normal-case text-xl">
+        <Link to={'/'} className="btn btn-ghost normal-case text-xl hover:shadow-inner">
           <Image
             src={`/api/box/static/${box.icon}`}
             fallback="/assets/logo.svg"

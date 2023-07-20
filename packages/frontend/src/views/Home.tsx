@@ -27,19 +27,22 @@ export default function Home() {
       </div>
       <div className="w-full px-10">
         <div className="flex flex-col sm:grid grid-cols-3 text-center gap-6">
-          <Link className="card bg-primary text-primary-content" to={'/dashboard'}>
+          <Link
+            className="card bg-primary text-primary-content hover:shadow-lg hover:shadow-primary transition-shadow"
+            to={'/dashboard'}
+          >
             <div className="card-body">
               <h2 className="card-title">{t('home.call_to_action.dashboard')}</h2>
               <p className="text-sm">{t('home.call_to_action.dashboard_subtitle')}</p>
             </div>
           </Link>
-          <Link className="card bg-primary text-primary-content" to={'/modules'}>
+          <Link className="card bg-primary text-primary-content hover:shadow-lg hover:shadow-primary transition-shadow" to={'/modules'}>
             <div className="card-body">
               <h2 className="card-title">{t('home.call_to_action.modules')}</h2>
               <p className="text-sm">{t('home.call_to_action.modules_subtitle')}</p>
             </div>
           </Link>
-          <Link className="card bg-primary text-primary-content" to={'/settings'}>
+          <Link className="card bg-primary text-primary-content hover:shadow-lg hover:shadow-primary transition-shadow" to={'/settings'}>
             <div className="card-body">
               <h2 className="card-title">{t('home.call_to_action.box')}</h2>
               <p className="text-sm">{t('home.call_to_action.box')}</p>

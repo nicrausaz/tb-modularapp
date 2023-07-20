@@ -32,15 +32,15 @@ export default function Login() {
     <div className="hero min-h-screen bg-base-200">
       <BoxProvider>
         <ToastContainer />
-        <div className="hero-content flex-col lg:flex-row">
-          <div className="text-center lg:text-left flex-row lg:flex gap-6">
+        <div className="hero-content flex-col lg:flex-row border rounded-3xl backdrop-blur-2xl bg-white/50 shadow-lg">
+          <div className="text-center lg:text-left flex-row lg:flex gap-6 p-1">
             <div>
-              <div className="text-4xl font-bold flex items-center gap-3 text-center">
+              <div className="text-4xl font-bold flex items-center gap-3 text-center justify-center lg:justify-normal">
                 <Image
                   src={`/api/box/static/${box?.icon}`}
                   fallback="/assets/logo.svg"
                   alt="module_icon"
-                  className="w-14"
+                  className="w-16"
                 />
                 {box?.name}
               </div>
