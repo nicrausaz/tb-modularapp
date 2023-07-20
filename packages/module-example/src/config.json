@@ -30,11 +30,7 @@
       "label": "Example select",
       "description": "An example value for a select",
       "value": "option1",
-      "options": [
-        "option1",
-        "option2",
-        "option3"
-      ]
+      "options": ["option1", "option2", "option3"]
     },
     "anExampleSecret": {
       "type": "secret",

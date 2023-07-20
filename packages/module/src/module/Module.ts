@@ -44,7 +44,7 @@ export default abstract class Module {
    */
   public setConfiguration(configuration: Array<{ name: string; value: SpecificConfigurationEntryTypeValue }>) {
     configuration.forEach((field) => {
-      this.currentConfig.updateEntryFromKey(field.name, field.value)
+      this.currentConfig.updateEntry(field.name, field.value)
     })
     this.onConfigurationChanged()
   }

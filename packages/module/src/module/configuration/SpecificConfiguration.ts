@@ -10,7 +10,7 @@ type EntryName = string
 export class SpecificConfiguration {
   readonly entries: Map<EntryName, SpecificConfigurationEntry> = new Map()
 
-  protected constructor(entries: SpecificConfigurationEntry[]) {
+  private constructor(entries: SpecificConfigurationEntry[]) {
     entries.forEach((entry) => {
       this.entries.set(entry.name, entry)
     })
@@ -21,7 +21,7 @@ export class SpecificConfiguration {
    * @param name entry name
    * @returns the entry or undefined if it does not exist
    */
-  getEntry(name: EntryName): SpecificConfigurationEntry | undefined {
+  public getEntry(name: EntryName): SpecificConfigurationEntry | undefined {
     return this.entries.get(name)
   }
 
@@ -30,7 +30,7 @@ export class SpecificConfiguration {
    * @param rawConfiguration raw configuration object
    * @returns the specific configuration instance
    */
-  static fromObject(rawConfiguration: object): SpecificConfiguration {
+  public static fromObject(rawConfiguration: object): SpecificConfiguration {
     const entries: SpecificConfigurationEntry[] = []
     Object.entries(rawConfiguration).forEach(([key, value]) => {
       entries.push({
@@ -43,11 +43,11 @@ export class SpecificConfiguration {
 
   /**
    * Update a specific configuration entry from its key, only if it exists
-   * @param key key to update
-   * @param value new value
+   * @param name name of the entry to update
+   * @param value new value of the entry
    */
-  updateEntryFromKey(key: EntryName, value: SpecificConfigurationEntryTypeValue) {
-    const entry = this.entries.get(key)
+  public updateEntry(name: EntryName, value: SpecificConfigurationEntryTypeValue) {
+    const entry = this.entries.get(name)
     if (entry) {
       entry.value = value
     }

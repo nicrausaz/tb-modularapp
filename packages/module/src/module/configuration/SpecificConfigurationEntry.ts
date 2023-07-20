@@ -6,21 +6,24 @@ export type SpecificConfigurationEntryType = 'text' | 'number' | 'bool' | 'optio
 /**
  * Defines the allowed values for a specific configuration entry.
  */
-export type SpecificConfigurationEntryTypeValue = string | number | boolean | Array<string>
+type SpecificConfigurationEntryTypeValueMap = {
+  text: string
+  number: number
+  bool: boolean
+  option: string
+  secret: string
+}
+
+export type SpecificConfigurationEntryTypeValue = SpecificConfigurationEntryTypeValueMap[SpecificConfigurationEntryType]
 
 /**
  * Defines a specific configuration entry.
  */
-export type SpecificConfigurationEntry = {
-  type: SpecificConfigurationEntryType
-
+export type SpecificConfigurationEntry<T extends SpecificConfigurationEntryType = SpecificConfigurationEntryType> = {
+  type: T
   name: string
-
   label: string
-
   description?: string
-
-  value: SpecificConfigurationEntryTypeValue
-
-  options?: Array<string>
+  value: SpecificConfigurationEntryTypeValueMap[T]
+  options?: T extends 'option' ? Array<string> : undefined
 }
