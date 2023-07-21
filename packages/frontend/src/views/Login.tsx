@@ -29,10 +29,10 @@ export default function Login() {
   }
 
   return (
-    <div className="hero min-h-screen bg-base-200">
+    <div className="hero min-h-screen bg-gradient-to-r from-primary to-accent ">
       <BoxProvider>
         <ToastContainer />
-        <div className="hero-content flex-col lg:flex-row border rounded-3xl backdrop-blur-2xl bg-white/50 shadow-lg">
+        <div className="hero-content flex-col lg:flex-row border rounded-3xl backdrop-blur-2xl bg-white/60 shadow-lg">
           <div className="text-center lg:text-left flex-row lg:flex gap-6 p-1">
             <div>
               <div className="text-4xl font-bold flex items-center gap-3 text-center justify-center lg:justify-normal">

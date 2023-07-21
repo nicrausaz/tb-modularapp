@@ -165,7 +165,7 @@ export default class Manager {
    * Start all the modules
    */
   start(): void {
-    this.modules.forEach((_, key) => this.enableModule(key))
+    this.modules.forEach((_, id) => this.enableModule(id))
   }
 
   /**

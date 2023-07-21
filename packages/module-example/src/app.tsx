@@ -14,7 +14,7 @@ export default class ExampleModuleRenderer extends ModuleRenderer {
     return (
       <div className="example-module">
         <h1>Hi ! This is the example module</h1>
-        <p>{message}</p>
+        <p style={{color: "red"}} >{message}</p>
       </div>
     )
   }

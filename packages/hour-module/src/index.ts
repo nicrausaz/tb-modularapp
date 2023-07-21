@@ -17,7 +17,7 @@ export default class HourModule extends Module {
 
   start(): void {
     this.interval = setInterval(() => {
-      this.notify<HourModuleProps>({
+      this.notify({
         date: new Date().toLocaleString(),
       })
     }, this.getEntryValue<number>('refreshRate'))

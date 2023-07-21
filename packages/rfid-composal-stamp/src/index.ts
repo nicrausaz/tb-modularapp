@@ -22,7 +22,7 @@ export default class ComposalStampRFID extends Module {
 
   stop(): void {}
 
-  onReceive(type: string, data: any): void {
+  onReceive(type: string, data: unknown): void {
     // Trigger the clocking using the keyboard event (RFID reader)
     if (type === 'keyboard') {
       this.notify({
@@ -30,7 +30,7 @@ export default class ComposalStampRFID extends Module {
         data: data,
       })
 
-      this.toggleClocking(data)
+      this.toggleClocking(data as string)
     }
 
     // Trigger the clocking using the HTTP event (API)
@@ -39,13 +39,15 @@ export default class ComposalStampRFID extends Module {
     //   "nfc_serial_number": "1234567890"
     // }
     if (type === 'http') {
-      if (data.event === 'toggle') {
+      const d = data as { event: 'toggle'; nfc_serial_number: string }
+
+      if (d.event === 'toggle') {
         this.notify({
           status: 'loading',
-          data: data.nfc_serial_number,
+          data: d.nfc_serial_number,
         })
 
-        this.toggleClocking(data.nfc_serial_number)
+        this.toggleClocking(d.nfc_serial_number)
       }
     }
   }

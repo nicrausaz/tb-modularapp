@@ -4,7 +4,6 @@ import { SpecificConfiguration } from './configuration/SpecificConfiguration'
 import ModuleRenderer from './ModuleRenderer'
 import { SpecificConfigurationEntryTypeValue } from './configuration/SpecificConfigurationEntry'
 
-
 export interface ModuleProps {
   [key: string]: unknown
 }
@@ -19,14 +18,7 @@ export default abstract class Module {
   /**
    * Initialize the module
    */
-  public init(): void {}
-
-  /**
-   * Clear the module
-   */
-  public destroy(): void {
-    this.emitter.removeAllListeners()
-  }
+  public abstract init(): void
 
   /**
    * Start the module
@@ -36,7 +28,14 @@ export default abstract class Module {
   /**
    * Stop the module
    */
-  public stop(): void {}
+  public abstract stop(): void
+
+  /**
+   * Clear the module
+   */
+  public destroy(): void {
+    this.emitter.removeAllListeners()
+  }
 
   /**
    * Apply configuration changes to the module, only existing fiels will be updated, others will be ignored
@@ -148,7 +147,7 @@ export default abstract class Module {
    * Notifies a state change and triggers a re-render
    * @param data The data to send
    */
-  protected notify<T extends ModuleProps>(data: T): void {
+  protected notify(data: ModuleProps): void {
     // Render the module to HTML and emit the result
     if (this._renderer) {
       this.emitter.emit(Module.UPDATE_STATE_KEY, this._renderer.render(data))
@@ -175,7 +174,7 @@ export default abstract class Module {
    * Called when a new subscriber is registered to the module render updates
    * This method is useful to send the current or initial state to the new subscriber
    */
-  protected abstract onNewSubscriber(): void
+  protected onNewSubscriber(): void {}
 
   /**
    * Called when the configuration values are changed

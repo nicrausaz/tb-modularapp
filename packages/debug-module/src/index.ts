@@ -24,7 +24,7 @@ export default class HelloModule extends Module {
     console.log('Debug module started')
 
     setInterval(() => {
-      this.notify<HelloModuleProps>({
+      this.notify({
         name: this.getEntryValue<string>('message'),
         last: this.lastReceivedData,
       })
