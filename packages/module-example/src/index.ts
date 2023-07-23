@@ -42,10 +42,7 @@ export default class ExampleModule extends Module {
     // - You can send data trought a "required" accessors using the sendData method:
     // this.sendData('', { message: 'Hello World!' } )
     //
-    // TODO: more tips
-    //
     // Your code here ...
-    //
   }
 
   stop(): void {

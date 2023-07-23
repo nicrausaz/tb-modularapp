@@ -169,7 +169,7 @@ export default class ModulesRepository {
         // Unzip the module
         const zip = new AdmZip(filepath)
         const zipEntries = zip.getEntries().filter((entry) => {
-          // TODO: might find a better way to do this (maybe with a regex to ignore potential harmful files)
+          // Do not extract hidden files
           if (entry.entryName.startsWith('__MACOSX') || entry.entryName.startsWith('.')) {
             return false
           }

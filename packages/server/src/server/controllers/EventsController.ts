@@ -41,7 +41,6 @@ export default class EventsController {
     }
   }
 
-  // TODO: refactor this
   private subscribeToModule(conn: WebSocket, moduleId: string) {
     const renderCallback = (render: string) => {
       conn.send(
@@ -66,9 +65,7 @@ export default class EventsController {
             }),
           )
         })
-        .catch((err) => {
-          console.log('error is: ', err, 'disabled ?')
-        })
+        .catch(() => {})
     }
 
     let moduleSubscribers = this.modulesSubscribers.get(moduleId)

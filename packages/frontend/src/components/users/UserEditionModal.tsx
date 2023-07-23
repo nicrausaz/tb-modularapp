@@ -107,6 +107,10 @@ export default function UserEditionModal({ isOpen, user, onCancel, onConfirm }: 
     }
 
     onConfirm()
+    setErrors({
+      username: '',
+      password: '',
+    })
   }
 
   const handleCancel = () => {

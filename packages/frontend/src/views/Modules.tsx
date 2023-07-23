@@ -76,7 +76,7 @@ export default function Modules() {
 
     if (searchQuery) {
       filteredModules = filteredModules.filter((module) =>
-        module.name.toLowerCase().includes(searchQuery.toLowerCase()),
+        module.name.toLowerCase().includes(searchQuery.toLowerCase()) || module.nickname?.toLowerCase().includes(searchQuery.toLowerCase()),
       )
     }
 

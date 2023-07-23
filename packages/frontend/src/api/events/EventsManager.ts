@@ -34,9 +34,8 @@ export default class EventsManager {
     this.conn.onmessage = (event) => {
       this.onReceive(event)
     }
-    this.conn.onclose = () => {
-      console.log('Connection closed')
-    }
+    
+    this.conn.onclose = () => {}
 
     this.conn.onerror = (err) => {
       console.error('Connection error', err)

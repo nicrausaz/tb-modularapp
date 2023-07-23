@@ -24,8 +24,6 @@ import logger from './libs/logger'
 import EventsController from './controllers/EventsController'
 import ModuleLiveUpdater from './helpers/ModuleLiveUpdater'
 
-// TODO: Add validation errors to the swagger documentation
-
 /**
  * Define all the routes for the application
  *

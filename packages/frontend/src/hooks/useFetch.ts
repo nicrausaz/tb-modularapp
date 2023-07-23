@@ -7,8 +7,6 @@ interface FetchProps<T> {
   loading: boolean
 }
 
-// TODO: factorize useFetch and useFetchAuth together
-
 const useFetch = <T>(url: string, options?: RequestInit): FetchProps<T> => {
   const [data, setData] = useState<T | null>(null)
   const [error, setError] = useState<Error | null>(null)

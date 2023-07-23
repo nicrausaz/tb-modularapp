@@ -84,8 +84,7 @@ export default class UsersService {
     }
 
     // Check if the username is already taken
-    const existingUser = await this.usersRepository.getByUsername(user.username)
-    if (existingUser && existingUser.id !== id) {
+    if (await this.otherUserExistsByUsername(id, user.username)) {
       throw new UserAlreadyExistsException(user.username)
     }
 
@@ -148,6 +147,19 @@ export default class UsersService {
     return this.usersRepository
       .getByUsername(username)
       .then(() => true)
+      .catch(() => false)
+  }
+
+  /**
+   * Check if another user exists by its username
+   * @param id id of the user to exclude
+   * @param username username of the user
+   * @returns true if the user exists, false otherwise
+   */
+  private otherUserExistsByUsername = async (id: number, username: string): Promise<boolean> => {
+    return this.usersRepository
+      .getByUsername(username)
+      .then((user) => user.id !== id)
       .catch(() => false)
   }
 }
