@@ -132,7 +132,6 @@ export default class ComposalStampRFIDRenderer extends ModuleRenderer {
           <div className="content">
             <h1 className="content-title">{data.display_name}</h1>
             <p className="content-hour">{data.clocked_in_at}</p>
-            <div className="content-details">{additionalMessage} ⏰</div>
           </div>
         </div>
       )
@@ -140,8 +139,9 @@ export default class ComposalStampRFIDRenderer extends ModuleRenderer {
 
     if (status === 'error') {
       return (
-        <div className="p-6 bg-warning border border-gray-200 rounded-lg shadow text-center">
-          <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 italic">{additionalMessage}</h5>
+        <div className="idle">
+          <img className="loading-img" src="https://test.crausaz.click/composal.svg" alt="composal_logo" />
+          <span className="idle-details">{additionalMessage}</span>
         </div>
       )
     }

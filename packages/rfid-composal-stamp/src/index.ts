@@ -39,15 +39,14 @@ export default class ComposalStampRFID extends Module {
     //   "nfc_serial_number": "1234567890"
     // }
     if (type === 'http') {
-      const d = data as { event: 'toggle'; nfc_serial_number: string }
+      const { event, nfc_serial_number } = data as { event: 'toggle'; nfc_serial_number: string }
 
-      if (d.event === 'toggle') {
+      if (event === 'toggle') {
         this.notify({
           status: 'loading',
-          data: d.nfc_serial_number,
+          data: nfc_serial_number,
         })
-
-        this.toggleClocking(d.nfc_serial_number)
+        this.toggleClocking(nfc_serial_number)
       }
     }
   }
@@ -71,9 +70,9 @@ export default class ComposalStampRFID extends Module {
       body: JSON.stringify({ nfc_serial_number: rfid }),
     })
 
-    if (response.ok) {
-      const data = await response.json()
+    const data = await response.json()
 
+    if (response.ok) {
       let message = ''
       const theoreticalClockingTime = new Date(data.user.theoretical_clocking_time)
       const clockedInAt = new Date(data.user.clocked_in_at)
@@ -111,10 +110,10 @@ export default class ComposalStampRFID extends Module {
       })
       this.resetAfter(7000)
     } else {
-      const data = await response.json()
+      // const data = await response.json()
       this.notify({
         status: 'error',
-        additionalMessage: data.message,
+        additionalMessage: 'The badge could not be found',
         data: null,
       })
       this.resetAfter(7000)
