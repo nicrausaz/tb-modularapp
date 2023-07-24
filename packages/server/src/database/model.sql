@@ -61,8 +61,8 @@ CREATE TABLE IF NOT EXISTS ScreenSlots (
   x INTEGER NOT NULL,
   y INTEGER NOT NULL,
   PRIMARY KEY (id),
-  FOREIGN KEY (screenId) REFERENCES ScreenConfiguration(id),
-  FOREIGN KEY (moduleId) REFERENCES Module(id)
+  FOREIGN KEY (screenId) REFERENCES Screens(id),
+  FOREIGN KEY (moduleId) REFERENCES Modules(id)
 );
 
 /*
