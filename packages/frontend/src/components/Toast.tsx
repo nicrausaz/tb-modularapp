@@ -14,11 +14,12 @@ export default function Toast({ toast, onAction, onClose }: ToastProps) {
   useEffect(() => {
     const timeout = setTimeout(() => {
       onClose(toast.id)
-    }, toast.duration)
+    }, 3000)
+
     return () => {
       clearTimeout(timeout)
     }
-  }, [toast, onClose])
+  }, [toast.id, onClose])
 
   const colors = {
     success: 'alert-success',

@@ -9,7 +9,7 @@ export default function ToastContainer() {
   return (
     <div className="fixed toast toast-top toast-center z-50">
       <div className="stack">
-        {toasts.map((toast) => (
+        {toasts.reverse().map((toast) => (
           <Toast key={toast.id} toast={toast} onAction={closeToast} onClose={closeToast} />
         ))}
       </div>

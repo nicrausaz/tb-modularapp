@@ -26,7 +26,7 @@ export class UserAlreadyExistsException extends BadRequestError {
  */
 export class UserAuthentificationFailedException extends ForbiddenError {
   constructor(username: string) {
-    super(`User authentification failed for user ${username}`)
+    super(`User authentification failed, invalid credentials`)
     logger.warn(`User authentification failed for user ${username}`)
   }
 }
