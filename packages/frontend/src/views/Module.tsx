@@ -122,12 +122,14 @@ export default function Module() {
 
   const handleReset = async () => {
     setConfirmReset(false)
+    
     resetConfiguration(module.id)
       .then(async () => {
         setModule({
           ...module,
           currentConfig: await configuration(module.id),
         })
+        
         tSuccess(t('status.success'), t('module.feedbacks.config_reset_ok'))
       })
       .catch(() => {
@@ -163,11 +165,17 @@ export default function Module() {
                 <DeveloperIcon className="w-4 h-4 mr-2" />
                 <span className="font-light">{module.author}</span>
               </div>
-              <div className="badge flex items-center tooltip tooltip-bottom" data-tip={t('module.information.version')}>
+              <div
+                className="badge flex items-center tooltip tooltip-bottom"
+                data-tip={t('module.information.version')}
+              >
                 <VersionIcon className="w-4 h-4 mr-2" />
                 <span className="font-light">{module.version}</span>
               </div>
-              <div className="badge flex items-center tooltip tooltip-bottom" data-tip={t('module.information.import_date')}>
+              <div
+                className="badge flex items-center tooltip tooltip-bottom"
+                data-tip={t('module.information.import_date')}
+              >
                 <TimeIcon className="w-4 h-4 mr-2" />
                 <span className="font-light">{module.importedAt.toString()}</span>
               </div>
@@ -288,6 +296,7 @@ export default function Module() {
       <div className="flex flex-col w-full items-center">
         <div className="divider text-2xl text-neutral font-bold my-6">{t('module.configuration.title')}</div>
         <div className="bg-base-100 shadow rounded-box w-full md:w-3/4 p-4">
+          {JSON.stringify(module.currentConfig)}
           <ConfigurationEditor
             configuration={module.currentConfig}
             onSave={saveConfig}
