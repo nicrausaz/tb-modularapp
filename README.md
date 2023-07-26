@@ -84,13 +84,28 @@ _Below are a few examples and usefull monorepo commands to get you started with 
    npm run build -W
    ```
 
-4. Start the backend
+4. Copy and fill the .env file
+
+   ```sh
+   cp ./packages/server/.env.example ./packages/server/.env
+   ```
+
+   ```env
+    JWT_SECRET = <generate a random string>
+    PORT = 3000
+    ENV = development
+    DB_DIR = <path_to>/tb-modularapp/packages/server/src/database
+    MODULES_DIR = <path_to>/tb-modularapp/packages/server/modules
+    PUBLIC_DIR = <path_to>/tb-modularapp/packages/server/public
+   ```
+
+5. Start the backend
 
    ```sh
    npm run start -w packages/server
    ```
 
-5. Start the frontend
+6. Start the frontend
    ```sh
     npm run dev -w packages/frontend
    ```
