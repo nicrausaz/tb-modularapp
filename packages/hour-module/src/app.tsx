@@ -10,6 +10,7 @@ export default class HourModuleRenderer extends ModuleRenderer {
     font-family: "Montserrat";
     border: 5px solid white;
     box-shadow: inset 2px 3px 8px 0 rgba(0, 0, 0, 0.1);
+    margin: auto;
   }
 
   .wrap {
@@ -112,7 +113,6 @@ export default class HourModuleRenderer extends ModuleRenderer {
             <span className="dot"></span>
           </div>
         </div>
-        <div className="details">{d.toLocaleDateString()}</div>
       </div>
     )
   }

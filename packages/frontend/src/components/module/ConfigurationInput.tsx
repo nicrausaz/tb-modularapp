@@ -65,7 +65,7 @@ export default function ConfigurationInput({ input, error, onValueChange }: Conf
         <select
           className="select select-bordered w-full"
           onChange={(e) => onValueChange(e.target.name, e.target.value)}
-          defaultValue={input.value as string}
+          value={input.value as string}
           name={input.name}
         >
           {input.options &&

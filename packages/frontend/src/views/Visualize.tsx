@@ -67,7 +67,7 @@ export default function Visualize() {
   }
 
   return (
-    <div className="h-screen w-screen">
+    <div className="h-screen w-screen bg-base-200">
       <ScreenEditor slots={screen.slots} readonly={true} containerClassName="h-screen w-screen" />
     </div>
   )

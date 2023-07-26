@@ -23,7 +23,7 @@ export class Configuration {
 
   public reset(): void {
     this._defaultEntries.entries.forEach((value, key) => {
-      this._specificEntries.entries.set(key, value)
+      this._specificEntries.entries.set(key, { ...value })
     })
   }
 

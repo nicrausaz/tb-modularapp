@@ -296,7 +296,6 @@ export default function Module() {
       <div className="flex flex-col w-full items-center">
         <div className="divider text-2xl text-neutral font-bold my-6">{t('module.configuration.title')}</div>
         <div className="bg-base-100 shadow rounded-box w-full md:w-3/4 p-4">
-          {JSON.stringify(module.currentConfig)}
           <ConfigurationEditor
             configuration={module.currentConfig}
             onSave={saveConfig}

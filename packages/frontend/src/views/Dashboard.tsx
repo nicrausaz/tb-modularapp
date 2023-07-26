@@ -99,7 +99,7 @@ export default function Dashboard() {
 
   const addModulesToScreen = (modules: Module[]) => {
     setModulesModalOpen(false)
-    
+
     const x = screen.slots.length * 3
     const newSlots: ScreenSlot[] = modules.map((module, i) => ({
       id: uuid(),
@@ -153,7 +153,7 @@ export default function Dashboard() {
             <ScreenEditor
               slots={screen.slots}
               onChange={handleLayoutChange}
-              containerClassName="border rounded-lg w-full h-full"
+              containerClassName="border rounded-lg w-full h-full bg-base-200"
             />
           </div>
         )}

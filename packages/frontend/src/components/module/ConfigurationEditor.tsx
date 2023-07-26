@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Configuration } from '@/models/Configuration'
 import ConfigurationInput from '@/components/module/ConfigurationInput'
 import IconButton from '@/components/IconButton'
@@ -14,6 +14,10 @@ type ConfigurationEditorProps = {
 export default function ConfigurationEditor({ configuration, onSave, onReset }: ConfigurationEditorProps) {
   const { t } = useTranslation()
   const [editingConfig, setEditingConfig] = useState<Configuration>([...configuration])
+
+  useEffect(() => {
+    setEditingConfig([...configuration])
+  }, [configuration])
 
   const handleInputChange = (name: string, value: string | boolean | number) => {
     setEditingConfig((prev) => {
