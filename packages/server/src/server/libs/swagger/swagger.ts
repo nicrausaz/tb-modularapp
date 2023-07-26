@@ -1,6 +1,8 @@
 import swaggerJSDoc from 'swagger-jsdoc'
 import * as path from 'path'
 
+const apiLink = process.env.NODE_ENV === 'production' ? '../../Routes.js' : '../../Routes.ts'
+
 const swaggerSpec = swaggerJSDoc({
   definition: {
     openapi: '3.0.0',
@@ -22,7 +24,7 @@ const swaggerSpec = swaggerJSDoc({
       },
     },
   },
-  apis: [path.join(__dirname, '../../Routes.ts')],
+  apis: [path.join(__dirname, apiLink)],
 })
 
 export { swaggerSpec }

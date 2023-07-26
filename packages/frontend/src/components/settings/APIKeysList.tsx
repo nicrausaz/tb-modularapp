@@ -57,14 +57,14 @@ export default function APIKeysList({ keys, onUpdated }: APIKeyListProps) {
 
   const handleCreationConfirm = () => {
     setKeyCreationModalOpen(false)
-    tSuccess(t('status.success'), t('settings.api_keys.feedbacks.create_success'))
+    tSuccess(t('status.success'), t('settings.api_keys.feedbacks.created_ok'))
     onUpdated()
   }
 
   const handleDelete = (id: number) => {
     deleteAPIKey(id).then(() => {
       setKeyDeletionModalOpen(false)
-      tSuccess(t('status.success'), t('settings.api_keys.feedbacks.delete_success'))
+      tSuccess(t('status.success'), t('settings.api_keys.feedbacks.deleted_ok'))
       onUpdated()
     })
   }
