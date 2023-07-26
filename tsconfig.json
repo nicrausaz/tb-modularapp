@@ -18,10 +18,10 @@
       "path": "./packages/module"
     },
     {
-      "path": "./packages/module-manager"
+      "path": "./packages/device-accessor"
     },
     {
-      "path": "./packages/device-accessor"
+      "path": "./packages/module-manager"
     },
     {
       "path": "./packages/server"
