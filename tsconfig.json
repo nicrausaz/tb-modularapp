@@ -27,6 +27,9 @@
       "path": "./packages/server"
     },
     {
+      "path": "./packages/frontend"
+    },
+    {
       "path": "./packages/module-example"
     },
     {
